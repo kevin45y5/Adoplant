@@ -1,0 +1,65 @@
+from datetime import datetime
+
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator, model_validator
+
+
+class UsuarioRegistro(BaseModel):
+    nombre: str = Field(min_length=1, max_length=100)
+    apellido: str = Field(min_length=1, max_length=100)
+    correo: EmailStr = Field(max_length=150)
+    telefono: str = Field(min_length=1, max_length=20)
+    contrasena: str = Field(min_length=8, max_length=128,
+                            repr=False, exclude=True)
+    confirmar_contrasena: str = Field(
+        min_length=8, max_length=128, repr=False, exclude=True)
+
+    @field_validator("nombre", "apellido", "correo", "telefono", mode="before")
+    @classmethod
+    def quitar_espacios_exteriores(cls, valor):
+        return valor.strip() if isinstance(valor, str) else valor
+
+    @field_validator("contrasena")
+    @classmethod
+    def validar_contrasena(cls, valor: str) -> str:
+        if not any(letra.isalpha() for letra in valor) or not any(numero.isdecimal() for numero in valor):
+            raise ValueError(
+                "La contraseña debe contener al menos una letra y un número")
+        return valor
+
+    @model_validator(mode="after")
+    def confirmar_coincidencia(self):
+        if self.contrasena != self.confirmar_contrasena:
+            raise ValueError("Las contraseñas no coinciden")
+        return self
+
+
+class UsuarioRespuesta(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id_usuario: int
+    nombre: str
+    apellido: str
+    correo: EmailStr
+    telefono: str
+    estado: str
+    fecha_registro: datetime
+
+
+class UsuarioLogin(BaseModel):
+    identificador: str = Field(min_length=1, max_length=150)
+    contrasena: str = Field(
+        min_length=1,
+        max_length=128,
+        repr=False,
+        exclude=True,
+    )
+
+    @field_validator("identificador", mode="before")
+    @classmethod
+    def limpiar_identificador(cls, valor):
+        return valor.strip() if isinstance(valor, str) else valor
+
+
+class TokenRespuesta(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
