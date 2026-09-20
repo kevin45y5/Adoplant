@@ -9,6 +9,7 @@ from fastapi.responses import JSONResponse
 
 from app.database import get_db
 from app.routes.api import api_router
+from app.api.v1.router import api_v1_router
 
 logger = logging.getLogger(__name__)
 
@@ -71,3 +72,4 @@ def probar_base_datos(db: Session = Depends(get_db)):
 
 
 app.include_router(api_router)
+app.include_router(api_v1_router)

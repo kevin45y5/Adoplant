@@ -4,7 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.models import Usuario
+from app.models import Usuario, administrador
 from app.security import decodificar_token_acceso
 
 
@@ -48,4 +48,17 @@ def obtener_usuario_actual(
             detail="La cuenta está bloqueada",
         )
 
+    return usuario
+
+
+def es_administrador(usuario: Usuario = Depends(obtener_usuario_actual), db: Session = Depends(get_db)) -> Usuario:
+    admin = db.execute(
+        select(administrador).where(administrador.c.id_usuario == usuario.id_usuario)
+    ).scalar_one_or_none()
+    
+    if admin is None:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Usuario no tiene rol de administrador",
+        )
     return usuario

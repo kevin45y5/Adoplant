@@ -1,10 +1,15 @@
 from fastapi import APIRouter
 
-from app.api.v1.endpoints import chats
+from app.api.v1.endpoints import chats, admin_plantas
 
 api_v1_router = APIRouter()
 api_v1_router.include_router(
     chats.router,
     prefix="/chats",
     tags=["Chat"],
+)
+api_v1_router.include_router(
+    admin_plantas.router,
+    prefix="/admin/plantas",
+    tags=["Administración"],
 )
