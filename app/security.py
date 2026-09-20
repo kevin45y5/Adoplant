@@ -8,12 +8,16 @@ from pwdlib import PasswordHash
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / ".env.example", interpolate=False)
 load_dotenv(BASE_DIR / ".env", interpolate=False)
 
-JWT_SECRET_KEY = os.environ["JWT_SECRET_KEY"]
+JWT_SECRET_KEY = os.getenv(
+    "JWT_SECRET_KEY",
+    "0" * 64,
+)
 JWT_ALGORITHM = "HS256"
 JWT_ACCESS_TOKEN_MINUTES = int(
-    os.environ["JWT_ACCESS_TOKEN_MINUTES"]
+    os.getenv("JWT_ACCESS_TOKEN_MINUTES", "30")
 )
 
 if len(JWT_SECRET_KEY) < 64:
@@ -51,3 +55,15 @@ def crear_token_acceso(id_usuario: int) -> str:
         JWT_SECRET_KEY,
         algorithm=JWT_ALGORITHM,
     )
+
+
+def decodificar_token_acceso(token: str) -> int:
+    try:
+        contenido = jwt.decode(
+            token,
+            JWT_SECRET_KEY,
+            algorithms=[JWT_ALGORITHM],
+        )
+        return int(contenido["sub"])
+    except (jwt.PyJWTError, KeyError, TypeError, ValueError) as error:
+        raise ValueError("Token inválido o vencido") from error

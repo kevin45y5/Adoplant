@@ -1,9 +1,7 @@
 from sqlalchemy import Column, DateTime, Integer, String, text
 from sqlalchemy.dialects.postgresql import ENUM
-from sqlalchemy.orm import declarative_base
 
-
-Base = declarative_base()
+from app.models.base import Base
 
 
 class Usuario(Base):
@@ -21,7 +19,6 @@ class Usuario(Base):
     correo = Column(String(150), nullable=False)
     telefono = Column(String(20), nullable=False)
 
-    # Aquí guardaremos el hash, nunca la contraseña original.
     contrasena = Column(String(255), nullable=False)
 
     estado = Column(
