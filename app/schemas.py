@@ -63,3 +63,42 @@ class UsuarioLogin(BaseModel):
 class TokenRespuesta(BaseModel):
     access_token: str
     token_type: str = "bearer"
+
+
+class ReporteCrear(BaseModel):
+    id_reportado: int = Field(gt=0)
+    motivo: str = Field(min_length=1)
+
+    @field_validator("motivo", mode="before")
+    @classmethod
+    def motivo_no_vacio(cls, valor):
+        if isinstance(valor, str):
+            valor = valor.strip()
+        if not valor:
+            raise ValueError("El motivo no puede estar vacío")
+        return valor
+
+
+class ReporteEstadoActualizar(BaseModel):
+    estado: str = Field(min_length=1, max_length=20)
+
+    @field_validator("estado", mode="before")
+    @classmethod
+    def normalizar_estado(cls, valor):
+        if isinstance(valor, str):
+            valor = valor.strip().upper()
+        if not valor:
+            raise ValueError("El estado no puede estar vacío")
+        return valor
+
+
+class ReporteRespuesta(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id_reporte: int
+    motivo: str
+    estado: str
+    fecha_creacion: datetime
+    id_reportante: int
+    id_reportado: int
+    id_administrador: int | None = None

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, DateTime, Integer, String, text
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Text, text
 from sqlalchemy.dialects.postgresql import ENUM
 from sqlalchemy.orm import declarative_base
 
@@ -40,4 +40,64 @@ class Usuario(Base):
         DateTime(timezone=True),
         nullable=False,
         server_default=text("CURRENT_TIMESTAMP"),
+    )
+
+
+class Administrador(Base):
+    __tablename__ = "administrador"
+    __table_args__ = {"schema": "public"}
+
+    id_administrador = Column(
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+    )
+    id_usuario = Column(
+        Integer,
+        ForeignKey("public.usuario.id_usuario"),
+        unique=True,
+        nullable=False,
+    )
+
+
+class Reporte(Base):
+    __tablename__ = "reporte"
+    __table_args__ = {"schema": "public"}
+
+    id_reporte = Column(
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+    )
+    motivo = Column(Text, nullable=False)
+    estado = Column(
+        ENUM(
+            "EN_REVISION",
+            "RESUELTO",
+            name="estado_reporte",
+            schema="public",
+            create_type=False,
+        ),
+        nullable=False,
+        server_default=text("'EN_REVISION'::public.estado_reporte"),
+    )
+    fecha_creacion = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    )
+    id_reportante = Column(
+        Integer,
+        ForeignKey("public.usuario.id_usuario"),
+        nullable=False,
+    )
+    id_reportado = Column(
+        Integer,
+        ForeignKey("public.usuario.id_usuario"),
+        nullable=False,
+    )
+    id_administrador = Column(
+        Integer,
+        ForeignKey("public.administrador.id_administrador"),
+        nullable=True,
     )

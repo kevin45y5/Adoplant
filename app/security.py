@@ -51,3 +51,15 @@ def crear_token_acceso(id_usuario: int) -> str:
         JWT_SECRET_KEY,
         algorithm=JWT_ALGORITHM,
     )
+
+
+def decodificar_token_acceso(token: str) -> int:
+    try:
+        contenido = jwt.decode(
+            token,
+            JWT_SECRET_KEY,
+            algorithms=[JWT_ALGORITHM],
+        )
+        return int(contenido["sub"])
+    except (jwt.PyJWTError, KeyError, TypeError, ValueError) as error:
+        raise ValueError("Token inválido o vencido") from error
