@@ -63,3 +63,30 @@ class UsuarioLogin(BaseModel):
 class TokenRespuesta(BaseModel):
     access_token: str
     token_type: str = "bearer"
+
+
+class UsuarioActualizacion(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    nombre: str | None = Field(default=None, min_length=1, max_length=100)
+    apellido: str | None = Field(default=None, min_length=1, max_length=100)
+    correo: EmailStr | None = Field(default=None, max_length=150)
+    telefono: str | None = Field(default=None, min_length=1, max_length=20)
+
+    @field_validator(
+        "nombre", "apellido", "correo", "telefono",
+        mode="before",
+    )
+    @classmethod
+    def validar_campo_enviado(cls, valor):
+        if valor is None:
+            raise ValueError("El campo no puede ser null")
+
+        return valor.strip() if isinstance(valor, str) else valor
+
+    @model_validator(mode="after")
+    def comprobar_cambios(self):
+        if not self.model_fields_set:
+            raise ValueError("Debes enviar al menos un campo para actualizar")
+
+        return self
