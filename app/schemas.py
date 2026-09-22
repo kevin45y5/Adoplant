@@ -1,5 +1,5 @@
 from datetime import datetime
-
+from typing import Optional
 from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator, model_validator
 
 
@@ -63,3 +63,75 @@ class UsuarioLogin(BaseModel):
 class TokenRespuesta(BaseModel):
     access_token: str
     token_type: str = "bearer"
+    
+class CategoriaCreate(BaseModel):
+    nombre: str = Field(min_length=1, max_length=100)
+
+
+class CategoriaRespuesta(BaseModel):
+    id_categoria: int
+    nombre: str
+    estado: str
+    model_config = ConfigDict(from_attributes=True)
+
+
+class PlantaCreate(BaseModel):
+    nombre: str = Field(min_length=1, max_length=100)
+    tamano: str = Field(min_length=1, max_length=50)
+    nivel_cuidado: str = Field(min_length=1, max_length=50)
+    estado_salud: str = Field(min_length=1, max_length=100)
+    necesidad_luz: str = Field(min_length=1, max_length=100)
+    necesidad_agua: str = Field(min_length=1, max_length=100)
+    descripcion: Optional[str] = Field(default="", max_length=500)
+    ubicacion: str = Field(min_length=1, max_length=255)
+    id_categoria: int
+
+
+class PlantaUpdate(BaseModel):
+    nombre: Optional[str] = Field(default="", max_length=100)
+    tamano: Optional[str] = Field(default="", max_length=50)
+    nivel_cuidado: Optional[str] = Field(default="", max_length=50)
+    estado_salud: Optional[str] = Field(default="", max_length=100)
+    necesidad_luz: Optional[str] = Field(default="", max_length=100)
+    necesidad_agua: Optional[str] = Field(default="", max_length=100)
+    descripcion: Optional[str] = Field(default="", max_length=500)
+    ubicacion: Optional[str] = Field(default="", max_length=255)
+    id_categoria: Optional[int] = None
+    visible: bool = Field(default=True)
+
+
+class PlantaRespuesta(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id_planta: int
+    nombre: str
+    tamano: str
+    nivel_cuidado: str
+    estado_salud: str
+    necesidad_luz: str
+    necesidad_agua: str
+    descripcion: Optional[str]
+    ubicacion: str
+    estado_planta: str
+    fecha_publicacion: datetime
+    visible: bool
+    eliminada: bool
+    motivo_moderacion: Optional[str]
+    fecha_moderacion: Optional[datetime]
+    id_administrador_moderador: Optional[int]
+    id_usuario: int
+    id_categoria: int
+    categoria: Optional[CategoriaRespuesta] = None
+
+
+class FotoPlantaCreate(BaseModel):
+    url: str = Field(min_length=1, max_length=500)
+    es_principal: bool = False
+
+
+class FotoPlantaRespuesta(BaseModel):
+    id_foto: int
+    url: str
+    es_principal: bool
+    fecha_carga: datetime
+    model_config = ConfigDict(from_attributes=True)
