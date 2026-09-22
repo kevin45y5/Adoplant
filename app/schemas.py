@@ -122,16 +122,3 @@ class PlantaRespuesta(BaseModel):
     id_usuario: int
     id_categoria: int
     categoria: Optional[CategoriaRespuesta] = None
-
-
-class FotoPlantaCreate(BaseModel):
-    url: str = Field(min_length=1, max_length=500)
-    es_principal: bool = False
-
-
-class FotoPlantaRespuesta(BaseModel):
-    id_foto: int
-    url: str
-    es_principal: bool
-    fecha_carga: datetime
-    model_config = ConfigDict(from_attributes=True)
