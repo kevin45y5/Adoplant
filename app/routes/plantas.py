@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from typing import List, Optional
+
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -8,6 +10,31 @@ from app.schemas import PlantaCreate, PlantaRespuesta
 from app.security import obtener_usuario_actual
 
 router = APIRouter(prefix="/plantas", tags=["Plantas"])
+
+
+@router.get("/mias", response_model=List[PlantaRespuesta])
+def consultar_mias(
+    usuario_actual: Usuario = Depends(obtener_usuario_actual),
+    db: Session = Depends(get_db),
+    busqueda: Optional[str] = Query(None, max_length=100),
+    estado: Optional[str] = Query(None),
+    pagina: int = Query(1, ge=1),
+    limite: int = Query(20, ge=1, le=100),
+):
+    consulta = select(Planta).where(Planta.id_usuario == usuario_actual.id_usuario)
+
+    if busqueda:
+        consulta = consulta.where(Planta.nombre.ilike(f"%{busqueda}%"))
+    if estado:
+        consulta = consulta.where(Planta.estado_planta == estado)
+
+    offset = (pagina - 1) * limite
+    total = db.execute(consulta).scalars().unique().count()
+    plantas = db.execute(
+        consulta.offset(offset).limit(limite)
+    ).scalars().unique().all()
+
+    return plantas
 
 
 @router.post("/", response_model=PlantaRespuesta, status_code=status.HTTP_201_CREATED)
