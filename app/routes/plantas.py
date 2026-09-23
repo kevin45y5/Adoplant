@@ -97,6 +97,64 @@ def modificar_planta(
     return planta
 
 
+@router.delete("/{id_planta}")
+def retirar_planta(
+    id_planta: int,
+    usuario_actual: Usuario = Depends(obtener_usuario_actual),
+    db: Session = Depends(get_db),
+):
+    planta = db.execute(
+        select(Planta).where(Planta.id_planta == id_planta)
+    ).scalar_one_or_none()
+
+    if planta is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Planta no encontrada",
+        )
+
+    if planta.id_usuario != usuario_actual.id_usuario:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="No tienes permiso para retirar esta publicación",
+        )
+
+    if planta.estado_planta != "DISPONIBLE" or not planta.visible or planta.eliminada:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Solo se pueden retirar publicaciones DISPONIBLES, visibles y no eliminadas",
+        )
+
+    adopcion_en_curso = db.execute(
+        text("SELECT 1 FROM public.adopcion WHERE id_planta = :id AND estado IN ('EN_PROCESO', 'COMPLETADA') LIMIT 1")
+    ).params(id=id_planta).scalar_one_or_none()
+
+    if adopcion_en_curso is not None:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="No se puede retirar una planta con adopción en curso o completada",
+        )
+
+    try:
+        db.execute(
+            text("UPDATE public.solicitud_adopcion SET estado = 'RECHAZADA' WHERE id_planta = :id AND estado = 'PENDIENTE'")
+        ).params(id=id_planta)
+
+        planta.eliminada = True
+        planta.visible = False
+
+        db.commit()
+        db.refresh(planta)
+    except Exception:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Error al retirar la publicación",
+        )
+
+    return planta
+
+
 @router.post("/", response_model=PlantaRespuesta, status_code=status.HTTP_201_CREATED)
 def crear_planta(
     datos: PlantaCreate,
