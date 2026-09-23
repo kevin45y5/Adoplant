@@ -18,6 +18,7 @@ UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 MAX_FILE_SIZE = 5 * 1024 * 1024
 ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".webp"}
 ALLOWED_MIME_TYPES = {"image/jpeg", "image/png", "image/gif", "image/webp"}
+FOTO_BASE_URL = "/fotografias"
 
 router = APIRouter(prefix="/fotografias", tags=["Fotografías"])
 
@@ -40,7 +41,7 @@ def validar_archivo(file: UploadFile) -> str:
     if len(file_content) > MAX_FILE_SIZE:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"El archivo excede el tamaño máximo de 5MB",
+            detail="El archivo excede el tamaño máximo de 5MB",
         )
 
     file.file.seek(0)
@@ -68,19 +69,27 @@ def subir_fotografia(
 
     nombre_seguro = f"{secrets.token_hex(16)}{extension}"
     ruta_destino = UPLOAD_DIR / nombre_seguro
+    url = f"{FOTO_BASE_URL}/{nombre_seguro}"
 
-    with open(ruta_destino, "wb") as buffer:
-        buffer.write(foto.file.read())
+    try:
+        with open(ruta_destino, "wb") as buffer:
+            buffer.write(foto.file.read())
 
-    url = f"/fotografias/{nombre_seguro}"
-
-    fotografia = Fotografia(
-        url=url,
-        id_planta=id_planta,
-    )
-    db.add(fotografia)
-    db.commit()
-    db.refresh(fotografia)
+        fotografia = Fotografia(
+            url=url,
+            id_planta=id_planta,
+        )
+        db.add(fotografia)
+        db.commit()
+        db.refresh(fotografia)
+    except Exception:
+        if ruta_destino.exists():
+            ruta_destino.unlink()
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Error al guardar la fotografía",
+        )
 
     return FotografiaRespuesta(
         id_foto=fotografia.id_foto,
@@ -98,4 +107,4 @@ def servir_fotografia(nombre_archivo: str):
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Fotografía no encontrada",
         )
-    return {"url": f"/fotografias/{nombre_archivo}"}
+    return {"url": f"{FOTO_BASE_URL}/{nombre_archivo}"}

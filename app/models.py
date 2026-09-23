@@ -100,6 +100,6 @@ class Fotografia(Base):
         nullable=False,
         server_default=text("CURRENT_TIMESTAMP"),
     )
-    id_planta = Column(Integer, nullable=False)
+    id_planta = Column(Integer, ForeignKey("public.planta.id_planta"), nullable=False)
 
     planta = relationship("Planta", foreign_keys=[id_planta])
