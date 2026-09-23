@@ -124,6 +124,7 @@ class PlantaRespuesta(BaseModel):
     id_categoria: int
     categoria: Optional[CategoriaRespuesta] = None
     fotografia_url: Optional[str] = None
+    puede_solicitar: bool = False
 
 
 class CatalogoResponse(BaseModel):

@@ -114,6 +114,7 @@ def consultar_planta(
     ).params(id=id_planta).scalar_one_or_none()
 
     planta.fotografia_url = fotografia_url
+    planta.puede_solicitar = planta.estado_planta == "DISPONIBLE"
 
     return planta
 
