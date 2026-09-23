@@ -1,9 +1,9 @@
 from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy import select, text, func
+from sqlalchemy import select, text
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.database import get_db
 from app.models import Categoria, Planta, Usuario
@@ -84,6 +84,38 @@ def catalogo(
         total_paginas=total_paginas,
         tiene_mas=pagina < total_paginas,
     )
+
+
+@router.get("/{id_planta}", response_model=PlantaRespuesta)
+def consultar_planta(
+    id_planta: int,
+    db: Session = Depends(get_db),
+):
+    planta = db.execute(
+        select(Planta)
+        .options(joinedload(Planta.categoria))
+        .where(Planta.id_planta == id_planta)
+    ).scalar_one_or_none()
+
+    if planta is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Planta no encontrada",
+        )
+
+    if not planta.visible or planta.eliminada:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Esta publicación no está disponible",
+        )
+
+    fotografia_url = db.execute(
+        text("SELECT url FROM public.fotografia WHERE id_planta = :id ORDER BY fecha_carga ASC LIMIT 1")
+    ).params(id=id_planta).scalar_one_or_none()
+
+    planta.fotografia_url = fotografia_url
+
+    return planta
 
 
 @router.patch("/{id_planta}", response_model=PlantaRespuesta)
