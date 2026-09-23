@@ -127,6 +127,19 @@ class PlantaRespuesta(BaseModel):
     puede_solicitar: bool = False
 
 
+class FotografiaRespuesta(BaseModel):
+    id_foto: int
+    url: str
+    fecha_carga: datetime
+    id_planta: int
+    model_config = ConfigDict(from_attributes=True)
+
+
+class FotografiaCreate(BaseModel):
+    id_planta: int
+    model_config = ConfigDict(from_attributes=True)
+
+
 class CatalogoResponse(BaseModel):
     items: List[PlantaRespuesta]
     total: int

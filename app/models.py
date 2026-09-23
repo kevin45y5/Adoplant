@@ -1,4 +1,4 @@
-from sqlalchemy import Column, DateTime, Integer, String, Text, Boolean, text
+from sqlalchemy import Column, DateTime, Integer, String, Text, Boolean, text, ForeignKey
 from sqlalchemy.dialects.postgresql import ENUM
 from sqlalchemy.orm import declarative_base, relationship
 
@@ -20,7 +20,6 @@ class Usuario(Base):
     correo = Column(String(150), nullable=False)
     telefono = Column(String(20), nullable=False)
 
-# Aquí guardaremos el hash, nunca la contraseña original.
     contrasena = Column(String(255), nullable=False)
 
     estado = Column(
@@ -88,3 +87,19 @@ class Planta(Base):
 
     usuario = relationship("Usuario", foreign_keys=[id_usuario])
     categoria = relationship("Categoria", foreign_keys=[id_categoria])
+
+
+class Fotografia(Base):
+    __tablename__ = "fotografia"
+    __table_args__ = {"schema": "public"}
+
+    id_foto = Column(Integer, primary_key=True, autoincrement=True)
+    url = Column(String(500), nullable=False)
+    fecha_carga = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    )
+    id_planta = Column(Integer, nullable=False)
+
+    planta = relationship("Planta", foreign_keys=[id_planta])
