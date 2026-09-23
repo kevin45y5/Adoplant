@@ -1,13 +1,13 @@
 from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy import select, text
+from sqlalchemy import select, text, func
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models import Categoria, Planta, Usuario
-from app.schemas import PlantaCreate, PlantaRespuesta, PlantaUpdate
+from app.schemas import CatalogoResponse, PlantaCreate, PlantaRespuesta, PlantaUpdate
 from app.security import obtener_usuario_actual
 
 router = APIRouter(prefix="/plantas", tags=["Plantas"])
@@ -38,35 +38,52 @@ def consultar_mias(
     return plantas
 
 
-@router.get("/", response_model=List[PlantaRespuesta])
+@router.get("/", response_model=CatalogoResponse)
 def catalogo(
     db: Session = Depends(get_db),
     busqueda: Optional[str] = Query(None, max_length=100),
-    tamano: Optional[str] = Query(None),
-    nivel_cuidado: Optional[str] = Query(None),
+    tamano: Optional[str] = Query(None, max_length=50),
+    nivel_cuidado: Optional[str] = Query(None, max_length=50),
+    orden: str = Query("fecha_publicacion_desc", pattern="^(fecha_publicacion|nombre)(_desc|_asc)?$"),
     pagina: int = Query(1, ge=1),
     limite: int = Query(20, ge=1, le=100),
 ):
     consulta = select(Planta).where(
         Planta.estado_planta == "DISPONIBLE",
-        Planta.visible == True,
-        Planta.eliminada == False,
+        Planta.visible.is_(True),
+        Planta.eliminada.is_(False),
     )
 
-    if busqueda:
-        consulta = consulta.where(Planta.nombre.ilike(f"%{busqueda}%"))
-    if tamano:
-        consulta = consulta.where(Planta.tamano == tamano)
-    if nivel_cuidado:
-        consulta = consulta.where(Planta.nivel_cuidado == nivel_cuidado)
+    if busqueda and busqueda.strip():
+        consulta = consulta.where(Planta.nombre.ilike(f"%{busqueda.strip()}%"))
+    if tamano and tamano.strip():
+        consulta = consulta.where(Planta.tamano == tamano.strip())
+    if nivel_cuidado and nivel_cuidado.strip():
+        consulta = consulta.where(Planta.nivel_cuidado == nivel_cuidado.strip())
+
+    columna_orden = Planta.fecha_publicacion if orden.startswith("fecha") else Planta.nombre
+    direccion = "desc" if orden.endswith("_desc") else "asc"
+    if direccion == "desc":
+        consulta = consulta.order_by(columna_orden.desc())
+    else:
+        consulta = consulta.order_by(columna_orden.asc())
+
+    total = db.execute(consulta).scalars().unique().count()
+    total_paginas = (total + limite - 1) // limite
 
     offset = (pagina - 1) * limite
-    total = db.execute(consulta).scalars().unique().count()
     plantas = db.execute(
         consulta.offset(offset).limit(limite)
     ).scalars().unique().all()
 
-    return plantas
+    return CatalogoResponse(
+        items=plantas,
+        total=total,
+        pagina=pagina,
+        limite=limite,
+        total_paginas=total_paginas,
+        tiene_mas=pagina < total_paginas,
+    )
 
 
 @router.patch("/{id_planta}", response_model=PlantaRespuesta)

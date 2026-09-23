@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import List, Optional
 from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator, model_validator
 
 
@@ -124,3 +124,12 @@ class PlantaRespuesta(BaseModel):
     id_categoria: int
     categoria: Optional[CategoriaRespuesta] = None
     fotografia_url: Optional[str] = None
+
+
+class CatalogoResponse(BaseModel):
+    items: List[PlantaRespuesta]
+    total: int
+    pagina: int
+    limite: int
+    total_paginas: int
+    tiene_mas: bool
