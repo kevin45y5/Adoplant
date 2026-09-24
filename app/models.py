@@ -98,3 +98,21 @@ class Usuario(Base):
         nullable=False,
         server_default=text("CURRENT_TIMESTAMP"),
     )
+
+
+class Notificacion(Base):
+    __tablename__ = "notificacion"
+    __table_args__ = {"schema": "public"}
+
+    id_notificacion = Column(Integer, primary_key=True, autoincrement=True)
+    tipo = Column(String(100), nullable=False)
+    mensaje = Column(Text, nullable=False)
+    fecha_hora = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    )
+    leida = Column(Boolean, nullable=False, server_default=text("false"))
+    id_usuario = Column(Integer, ForeignKey("public.usuario.id_usuario", ondelete="CASCADE"), nullable=False)
+    id_solicitud = Column(Integer, ForeignKey("public.solicitud_adopcion.id_solicitud", ondelete="SET NULL"), nullable=True)
+    id_planta = Column(Integer, ForeignKey("public.planta.id_planta", ondelete="SET NULL"), nullable=True)

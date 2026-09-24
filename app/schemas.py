@@ -66,6 +66,41 @@ class TokenRespuesta(BaseModel):
     token_type: str = "bearer"
 
 
+ feature/SCRUM-14-Notificaciones
+class ReferenciasNotificacion(BaseModel):
+    id_solicitud: int | None
+    id_planta: int | None
+    solicitud_disponible: bool
+    planta_disponible: bool
+
+
+class NotificacionRespuesta(BaseModel):
+    id_notificacion: int
+    tipo: str
+    mensaje: str
+    fecha_hora: datetime
+    leida: bool
+    referencias: ReferenciasNotificacion
+
+
+class SolicitudCrear(BaseModel):
+    id_planta: int = Field(gt=0)
+    mensaje: str = Field(min_length=1, max_length=500)
+
+    @field_validator("mensaje", mode="before")
+    @classmethod
+    def limpiar_mensaje_solicitud(cls, valor):
+        return valor.strip() if isinstance(valor, str) else valor
+
+
+class SolicitudRespuesta(BaseModel):
+    id_solicitud: int
+    mensaje: str
+    estado: str
+    fecha_solicitud: datetime
+    id_planta: int
+    id_adoptante: int
+
 class UsuarioEstadoActualizacion(BaseModel):
     model_config = ConfigDict(extra="forbid")
     estado: Literal["ACTIVO", "BLOQUEADO"]
@@ -132,3 +167,4 @@ class UsuarioActualizacion(BaseModel):
             raise ValueError("Debes enviar al menos un campo para actualizar")
 
         return self
+ Main
