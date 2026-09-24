@@ -63,3 +63,38 @@ class UsuarioLogin(BaseModel):
 class TokenRespuesta(BaseModel):
     access_token: str
     token_type: str = "bearer"
+
+
+class ReferenciasNotificacion(BaseModel):
+    id_solicitud: int | None
+    id_planta: int | None
+    solicitud_disponible: bool
+    planta_disponible: bool
+
+
+class NotificacionRespuesta(BaseModel):
+    id_notificacion: int
+    tipo: str
+    mensaje: str
+    fecha_hora: datetime
+    leida: bool
+    referencias: ReferenciasNotificacion
+
+
+class SolicitudCrear(BaseModel):
+    id_planta: int = Field(gt=0)
+    mensaje: str = Field(min_length=1, max_length=500)
+
+    @field_validator("mensaje", mode="before")
+    @classmethod
+    def limpiar_mensaje_solicitud(cls, valor):
+        return valor.strip() if isinstance(valor, str) else valor
+
+
+class SolicitudRespuesta(BaseModel):
+    id_solicitud: int
+    mensaje: str
+    estado: str
+    fecha_solicitud: datetime
+    id_planta: int
+    id_adoptante: int
