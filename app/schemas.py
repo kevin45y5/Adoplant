@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator, model_validator
 
@@ -63,6 +64,18 @@ class UsuarioLogin(BaseModel):
 class TokenRespuesta(BaseModel):
     access_token: str
     token_type: str = "bearer"
+
+
+class UsuarioEstadoActualizacion(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    estado: Literal["ACTIVO", "BLOQUEADO"]
+
+
+class UsuariosPagina(BaseModel):
+    total: int
+    pagina: int
+    limite: int
+    usuarios: list[UsuarioRespuesta]
 
 
 class UsuarioActualizacion(BaseModel):

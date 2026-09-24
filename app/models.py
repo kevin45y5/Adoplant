@@ -1,9 +1,18 @@
-from sqlalchemy import Column, DateTime, Integer, String, text
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, text
 from sqlalchemy.dialects.postgresql import ENUM
 from sqlalchemy.orm import declarative_base
 
 
 Base = declarative_base()
+
+
+class Administrador(Base):
+    __tablename__ = "administrador"
+    __table_args__ = {"schema": "public"}
+
+    id_administrador = Column(Integer, primary_key=True, autoincrement=True)
+    id_usuario = Column(Integer, ForeignKey("public.usuario.id_usuario"),
+                        nullable=False, unique=True)
 
 
 class Usuario(Base):

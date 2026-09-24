@@ -4,9 +4,10 @@ import jwt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
+from sqlalchemy import select
 
 from app.database import get_db
-from app.models import Usuario
+from app.models import Administrador, Usuario
 from app.security import JWT_ALGORITHM, JWT_SECRET_KEY
 
 
@@ -61,4 +62,18 @@ def obtener_usuario_actual(
             detail="La cuenta está bloqueada",
         )
 
+    return usuario
+
+
+def obtener_administrador_actual(
+    usuario: Usuario = Depends(obtener_usuario_actual),
+    db: Session = Depends(get_db),
+) -> Usuario:
+    consulta = select(Administrador.id_administrador).where(
+        Administrador.id_usuario == usuario.id_usuario
+    )
+    if db.execute(consulta).scalar_one_or_none() is None:
+        raise HTTPException(
+            status_code=403, detail="Se requieren permisos de administrador"
+        )
     return usuario
