@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator, model_validator
 
@@ -65,6 +66,7 @@ class TokenRespuesta(BaseModel):
     token_type: str = "bearer"
 
 
+ feature/SCRUM-14-Notificaciones
 class ReferenciasNotificacion(BaseModel):
     id_solicitud: int | None
     id_planta: int | None
@@ -98,3 +100,71 @@ class SolicitudRespuesta(BaseModel):
     fecha_solicitud: datetime
     id_planta: int
     id_adoptante: int
+
+class UsuarioEstadoActualizacion(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    estado: Literal["ACTIVO", "BLOQUEADO"]
+
+
+class UsuariosPagina(BaseModel):
+    total: int
+    pagina: int
+    limite: int
+    usuarios: list[UsuarioRespuesta]
+
+
+class SolicitudMensaje(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    mensaje: str = Field(min_length=1, max_length=500)
+
+    @field_validator("mensaje")
+    @classmethod
+    def limpiar_mensaje(cls, valor: str) -> str:
+        valor = valor.strip()
+        if not valor:
+            raise ValueError("El mensaje no puede estar vacío")
+        return valor
+
+
+class SolicitudCrear(SolicitudMensaje):
+    id_planta: int = Field(strict=True, gt=0, le=2_147_483_647)
+
+
+class SolicitudRespuesta(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id_solicitud: int
+    id_planta: int
+    id_adoptante: int
+    mensaje: str
+    estado: str
+    fecha_solicitud: datetime
+
+
+class UsuarioActualizacion(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    nombre: str | None = Field(default=None, min_length=1, max_length=100)
+    apellido: str | None = Field(default=None, min_length=1, max_length=100)
+    correo: EmailStr | None = Field(default=None, max_length=150)
+    telefono: str | None = Field(default=None, min_length=1, max_length=20)
+
+    @field_validator(
+        "nombre", "apellido", "correo", "telefono",
+        mode="before",
+    )
+    @classmethod
+    def validar_campo_enviado(cls, valor):
+        if valor is None:
+            raise ValueError("El campo no puede ser null")
+
+        return valor.strip() if isinstance(valor, str) else valor
+
+    @model_validator(mode="after")
+    def comprobar_cambios(self):
+        if not self.model_fields_set:
+            raise ValueError("Debes enviar al menos un campo para actualizar")
+
+        return self
+ Main

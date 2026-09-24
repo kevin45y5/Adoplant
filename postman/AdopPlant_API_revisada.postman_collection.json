@@ -1,0 +1,2725 @@
+{
+  "info": {
+    "name": "AdopPlant API — revisada",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "SCRUM-1 y SCRUM-18. Ejemplos originales conservados y ejemplos administrativos comprobados localmente el 23-09-2026. Tokens reales retirados. Obtener tokens mediante login y asignarlos a token_usuario o token_admin. Importar como colección nueva, conservando la anterior. Cambiar baseUrl cuando se despliegue la API."
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:8000",
+      "type": "string"
+    },
+    {
+      "key": "token_usuario",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "token_admin",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "SCRUM-1 — Autenticación y cuenta",
+      "item": [
+        {
+          "name": "Registrar Usuario",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/auth/registro",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Lucia\",\n  \"apellido\": \"Prueba\",\n  \"correo\": \"lucia.prueba@example.com\",\n  \"telefono\": \"72223344\",\n  \"contrasena\": \"PlantaPrueba123!\",\n  \"confirmar_contrasena\": \"PlantaPrueba123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "**SCRUM-1 — Registro de usuarios.**  \nCrea una cuenta ACTIVA con nombre, apellido, correo, teléfono, contraseña y confirmación. La contraseña requiere entre 8 y 128 caracteres, al menos una letra y un número, y ambas deben coincidir.  \n**201:** usuario creado, sin contraseña ni hash en la respuesta.  \n**409:** correo o teléfono ya registrado.  \n**422:** campos ausentes o inválidos, o contraseñas que incumplen las reglas.  \nNo requiere autenticación.\nLos datos de prueba ya existen localmente: repetirlos devuelve 409."
+          },
+          "response": [
+            {
+              "name": "Registro-Exitoso",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Lucia\",\n  \"apellido\": \"Prueba\",\n  \"correo\": \"lucia.prueba@example.com\",\n  \"telefono\": \"72223344\",\n  \"contrasena\": \"PlantaPrueba123!\",\n  \"confirmar_contrasena\": \"PlantaPrueba123!\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/registro",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "registro"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sat, 19 Sep 2026 21:02:38 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "181"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"id_usuario\": 4,\n  \"nombre\": \"Lucia\",\n  \"apellido\": \"Prueba\",\n  \"correo\": \"lucia.prueba@example.com\",\n  \"telefono\": \"72223344\",\n  \"estado\": \"ACTIVO\",\n  \"fecha_registro\": \"2026-09-19T15:02:39.150536-06:00\"\n}"
+            },
+            {
+              "name": "Registro-Correo ya registrado",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Lucia\",\n  \"apellido\": \"Prueba\",\n  \"correo\": \"lucia.prueba@example.com\",\n  \"telefono\": \"73334455\",\n  \"contrasena\": \"PlantaPrueba123!\",\n  \"confirmar_contrasena\": \"PlantaPrueba123!\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/registro",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "registro"
+                  ]
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sat, 19 Sep 2026 21:40:35 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "55"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"El correo electrónico ya está registrado\"\n}"
+            },
+            {
+              "name": "Registro-Telefono ya en uso",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Lucia\",\n  \"apellido\": \"Prueba\",\n  \"correo\": \"lucia.segunda@example.com\",\n  \"telefono\": \"72223344\",\n  \"contrasena\": \"PlantaPrueba123!\",\n  \"confirmar_contrasena\": \"PlantaPrueba123!\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/registro",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "registro"
+                  ]
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sat, 19 Sep 2026 21:45:11 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "56"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"El número de teléfono ya está registrado\"\n}"
+            },
+            {
+              "name": "Registro-Contraseñas no coinciden",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Lucia\",\n  \"apellido\": \"Prueba\",\n  \"correo\": \"lucia.segunda@example.com\",\n  \"telefono\": \"72223344\",\n  \"contrasena\": \"PlantaPrueba123!\",\n  \"confirmar_contrasena\": \"AlantaPrueba123!\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/registro",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "registro"
+                  ]
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sat, 19 Sep 2026 21:49:10 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "101"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"body\"\n      ],\n      \"msg\": \"Value error, Las contraseñas no coinciden\",\n      \"type\": \"value_error\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Registro-Contraseña corta",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Lucia\",\n  \"apellido\": \"Prueba\",\n  \"correo\": \"lucia.segunda@example.com\",\n  \"telefono\": \"72223344\",\n  \"contrasena\": \"Abc1231\",\n  \"confirmar_contrasena\": \"Abc123!\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/registro",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "registro"
+                  ]
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sat, 19 Sep 2026 21:53:33 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "232"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"body\",\n        \"contrasena\"\n      ],\n      \"msg\": \"String should have at least 8 characters\",\n      \"type\": \"string_too_short\"\n    },\n    {\n      \"loc\": [\n        \"body\",\n        \"confirmar_contrasena\"\n      ],\n      \"msg\": \"String should have at least 8 characters\",\n      \"type\": \"string_too_short\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Registro-Contraseña sin numero",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Lucia\",\n  \"apellido\": \"Prueba\",\n  \"correo\": \"lucia.segunda@example.com\",\n  \"telefono\": \"72223344\",\n  \"contrasena\": \"SoloLetra\",\n  \"confirmar_contrasena\": \"SoloLetra\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/registro",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "registro"
+                  ]
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sat, 19 Sep 2026 21:55:55 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "145"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"body\",\n        \"contrasena\"\n      ],\n      \"msg\": \"Value error, La contraseña debe contener al menos una letra y un número\",\n      \"type\": \"value_error\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Registro-Contraseña sin letra",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Lucia\",\n  \"apellido\": \"Prueba\",\n  \"correo\": \"lucia.segunda@example.com\",\n  \"telefono\": \"12345678\",\n  \"contrasena\": \"12345678\",\n  \"confirmar_contrasena\": \"SoloLetra\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/registro",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "registro"
+                  ]
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sat, 19 Sep 2026 21:57:35 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "145"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"body\",\n        \"contrasena\"\n      ],\n      \"msg\": \"Value error, La contraseña debe contener al menos una letra y un número\",\n      \"type\": \"value_error\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Registro-Correo Invalido",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Lucia\",\n  \"apellido\": \"Prueba\",\n  \"correo\": \"correo-invalido\",\n  \"telefono\": \"72223344\",\n  \"contrasena\": \"PlantaSegura123!\",\n  \"confirmar_contrasena\": \"PlantaSegura123!\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/registro",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "registro"
+                  ]
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sat, 19 Sep 2026 22:03:02 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "141"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"body\",\n        \"correo\"\n      ],\n      \"msg\": \"value is not a valid email address: An email address must have an @-sign.\",\n      \"type\": \"value_error\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Registro-Nombre vacio",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"\",\n  \"apellido\": \"Prueba\",\n  \"correo\": \"lucia.prueba@example.com\",\n  \"telefono\": \"72223344\",\n  \"contrasena\": \"PlantaSegura123!\",\n  \"confirmar_contrasena\": \"PlantaSegura123!\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/registro",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "registro"
+                  ]
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sat, 19 Sep 2026 22:34:06 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "112"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"body\",\n        \"nombre\"\n      ],\n      \"msg\": \"String should have at least 1 character\",\n      \"type\": \"string_too_short\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Registro-Apellido vacio",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Lucia\",\n  \"apellido\": \"\",\n  \"correo\": \"lucia.prueba@example.com\",\n  \"telefono\": \"72223344\",\n  \"contrasena\": \"PlantaSegura123!\",\n  \"confirmar_contrasena\": \"PlantaSegura123!\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/registro",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "registro"
+                  ]
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sun, 20 Sep 2026 01:43:35 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "114"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"body\",\n        \"apellido\"\n      ],\n      \"msg\": \"String should have at least 1 character\",\n      \"type\": \"string_too_short\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Registro-Telefono vacio",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Lucia\",\n  \"apellido\": \"Prueba\",\n  \"correo\": \"lucia.prueba@example.com\",\n  \"telefono\": \"\",\n  \"contrasena\": \"PlantaSegura123!\",\n  \"confirmar_contrasena\": \"PlantaSegura123!\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/registro",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "registro"
+                  ]
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sun, 20 Sep 2026 04:56:37 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "114"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"body\",\n        \"telefono\"\n      ],\n      \"msg\": \"String should have at least 1 character\",\n      \"type\": \"string_too_short\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Registro-Telefono ausente",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Lucia\",\n  \"apellido\": \"Prueba\",\n  \"correo\": \"lucia.prueba@example.com\",\n  \"contrasena\": \"PlantaSegura123!\",\n  \"confirmar_contrasena\": \"PlantaSegura123!\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/registro",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "registro"
+                  ]
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sun, 20 Sep 2026 04:58:16 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "80"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"body\",\n        \"telefono\"\n      ],\n      \"msg\": \"Field required\",\n      \"type\": \"missing\"\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Iniciar Sesion",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/auth/login",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificador\": \"lucia.prueba@example.com\",\n  \"contrasena\": \"PlantaPrueba123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "**SCRUM-1 — Inicio de sesión.**  \nAutentica una cuenta activa mediante correo o teléfono y contraseña.  \n**Campos:** `identificador` y `contrasena`.  \n**200:** devuelve `access_token` y `token_type: bearer`. El token tiene vencimiento.  \n**401:** credenciales inválidas.  \n**403:** cuenta bloqueada.  \n**422:** campos obligatorios ausentes o datos inválidos.  \nNo requiere un token previo.\nCopiar el token de Lucía a token_usuario; para token_admin iniciar sesión como Ana. Las variables de token se entregan vacías."
+          },
+          "response": [
+            {
+              "name": "Login-Correcto",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificador\": \"ana@example.com\",\n  \"contrasena\": \"PlantaSegura123!\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "login"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sat, 19 Sep 2026 19:42:21 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "182"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"access_token\": \"TOKEN_OCULTO\",\n  \"token_type\": \"bearer\"\n}"
+            },
+            {
+              "name": "Login-Incorrecto",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificador\": \"ana@example.com\",\n  \"contrasena\": \"Incorrecto123!\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "login"
+                  ]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sat, 19 Sep 2026 19:48:45 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "36"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"Credenciales inválidas\"\n}"
+            },
+            {
+              "name": "Login-Telefono correcto",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificador\": \"72223344\",\n  \"contrasena\": \"PlantaPrueba123!\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "login"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sun, 20 Sep 2026 05:35:56 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "182"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"access_token\": \"TOKEN_OCULTO\",\n  \"token_type\": \"bearer\"\n}"
+            },
+            {
+              "name": "Login-Campos ausentes",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "login"
+                  ]
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sun, 20 Sep 2026 06:53:09 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "155"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"body\",\n        \"identificador\"\n      ],\n      \"msg\": \"Field required\",\n      \"type\": \"missing\"\n    },\n    {\n      \"loc\": [\n        \"body\",\n        \"contrasena\"\n      ],\n      \"msg\": \"Field required\",\n      \"type\": \"missing\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Login-Cuenta bloqueada",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificador\": \"lucia.prueba@example.com\",\n  \"contrasena\": \"PlantaPrueba123!\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "login"
+                  ]
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Wed, 23 Sep 2026 00:42:58 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "38"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"detail\": \"La cuenta está bloqueada\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Consultar Mi cuenta",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/usuarios/me",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_usuario}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Devuelve el perfil de la cuenta identificada por el token Bearer. Requiere un usuario ACTIVO. No recibe Body ni un ID de usuario.  \n**200:** ID, nombre, apellido, correo, teléfono, estado y fecha de registro. No devuelve contraseña ni hash.  \n**401:** token ausente, inválido o vencido, o usuario inexistente.  \n**403:** cuenta bloqueada."
+          },
+          "response": [
+            {
+              "name": "Perfil-Consulta correcta",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/usuarios/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "usuarios",
+                    "me"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sun, 20 Sep 2026 17:46:18 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "181"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"id_usuario\": 4,\n  \"nombre\": \"Lucia\",\n  \"apellido\": \"Prueba\",\n  \"correo\": \"lucia.prueba@example.com\",\n  \"telefono\": \"72223344\",\n  \"estado\": \"ACTIVO\",\n  \"fecha_registro\": \"2026-09-19T15:02:39.150536-06:00\"\n}"
+            },
+            {
+              "name": "Perfil-Sin token",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/usuarios/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "usuarios",
+                    "me"
+                  ]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sun, 20 Sep 2026 17:54:17 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "www-authenticate",
+                  "value": "Bearer"
+                },
+                {
+                  "key": "content-length",
+                  "value": "47"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"Token ausente, inválido o vencido\"\n}"
+            },
+            {
+              "name": "Perfil-Token invalido",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/usuarios/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "usuarios",
+                    "me"
+                  ]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sun, 20 Sep 2026 18:06:08 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "www-authenticate",
+                  "value": "Bearer"
+                },
+                {
+                  "key": "content-length",
+                  "value": "47"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"detail\": \"Token ausente, inválido o vencido\"\n}"
+            },
+            {
+              "name": "Cuenta bloqueada — token previo (403)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/api/usuarios/me",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token_usuario}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"La cuenta está bloqueada\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Modificar cuenta",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/usuarios/me",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_usuario}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Lucia Maria\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Modifica los datos de la cuenta identificada por el token Bearer. Requiere una cuenta ACTIVA.  \nPermite enviar uno o varios campos: nombre, apellido, correo y teléfono. Los campos omitidos conservan su valor.  \nNo permite modificar ID, estado, fecha, permisos ni contraseña.  \n**200:** devuelve el perfil actualizado, sin contraseña ni hash.  \n**409:** correo o teléfono ocupado; se cancelan todos los cambios de la petición.  \n**422:** campos inválidos, no permitidos o petición vacía.  \n**401:** token ausente, inválido o vencido, o usuario inexistente.  \n**403:** cuenta bloqueada."
+          },
+          "response": [
+            {
+              "name": "Edicion-Nombre",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"nombre\": \"Lucia Maria\"}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/usuarios/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "usuarios",
+                    "me"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Mon, 21 Sep 2026 00:42:57 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "187"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"id_usuario\": 4,\n    \"nombre\": \"Lucia Maria\",\n    \"apellido\": \"Prueba\",\n    \"correo\": \"lucia.prueba@example.com\",\n    \"telefono\": \"72223344\",\n    \"estado\": \"ACTIVO\",\n    \"fecha_registro\": \"2026-09-19T15:02:39.150536-06:00\"\n}"
+            },
+            {
+              "name": "Edicion-Correo ocupado",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"correo\": \"ana@example.com\"}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/usuarios/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "usuarios",
+                    "me"
+                  ]
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Mon, 21 Sep 2026 04:04:24 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "55"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"detail\": \"El correo electrónico ya está registrado\"\n}"
+            },
+            {
+              "name": "Edicion-Telefono ocupado",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"telefono\": \"70000000\"}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/usuarios/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "usuarios",
+                    "me"
+                  ]
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Mon, 21 Sep 2026 04:15:46 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "56"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"detail\": \"El número de teléfono ya está registrado\"\n}"
+            },
+            {
+              "name": "Edición — nombre vacío (422)",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"nombre\": \"   \"}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/usuarios/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "usuarios",
+                    "me"
+                  ]
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Mon, 21 Sep 2026 04:18:48 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "112"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"detail\": [\n        {\n            \"loc\": [\n                \"body\",\n                \"nombre\"\n            ],\n            \"msg\": \"String should have at least 1 character\",\n            \"type\": \"string_too_short\"\n        }\n    ]\n}"
+            },
+            {
+              "name": "Edicion-Correo invalido",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"correo\": \"correo-invalido\"}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/usuarios/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "usuarios",
+                    "me"
+                  ]
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Mon, 21 Sep 2026 04:19:36 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "141"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"detail\": [\n        {\n            \"loc\": [\n                \"body\",\n                \"correo\"\n            ],\n            \"msg\": \"value is not a valid email address: An email address must have an @-sign.\",\n            \"type\": \"value_error\"\n        }\n    ]\n}"
+            },
+            {
+              "name": "Edición — teléfono null (422)",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"telefono\": null}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/usuarios/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "usuarios",
+                    "me"
+                  ]
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Mon, 21 Sep 2026 04:22:12 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "109"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"detail\": [\n        {\n            \"loc\": [\n                \"body\",\n                \"telefono\"\n            ],\n            \"msg\": \"Value error, El campo no puede ser null\",\n            \"type\": \"value_error\"\n        }\n    ]\n}"
+            },
+            {
+              "name": "Edición — cuerpo sin cambios (422)",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/usuarios/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "usuarios",
+                    "me"
+                  ]
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Mon, 21 Sep 2026 04:27:25 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "118"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"detail\": [\n        {\n            \"loc\": [\n                \"body\"\n            ],\n            \"msg\": \"Value error, Debes enviar al menos un campo para actualizar\",\n            \"type\": \"value_error\"\n        }\n    ]\n}"
+            },
+            {
+              "name": "Edicion-Cambiar estados sin permiso",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"estado\": \"BLOQUEADO\"}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/usuarios/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "usuarios",
+                    "me"
+                  ]
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Mon, 21 Sep 2026 04:28:23 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "102"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"detail\": [\n        {\n            \"loc\": [\n                \"body\",\n                \"estado\"\n            ],\n            \"msg\": \"Extra inputs are not permitted\",\n            \"type\": \"extra_forbidden\"\n        }\n    ]\n}"
+            },
+            {
+              "name": "Edicion-Cambio de contra por esta ruta",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"contrasena\": \"OtraPlanta123!\"}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/usuarios/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "usuarios",
+                    "me"
+                  ]
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Mon, 21 Sep 2026 04:29:49 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "106"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"detail\": [\n        {\n            \"loc\": [\n                \"body\",\n                \"contrasena\"\n            ],\n            \"msg\": \"Extra inputs are not permitted\",\n            \"type\": \"extra_forbidden\"\n        }\n    ]\n}"
+            },
+            {
+              "name": "Edicion-Datos personales actualizados",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"apellido\": \"Prueba Actualizada\",\r\n  \"correo\": \"lucia.actualizada@example.com\",\r\n  \"telefono\": \"74445566\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/usuarios/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "usuarios",
+                    "me"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Mon, 21 Sep 2026 16:59:11 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "204"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"id_usuario\": 4,\n    \"nombre\": \"Lucia Maria\",\n    \"apellido\": \"Prueba Actualizada\",\n    \"correo\": \"lucia.actualizada@example.com\",\n    \"telefono\": \"74445566\",\n    \"estado\": \"ACTIVO\",\n    \"fecha_registro\": \"2026-09-19T15:02:39.150536-06:00\"\n}"
+            },
+            {
+              "name": "Edicion-Conflicto cancela cambios",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"nombre\": \"No debe guardarse\",\r\n  \"correo\": \"ana@example.com\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/usuarios/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "usuarios",
+                    "me"
+                  ]
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Mon, 21 Sep 2026 17:13:33 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "55"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"detail\": \"El correo electrónico ya está registrado\"\n}"
+            },
+            {
+              "name": "Edicion-Sin token",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"nombre\": \"No debe guardarse\"}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/usuarios/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "usuarios",
+                    "me"
+                  ]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Mon, 21 Sep 2026 17:16:27 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "www-authenticate",
+                  "value": "Bearer"
+                },
+                {
+                  "key": "content-length",
+                  "value": "47"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"detail\": \"Token ausente, inválido o vencido\"\n}"
+            },
+            {
+              "name": "Edicion-Token invalido",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"nombre\": \"No debe guardarse\"}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/usuarios/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "usuarios",
+                    "me"
+                  ]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Mon, 21 Sep 2026 17:42:17 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "www-authenticate",
+                  "value": "Bearer"
+                },
+                {
+                  "key": "content-length",
+                  "value": "47"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"detail\": \"Token ausente, inválido o vencido\"\n}"
+            },
+            {
+              "name": "Cuenta bloqueada — token previo (403)",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/api/usuarios/me",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token_usuario}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Cambio bloqueado\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"La cuenta está bloqueada\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "SCRUM-18 — Administración de usuarios",
+      "item": [
+        {
+          "name": "Buscar Usuarios",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/admin/usuarios",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_admin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Requiere un administrador activo y token Bearer. Busca por nombre, apellido, correo o ID mediante `buscar`. Admite `pagina` y `limite`. Devuelve total y usuarios sin contraseñas ni hashes. Respuestas: 200 éxito, 401 sin autenticación válida, 403 sin permisos o cuenta bloqueada, 422 parámetros inválidos."
+          },
+          "response": [
+            {
+              "name": "Búsqueda — Listado (200)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/api/admin/usuarios",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token_admin}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"total\": 2,\n  \"pagina\": 1,\n  \"limite\": 20,\n  \"usuarios\": [\n    {\n      \"id_usuario\": 1,\n      \"nombre\": \"Ana\",\n      \"apellido\": \"Lopez\",\n      \"correo\": \"ana@example.com\",\n      \"telefono\": \"70000000\",\n      \"estado\": \"ACTIVO\",\n      \"fecha_registro\": \"2026-09-18T11:53:43.461046-06:00\"\n    },\n    {\n      \"id_usuario\": 4,\n      \"nombre\": \"Lucia Maria\",\n      \"apellido\": \"Prueba\",\n      \"correo\": \"lucia.prueba@example.com\",\n      \"telefono\": \"72223344\",\n      \"estado\": \"ACTIVO\",\n      \"fecha_registro\": \"2026-09-19T15:02:39.150536-06:00\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Búsqueda — Nombre (200)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/api/admin/usuarios?buscar=Lucia",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token_admin}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"total\": 1,\n  \"pagina\": 1,\n  \"limite\": 20,\n  \"usuarios\": [\n    {\n      \"id_usuario\": 4,\n      \"nombre\": \"Lucia Maria\",\n      \"apellido\": \"Prueba\",\n      \"correo\": \"lucia.prueba@example.com\",\n      \"telefono\": \"72223344\",\n      \"estado\": \"ACTIVO\",\n      \"fecha_registro\": \"2026-09-19T15:02:39.150536-06:00\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Búsqueda — Correo (200)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/api/admin/usuarios?buscar=lucia.prueba@example.com",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token_admin}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"total\": 1,\n  \"pagina\": 1,\n  \"limite\": 20,\n  \"usuarios\": [\n    {\n      \"id_usuario\": 4,\n      \"nombre\": \"Lucia Maria\",\n      \"apellido\": \"Prueba\",\n      \"correo\": \"lucia.prueba@example.com\",\n      \"telefono\": \"72223344\",\n      \"estado\": \"ACTIVO\",\n      \"fecha_registro\": \"2026-09-19T15:02:39.150536-06:00\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Búsqueda — ID (200)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/api/admin/usuarios?buscar=4",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token_admin}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"total\": 1,\n  \"pagina\": 1,\n  \"limite\": 20,\n  \"usuarios\": [\n    {\n      \"id_usuario\": 4,\n      \"nombre\": \"Lucia Maria\",\n      \"apellido\": \"Prueba\",\n      \"correo\": \"lucia.prueba@example.com\",\n      \"telefono\": \"72223344\",\n      \"estado\": \"ACTIVO\",\n      \"fecha_registro\": \"2026-09-19T15:02:39.150536-06:00\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Búsqueda — Paginación (200)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/api/admin/usuarios?pagina=1&limite=1",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token_admin}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"total\": 2,\n  \"pagina\": 1,\n  \"limite\": 1,\n  \"usuarios\": [\n    {\n      \"id_usuario\": 1,\n      \"nombre\": \"Ana\",\n      \"apellido\": \"Lopez\",\n      \"correo\": \"ana@example.com\",\n      \"telefono\": \"70000000\",\n      \"estado\": \"ACTIVO\",\n      \"fecha_registro\": \"2026-09-18T11:53:43.461046-06:00\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Búsqueda — sin permisos (403)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/api/admin/usuarios",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token_usuario}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"Se requieren permisos de administrador\"\n}"
+            },
+            {
+              "name": "Búsqueda — sin token (401)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/api/admin/usuarios",
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"Token ausente, inválido o vencido\"\n}"
+            },
+            {
+              "name": "Búsqueda — paginación inválida (422)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/api/admin/usuarios?pagina=0",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token_admin}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"query\",\n        \"pagina\"\n      ],\n      \"msg\": \"Input should be greater than or equal to 1\",\n      \"type\": \"greater_than_equal\"\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Consultar usuario por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/admin/usuarios/4",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_admin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "SCRUM-18. Requiere administrador ACTIVO. Consulta un perfil por ID sin contraseña ni hash. 200: éxito; 401: autenticación inválida; 403: sin permisos; 404: usuario inexistente; 422: ID inválido."
+          },
+          "response": [
+            {
+              "name": "Consulta — usuario encontrado (200)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/api/admin/usuarios/4",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token_admin}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"id_usuario\": 4,\n  \"nombre\": \"Lucia Maria\",\n  \"apellido\": \"Prueba\",\n  \"correo\": \"lucia.prueba@example.com\",\n  \"telefono\": \"72223344\",\n  \"estado\": \"ACTIVO\",\n  \"fecha_registro\": \"2026-09-19T15:02:39.150536-06:00\"\n}"
+            },
+            {
+              "name": "Consulta — usuario inexistente (404)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/api/admin/usuarios/2147483647",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token_admin}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"Usuario no encontrado\"\n}"
+            },
+            {
+              "name": "Consulta — sin permisos (403)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/api/admin/usuarios/4",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token_usuario}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"Se requieren permisos de administrador\"\n}"
+            },
+            {
+              "name": "Consulta — sin token (401)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/api/admin/usuarios/4",
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"Token ausente, inválido o vencido\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Cambiar estado de usuario",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/admin/usuarios/4/estado",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_admin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"ACTIVO\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Requiere un administrador activo y token Bearer. Recibe `estado` con valor ACTIVO o BLOQUEADO. Conserva los datos del usuario. El bloqueo impide el login y el uso de tokens anteriores mientras la cuenta permanezca bloqueada. Respuestas: 200 éxito, 401 sin autenticación válida, 403 sin permisos o cuenta bloqueada, 404 usuario inexistente, 422 datos inválidos."
+          },
+          "response": [
+            {
+              "name": "Admin-Usuario sin permisos cambia estado",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"estado\":\"BLOQUEADO\"}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/usuarios/4/estado",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "usuarios",
+                    "4",
+                    "estado"
+                  ]
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Wed, 23 Sep 2026 02:35:20 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "51"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"detail\": \"Se requieren permisos de administrador\"\n}"
+            },
+            {
+              "name": "Admin-Estado no permitido",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"estado\":\"ELIMINADO\"}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/usuarios/4/estado",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "usuarios",
+                    "4",
+                    "estado"
+                  ]
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Wed, 23 Sep 2026 02:37:38 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "109"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"detail\": [\n        {\n            \"loc\": [\n                \"body\",\n                \"estado\"\n            ],\n            \"msg\": \"Input should be 'ACTIVO' or 'BLOQUEADO'\",\n            \"type\": \"literal_error\"\n        }\n    ]\n}"
+            },
+            {
+              "name": "Admin-Usuario no encontrado",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"estado\":\"ACTIVO\"}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/usuarios/2147483647/estado",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "usuarios",
+                    "2147483647",
+                    "estado"
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Wed, 23 Sep 2026 02:40:40 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "34"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"detail\": \"Usuario no encontrado\"\n}"
+            },
+            {
+              "name": "Estado — bloquear usuario (200)",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/api/admin/usuarios/4/estado",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token_admin}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"estado\": \"BLOQUEADO\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"id_usuario\": 4,\n  \"nombre\": \"Lucia Maria\",\n  \"apellido\": \"Prueba\",\n  \"correo\": \"lucia.prueba@example.com\",\n  \"telefono\": \"72223344\",\n  \"estado\": \"BLOQUEADO\",\n  \"fecha_registro\": \"2026-09-19T15:02:39.150536-06:00\"\n}"
+            },
+            {
+              "name": "Estado — reactivar usuario (200)",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/api/admin/usuarios/4/estado",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token_admin}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"estado\": \"ACTIVO\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"id_usuario\": 4,\n  \"nombre\": \"Lucia Maria\",\n  \"apellido\": \"Prueba\",\n  \"correo\": \"lucia.prueba@example.com\",\n  \"telefono\": \"72223344\",\n  \"estado\": \"ACTIVO\",\n  \"fecha_registro\": \"2026-09-19T15:02:39.150536-06:00\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Diagnóstico técnico",
+      "item": [
+        {
+          "name": "Inicio",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ""
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Diagnóstico técnico; no cuenta como operación CRUD. Sin ejemplos de ejecución incluidos."
+          },
+          "response": []
+        },
+        {
+          "name": "Probar Base Datos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/prueba-db",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "prueba-db"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Diagnóstico técnico; no cuenta como operación CRUD. Sin ejemplos de ejecución incluidos."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

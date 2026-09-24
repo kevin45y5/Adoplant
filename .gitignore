@@ -1,5 +1,6 @@
 .venv/
 .env
+postman/*.local.postman_environment.json
 __pycache__/
 *.pyc
 .pytest_cache/
