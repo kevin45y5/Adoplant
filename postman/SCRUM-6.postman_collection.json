@@ -15,13 +15,13 @@
             "value": "application/json"
           }
         ],
-        "url": "{{baseUrl}}/api/solicitudes",
+        "url": "{{base_url}}/api/solicitudes",
         "auth": {
           "type": "bearer",
           "bearer": [
             {
               "key": "token",
-              "value": "{{token_usuario}}",
+              "value": "{{token}}",
               "type": "string"
             }
           ]
@@ -29,7 +29,7 @@
         "description": "**SCRUM-6 — Enviar solicitud.**  \nCrea una solicitud PENDIENTE para una planta DISPONIBLE ajena y genera una notificación al donante. La planta permanece DISPONIBLE. El adoptante se obtiene del token; no se envían estado, fecha ni usuario.  \n**201:** creada. **401:** token inválido. **403:** planta propia/cuenta bloqueada. **404:** planta inexistente, oculta o eliminada. **409:** planta no disponible o solicitud activa duplicada. **422:** mensaje vacío, mayor de 500 caracteres o campos adicionales.",
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"id_planta\": \"{{id_planta}}\",\n  \"mensaje\": \"Tengo espacio y tiempo para cuidar esta planta.\"\n}",
+          "raw": "{\n  \"id_planta\": \"{{planta_disponible}}\",\n  \"mensaje\": \"Tengo espacio y tiempo para cuidar esta planta.\"\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -48,10 +48,10 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/api/solicitudes",
+            "url": "{{base_url}}/api/solicitudes",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"id_planta\": \"{{id_planta}}\",\n  \"mensaje\": \"Tengo espacio y tiempo para cuidar esta planta.\"\n}",
+              "raw": "{\n  \"id_planta\": \"{{planta_disponible}}\",\n  \"mensaje\": \"Tengo espacio y tiempo para cuidar esta planta.\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -81,10 +81,10 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/api/solicitudes",
+            "url": "{{base_url}}/api/solicitudes",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"id_planta\": \"{{id_planta}}\",\n  \"mensaje\": \"Tengo espacio y tiempo para cuidar esta planta.\"\n}",
+              "raw": "{\n  \"id_planta\": \"{{planta_disponible}}\",\n  \"mensaje\": \"Tengo espacio y tiempo para cuidar esta planta.\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -114,10 +114,10 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/api/solicitudes",
+            "url": "{{base_url}}/api/solicitudes",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"id_planta\": \"{{id_planta}}\",\n  \"mensaje\": \"Tengo espacio y tiempo para cuidar esta planta.\"\n}",
+              "raw": "{\n  \"id_planta\": \"{{planta_disponible}}\",\n  \"mensaje\": \"Tengo espacio y tiempo para cuidar esta planta.\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -147,10 +147,10 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/api/solicitudes",
+            "url": "{{base_url}}/api/solicitudes",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"id_planta\": \"{{id_planta}}\",\n  \"mensaje\": \"Tengo espacio y tiempo para cuidar esta planta.\"\n}",
+              "raw": "{\n  \"id_planta\": \"{{planta_disponible}}\",\n  \"mensaje\": \"Tengo espacio y tiempo para cuidar esta planta.\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -180,10 +180,10 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/api/solicitudes",
+            "url": "{{base_url}}/api/solicitudes",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"id_planta\": \"{{id_planta}}\",\n  \"mensaje\": \"Tengo espacio y tiempo para cuidar esta planta.\"\n}",
+              "raw": "{\n  \"id_planta\": \"{{planta_disponible}}\",\n  \"mensaje\": \"Tengo espacio y tiempo para cuidar esta planta.\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -213,10 +213,10 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/api/solicitudes",
+            "url": "{{base_url}}/api/solicitudes",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"id_planta\": \"{{id_planta}}\",\n  \"mensaje\": \"Tengo espacio y tiempo para cuidar esta planta.\"\n}",
+              "raw": "{\n  \"id_planta\": \"{{planta_disponible}}\",\n  \"mensaje\": \"Tengo espacio y tiempo para cuidar esta planta.\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -246,10 +246,10 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/api/solicitudes",
+            "url": "{{base_url}}/api/solicitudes",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"id_planta\": \"{{id_planta}}\",\n  \"mensaje\": \"Tengo espacio y tiempo para cuidar esta planta.\"\n}",
+              "raw": "{\n  \"id_planta\": \"{{planta_disponible}}\",\n  \"mensaje\": \"Tengo espacio y tiempo para cuidar esta planta.\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -276,13 +276,13 @@
       "request": {
         "method": "GET",
         "header": [],
-        "url": "{{baseUrl}}/api/solicitudes?tipo=enviadas&estado=PENDIENTE&id_planta={{id_planta}}&limite=20&offset=0",
+        "url": "{{base_url}}/api/solicitudes?tipo=enviadas&estado=PENDIENTE&id_planta={{planta_disponible}}&limite=20&offset=0",
         "auth": {
           "type": "bearer",
           "bearer": [
             {
               "key": "token",
-              "value": "{{token_usuario}}",
+              "value": "{{token}}",
               "type": "string"
             }
           ]
@@ -295,7 +295,7 @@
           "originalRequest": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/api/solicitudes?tipo=enviadas&estado=PENDIENTE&id_planta={{id_planta}}&limite=20&offset=0"
+            "url": "{{base_url}}/api/solicitudes?tipo=enviadas&estado=PENDIENTE&id_planta={{planta_disponible}}&limite=20&offset=0"
           },
           "status": "OK",
           "code": 200,
@@ -314,7 +314,7 @@
           "originalRequest": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/api/solicitudes?tipo=enviadas&estado=PENDIENTE&id_planta={{id_planta}}&limite=20&offset=0"
+            "url": "{{base_url}}/api/solicitudes?tipo=enviadas&estado=PENDIENTE&id_planta={{planta_disponible}}&limite=20&offset=0"
           },
           "status": "OK",
           "code": 200,
@@ -333,7 +333,7 @@
           "originalRequest": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/api/solicitudes?tipo=enviadas&estado=PENDIENTE&id_planta={{id_planta}}&limite=20&offset=0"
+            "url": "{{base_url}}/api/solicitudes?tipo=enviadas&estado=PENDIENTE&id_planta={{planta_disponible}}&limite=20&offset=0"
           },
           "status": "OK",
           "code": 200,
@@ -352,7 +352,7 @@
           "originalRequest": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/api/solicitudes?tipo=enviadas&estado=PENDIENTE&id_planta={{id_planta}}&limite=20&offset=0"
+            "url": "{{base_url}}/api/solicitudes?tipo=enviadas&estado=PENDIENTE&id_planta={{planta_disponible}}&limite=20&offset=0"
           },
           "status": "Unprocessable Content",
           "code": 422,
@@ -371,7 +371,7 @@
           "originalRequest": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/api/solicitudes?tipo=enviadas&estado=PENDIENTE&id_planta={{id_planta}}&limite=20&offset=0"
+            "url": "{{base_url}}/api/solicitudes?tipo=enviadas&estado=PENDIENTE&id_planta={{planta_disponible}}&limite=20&offset=0"
           },
           "status": "Unauthorized",
           "code": 401,
@@ -392,13 +392,13 @@
       "request": {
         "method": "GET",
         "header": [],
-        "url": "{{baseUrl}}/api/solicitudes/{{id_solicitud}}",
+        "url": "{{base_url}}/api/solicitudes/{{solicitud_id}}",
         "auth": {
           "type": "bearer",
           "bearer": [
             {
               "key": "token",
-              "value": "{{token_usuario}}",
+              "value": "{{token}}",
               "type": "string"
             }
           ]
@@ -411,7 +411,7 @@
           "originalRequest": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/api/solicitudes/{{id_solicitud}}"
+            "url": "{{base_url}}/api/solicitudes/{{solicitud_id}}"
           },
           "status": "OK",
           "code": 200,
@@ -430,7 +430,7 @@
           "originalRequest": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/api/solicitudes/{{id_solicitud}}"
+            "url": "{{base_url}}/api/solicitudes/{{solicitud_id}}"
           },
           "status": "OK",
           "code": 200,
@@ -449,7 +449,7 @@
           "originalRequest": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/api/solicitudes/{{id_solicitud}}"
+            "url": "{{base_url}}/api/solicitudes/{{solicitud_id}}"
           },
           "status": "Not Found",
           "code": 404,
@@ -468,7 +468,7 @@
           "originalRequest": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/api/solicitudes/{{id_solicitud}}"
+            "url": "{{base_url}}/api/solicitudes/{{solicitud_id}}"
           },
           "status": "Unauthorized",
           "code": 401,
@@ -494,13 +494,13 @@
             "value": "application/json"
           }
         ],
-        "url": "{{baseUrl}}/api/solicitudes/{{id_solicitud}}",
+        "url": "{{base_url}}/api/solicitudes/{{solicitud_id}}",
         "auth": {
           "type": "bearer",
           "bearer": [
             {
               "key": "token",
-              "value": "{{token_usuario}}",
+              "value": "{{token}}",
               "type": "string"
             }
           ]
@@ -527,7 +527,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/api/solicitudes/{{id_solicitud}}",
+            "url": "{{base_url}}/api/solicitudes/{{solicitud_id}}",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"mensaje\": \"Ahora tengo más espacio para cuidarla.\"\n}",
@@ -560,7 +560,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/api/solicitudes/{{id_solicitud}}",
+            "url": "{{base_url}}/api/solicitudes/{{solicitud_id}}",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"mensaje\": \"Ahora tengo más espacio para cuidarla.\"\n}",
@@ -593,7 +593,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/api/solicitudes/{{id_solicitud}}",
+            "url": "{{base_url}}/api/solicitudes/{{solicitud_id}}",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"mensaje\": \"Ahora tengo más espacio para cuidarla.\"\n}",
@@ -626,7 +626,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/api/solicitudes/{{id_solicitud}}",
+            "url": "{{base_url}}/api/solicitudes/{{solicitud_id}}",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"mensaje\": \"Ahora tengo más espacio para cuidarla.\"\n}",
@@ -659,7 +659,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/api/solicitudes/{{id_solicitud}}",
+            "url": "{{base_url}}/api/solicitudes/{{solicitud_id}}",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"mensaje\": \"Ahora tengo más espacio para cuidarla.\"\n}",
@@ -692,7 +692,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/api/solicitudes/{{id_solicitud}}",
+            "url": "{{base_url}}/api/solicitudes/{{solicitud_id}}",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"mensaje\": \"Ahora tengo más espacio para cuidarla.\"\n}",
@@ -722,13 +722,13 @@
       "request": {
         "method": "DELETE",
         "header": [],
-        "url": "{{baseUrl}}/api/solicitudes/{{id_solicitud}}",
+        "url": "{{base_url}}/api/solicitudes/{{solicitud_id}}",
         "auth": {
           "type": "bearer",
           "bearer": [
             {
               "key": "token",
-              "value": "{{token_usuario}}",
+              "value": "{{token}}",
               "type": "string"
             }
           ]
@@ -741,7 +741,7 @@
           "originalRequest": {
             "method": "DELETE",
             "header": [],
-            "url": "{{baseUrl}}/api/solicitudes/{{id_solicitud}}"
+            "url": "{{base_url}}/api/solicitudes/{{solicitud_id}}"
           },
           "status": "No Content",
           "code": 204,
@@ -755,7 +755,7 @@
           "originalRequest": {
             "method": "DELETE",
             "header": [],
-            "url": "{{baseUrl}}/api/solicitudes/{{id_solicitud}}"
+            "url": "{{base_url}}/api/solicitudes/{{solicitud_id}}"
           },
           "status": "Conflict",
           "code": 409,
@@ -774,7 +774,7 @@
           "originalRequest": {
             "method": "DELETE",
             "header": [],
-            "url": "{{baseUrl}}/api/solicitudes/{{id_solicitud}}"
+            "url": "{{base_url}}/api/solicitudes/{{solicitud_id}}"
           },
           "status": "Conflict",
           "code": 409,
@@ -793,7 +793,7 @@
           "originalRequest": {
             "method": "DELETE",
             "header": [],
-            "url": "{{baseUrl}}/api/solicitudes/{{id_solicitud}}"
+            "url": "{{base_url}}/api/solicitudes/{{solicitud_id}}"
           },
           "status": "Not Found",
           "code": 404,
@@ -812,7 +812,7 @@
           "originalRequest": {
             "method": "DELETE",
             "header": [],
-            "url": "{{baseUrl}}/api/solicitudes/{{id_solicitud}}"
+            "url": "{{base_url}}/api/solicitudes/{{solicitud_id}}"
           },
           "status": "Not Found",
           "code": 404,
@@ -829,26 +829,5 @@
       ]
     }
   ],
-  "variable": [
-    {
-      "key": "baseUrl",
-      "value": "http://127.0.0.1:8000",
-      "type": "string"
-    },
-    {
-      "key": "token_usuario",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "id_planta",
-      "value": "1",
-      "type": "string"
-    },
-    {
-      "key": "id_solicitud",
-      "value": "1",
-      "type": "string"
-    }
-  ]
+  "variable": []
 }
