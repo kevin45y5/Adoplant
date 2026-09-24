@@ -6,6 +6,52 @@
   },
   "item": [
     {
+      "name": "Login adoptante",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Login correcto: HTTP 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "if (pm.response.code === 200) {",
+              "    const respuesta = pm.response.json();",
+              "    pm.expect(respuesta).to.have.property(\"access_token\");",
+              "    pm.environment.set(\"token\", respuesta.access_token);",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"identificador\": \"{{correo_adoptante}}\",\n  \"contrasena\": \"{{password}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{base_url}}/api/auth/login",
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "Inicia sesión con el usuario adoptante del entorno local. Al recibir HTTP 200 guarda access_token automáticamente en la variable de entorno {{token}}."
+      },
+      "response": []
+    },
+    {
       "name": "Enviar solicitud",
       "request": {
         "method": "POST",
@@ -384,6 +430,26 @@
           ],
           "cookie": [],
           "body": "{\n  \"detail\": \"Token ausente, inválido o vencido\"\n}"
+        }
+      ],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Listado correcto: HTTP 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "if (pm.response.code === 200) {",
+              "    const solicitudes = pm.response.json();",
+              "    if (Array.isArray(solicitudes) && solicitudes.length > 0) {",
+              "        pm.environment.set(\"solicitud_id\", solicitudes[0].id_solicitud);",
+              "    }",
+              "}"
+            ]
+          }
         }
       ]
     },
