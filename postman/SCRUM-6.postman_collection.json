@@ -21,6 +21,7 @@
               "    const respuesta = pm.response.json();",
               "    pm.expect(respuesta).to.have.property(\"access_token\");",
               "    pm.environment.set(\"token\", respuesta.access_token);",
+              "    pm.environment.unset(\"solicitud_id\");",
               "}"
             ]
           }
@@ -315,6 +316,25 @@
           "cookie": [],
           "body": "{\n  \"detail\": \"Token ausente, inválido o vencido\"\n}"
         }
+      ],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Solicitud creada: HTTP 201\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "",
+              "if (pm.response.code === 201) {",
+              "    const solicitud = pm.response.json();",
+              "    pm.expect(solicitud).to.have.property(\"id_solicitud\");",
+              "    pm.environment.set(\"solicitud_id\", solicitud.id_solicitud);",
+              "}"
+            ]
+          }
+        }
       ]
     },
     {
@@ -446,6 +466,8 @@
               "    const solicitudes = pm.response.json();",
               "    if (Array.isArray(solicitudes) && solicitudes.length > 0) {",
               "        pm.environment.set(\"solicitud_id\", solicitudes[0].id_solicitud);",
+              "    } else {",
+              "        pm.environment.unset(\"solicitud_id\");",
               "    }",
               "}"
             ]
