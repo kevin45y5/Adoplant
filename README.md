@@ -84,7 +84,6 @@ Endpoints funcionales actuales:
 - `PATCH /api/solicitudes/{id}` (corregir mensaje pendiente).
 - `DELETE /api/solicitudes/{id}` (retirar solicitud pendiente).
 
-Subtareas de solicitudes y guía para Postman: `docs/SCRUM-6-postman.md`.
 Importar la colección `postman/SCRUM-6.postman_collection.json`; generar el entorno
 local con `python -m scripts.preparar_postman` usando el Python de `.venv`.
 
