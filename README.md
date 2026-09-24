@@ -9,8 +9,10 @@ Documentación vigente:
 - `docs/revision_historias_backend.md`: decisiones tomadas para conservar el diagrama y la base.
 - `docs/guia_tecnica.md`: arquitectura y tecnologías acordadas.
 
-Avance implementado: registro de usuarios e inicio de sesión por correo o teléfono
-con hash Argon2 y emisión de JWT. El resto de historias continúa pendiente.
+Avance implementado: registro e inicio de sesión por correo o teléfono con hash
+Argon2 y JWT, consulta y edición de cuenta propia, y envío de solicitudes de
+adopción con notificación interna al donante. SCRUM-6 incluye consultas privadas,
+corrección del mensaje y retiro de solicitudes pendientes.
 
 ## Instalación en Windows
 
@@ -69,12 +71,22 @@ El alias /prueba-db se conserva por compatibilidad.
 .\.venv\Scripts\python.exe -m alembic current
 ```
 
-Las pruebas automáticas actuales no insertan datos ni requieren PostgreSQL.
+Las pruebas predeterminadas no requieren PostgreSQL. Las pruebas de integración
+de SCRUM-6 se habilitan con `SCRUM6_TEST_DB=1` y revierten sus datos al finalizar.
 La comprobación manual /api/prueba-db sí requiere la conexión configurada.
 Endpoints funcionales actuales:
 
 - `POST /api/auth/registro`
 - `POST /api/auth/login`
+- `POST /api/solicitudes` (SCRUM-6: envío autenticado y notificación interna).
+- `GET /api/solicitudes` (enviadas/recibidas, filtros y paginación).
+- `GET /api/solicitudes/{id}` (detalle privado para adoptante y donante).
+- `PATCH /api/solicitudes/{id}` (corregir mensaje pendiente).
+- `DELETE /api/solicitudes/{id}` (retirar solicitud pendiente).
+
+Subtareas de solicitudes y guía para Postman: `docs/SCRUM-6-postman.md`.
+Importar la colección `postman/SCRUM-6.postman_collection.json`; generar el entorno
+local con `python -m scripts.preparar_postman` usando el Python de `.venv`.
 
 Los endpoints de diagnóstico no cuentan como funciones del negocio. Las operaciones
 pendientes se encuentran en las historias y subtareas vigentes.
