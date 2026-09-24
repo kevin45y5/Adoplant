@@ -78,6 +78,35 @@ class UsuariosPagina(BaseModel):
     usuarios: list[UsuarioRespuesta]
 
 
+class SolicitudMensaje(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    mensaje: str = Field(min_length=1, max_length=500)
+
+    @field_validator("mensaje")
+    @classmethod
+    def limpiar_mensaje(cls, valor: str) -> str:
+        valor = valor.strip()
+        if not valor:
+            raise ValueError("El mensaje no puede estar vacío")
+        return valor
+
+
+class SolicitudCrear(SolicitudMensaje):
+    id_planta: int = Field(strict=True, gt=0, le=2_147_483_647)
+
+
+class SolicitudRespuesta(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id_solicitud: int
+    id_planta: int
+    id_adoptante: int
+    mensaje: str
+    estado: str
+    fecha_solicitud: datetime
+
+
 class UsuarioActualizacion(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
