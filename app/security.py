@@ -51,3 +51,6 @@ def crear_token_acceso(id_usuario: int) -> str:
         JWT_SECRET_KEY,
         algorithm=JWT_ALGORITHM,
     )
+
+
+

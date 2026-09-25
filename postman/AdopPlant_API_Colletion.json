@@ -1,0 +1,995 @@
+{
+  "info": {
+    "_postman_id": "03158c26-33e7-45ae-9e2b-ef5cc873fa4b",
+    "name": "AdopPlant API  (SCRUM-5, SCRUM-10, SCRUM-11, SCRUM-15)",
+    "description": "Endpoints asignados a Fabiola: publicación de plantas (SCRUM-5), catálogo (SCRUM-10), detalle de planta (SCRUM-11) y fotografías (SCRUM-15). Base URL: http://127.0.0.1:8000. Variables: baseUrl, token_usuario, id_planta.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "58319652",
+    "_collection_link": "https://go.postman.co/collection/58319652-03158c26-33e7-45ae-9e2b-ef5cc873fa4b?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "04 Plantas",
+      "item": [
+        {
+          "name": "Catálogo de plantas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_usuario}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/plantas?busqueda=Prueba&estado=DISPONIBLE&pagina=1&limite=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "plantas"
+              ],
+              "query": [
+                {
+                  "key": "busqueda",
+                  "value": "Prueba"
+                },
+                {
+                  "key": "estado",
+                  "value": "DISPONIBLE"
+                },
+                {
+                  "key": "pagina",
+                  "value": "1"
+                },
+                {
+                  "key": "limite",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "Text",
+              "header": [],
+              "cookie": [],
+              "body": "{\"total\": 1, \"pagina\": 1, \"limite\": 20, \"plantas\": [{\"id_planta\": 1, \"nombre\": \"Prueba\", \"tamano\": \"Pequeña\", \"estado_planta\": \"DISPONIBLE\", \"fotografia_url\": null, \"puede_solicitar\": true}]}"
+            },
+            {
+              "name": "Catálogo de plantas",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/plantas?busqueda=Prueba&estado=DISPONIBLE&pagina=1&limite=20",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "plantas"
+                  ],
+                  "query": [
+                    {
+                      "key": "busqueda",
+                      "value": "Prueba"
+                    },
+                    {
+                      "key": "estado",
+                      "value": "DISPONIBLE"
+                    },
+                    {
+                      "key": "pagina",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limite",
+                      "value": "20"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Thu, 24 Sep 2026 21:37:29 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "47"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"total\": 0,\n  \"pagina\": 1,\n  \"limite\": 20,\n  \"plantas\": []\n}"
+            }
+          ]
+        },
+        {
+          "name": "Consultar planta por ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_usuario}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/plantas/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "plantas",
+                "1"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "Text",
+              "header": [],
+              "cookie": [],
+              "body": "{\"id_planta\": 1, \"nombre\": \"Prueba\", \"tamano\": \"Pequeña\", \"estado_planta\": \"DISPONIBLE\", \"fotografia_url\": null, \"puede_solicitar\": true}"
+            },
+            {
+              "name": "Consultar planta por ID",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/plantas/5",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "plantas",
+                    "5"
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Fri, 25 Sep 2026 00:40:33 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "33"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"Planta no encontrada\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Mis plantas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_usuario}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/plantas/mias",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "plantas",
+                "mias"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "Text",
+              "header": [],
+              "cookie": [],
+              "body": "[{\"id_planta\": 1, \"nombre\": \"Mi planta\", \"estado_planta\": \"DISPONIBLE\", \"fotografia_url\": null, \"puede_solicitar\": true}]"
+            },
+            {
+              "name": "Mis plantas",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/plantas/mias",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "plantas",
+                    "mias"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Thu, 24 Sep 2026 22:12:47 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "2009"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "[\n  {\n    \"id_planta\": 1,\n    \"nombre\": \"Planta modificada\",\n    \"tamano\": \"Pequeña\",\n    \"nivel_cuidado\": \"Bajo\",\n    \"estado_salud\": \"Saludable\",\n    \"necesidad_luz\": \"Indirecta\",\n    \"necesidad_agua\": \"Moderada\",\n    \"descripcion\": null,\n    \"ubicacion\": \"Balcon\",\n    \"estado_planta\": \"DISPONIBLE\",\n    \"fecha_publicacion\": \"2026-09-24T11:12:12.322238-06:00\",\n    \"visible\": true,\n    \"eliminada\": false,\n    \"motivo_moderacion\": null,\n    \"fecha_moderacion\": null,\n    \"id_administrador_moderador\": null,\n    \"id_usuario\": 1,\n    \"id_categoria\": 1,\n    \"fotografia_url\": null,\n    \"puede_solicitar\": true,\n    \"categoria\": null\n  },\n  {\n    \"id_planta\": 2,\n    \"nombre\": \"Nueva planta\",\n    \"tamano\": \"Pequeña\",\n    \"nivel_cuidado\": \"Bajo\",\n    \"estado_salud\": \"Saludable\",\n    \"necesidad_luz\": \"Indirecta\",\n    \"necesidad_agua\": \"Moderada\",\n    \"descripcion\": null,\n    \"ubicacion\": \"Balcón\",\n    \"estado_planta\": \"DISPONIBLE\",\n    \"fecha_publicacion\": \"2026-09-24T11:37:46.726128-06:00\",\n    \"visible\": true,\n    \"eliminada\": false,\n    \"motivo_moderacion\": null,\n    \"fecha_moderacion\": null,\n    \"id_administrador_moderador\": null,\n    \"id_usuario\": 1,\n    \"id_categoria\": 1,\n    \"fotografia_url\": null,\n    \"puede_solicitar\": true,\n    \"categoria\": null\n  },\n  {\n    \"id_planta\": 3,\n    \"nombre\": \"Nueva planta\",\n    \"tamano\": \"Pequeña\",\n    \"nivel_cuidado\": \"Bajo\",\n    \"estado_salud\": \"Saludable\",\n    \"necesidad_luz\": \"Indirecta\",\n    \"necesidad_agua\": \"Moderada\",\n    \"descripcion\": null,\n    \"ubicacion\": \"Balcón\",\n    \"estado_planta\": \"DISPONIBLE\",\n    \"fecha_publicacion\": \"2026-09-24T15:52:48.874796-06:00\",\n    \"visible\": true,\n    \"eliminada\": false,\n    \"motivo_moderacion\": null,\n    \"fecha_moderacion\": null,\n    \"id_administrador_moderador\": null,\n    \"id_usuario\": 1,\n    \"id_categoria\": 1,\n    \"fotografia_url\": null,\n    \"puede_solicitar\": true,\n    \"categoria\": null\n  },\n  {\n    \"id_planta\": 4,\n    \"nombre\": \"Nueva planta\",\n    \"tamano\": \"Pequeña\",\n    \"nivel_cuidado\": \"Bajo\",\n    \"estado_salud\": \"Saludable\",\n    \"necesidad_luz\": \"Indirecta\",\n    \"necesidad_agua\": \"Moderada\",\n    \"descripcion\": null,\n    \"ubicacion\": \"Balcón\",\n    \"estado_planta\": \"DISPONIBLE\",\n    \"fecha_publicacion\": \"2026-09-24T16:06:51.764558-06:00\",\n    \"visible\": true,\n    \"eliminada\": false,\n    \"motivo_moderacion\": null,\n    \"fecha_moderacion\": null,\n    \"id_administrador_moderador\": null,\n    \"id_usuario\": 1,\n    \"id_categoria\": 1,\n    \"fotografia_url\": null,\n    \"puede_solicitar\": true,\n    \"categoria\": null\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Crear planta",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_usuario}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_usuario}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"nombre\": \"Nueva planta\", \"tamano\": \"Pequeña\", \"nivel_cuidado\": \"Bajo\", \"estado_salud\": \"Saludable\", \"necesidad_luz\": \"Indirecta\", \"necesidad_agua\": \"Moderada\", \"ubicacion\": \"Balcón\", \"id_categoria\": 1}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/plantas/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "plantas",
+                ""
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "Text",
+              "header": [],
+              "cookie": [],
+              "body": "{\"id_planta\": 2, \"nombre\": \"Nueva planta\", \"estado_planta\": \"DISPONIBLE\"}"
+            },
+            {
+              "name": "Crear planta",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_usuario}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"nombre\": \"Nueva planta\", \"tamano\": \"Pequeña\", \"nivel_cuidado\": \"Bajo\", \"estado_salud\": \"Saludable\", \"necesidad_luz\": \"Indirecta\", \"necesidad_agua\": \"Moderada\", \"ubicacion\": \"Balcón\", \"id_categoria\": 1}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/plantas/",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "plantas",
+                    ""
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Thu, 24 Sep 2026 22:48:37 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "500"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"id_planta\": 5,\n  \"nombre\": \"Nueva planta\",\n  \"tamano\": \"Pequeña\",\n  \"nivel_cuidado\": \"Bajo\",\n  \"estado_salud\": \"Saludable\",\n  \"necesidad_luz\": \"Indirecta\",\n  \"necesidad_agua\": \"Moderada\",\n  \"descripcion\": null,\n  \"ubicacion\": \"Balcón\",\n  \"estado_planta\": \"DISPONIBLE\",\n  \"fecha_publicacion\": \"2026-09-24T16:48:38.248515-06:00\",\n  \"visible\": true,\n  \"eliminada\": false,\n  \"motivo_moderacion\": null,\n  \"fecha_moderacion\": null,\n  \"id_administrador_moderador\": null,\n  \"id_usuario\": 1,\n  \"id_categoria\": 1,\n  \"fotografia_url\": null,\n  \"puede_solicitar\": true,\n  \"categoria\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "Modificar planta",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_usuario}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_usuario}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"nombre\": \"Planta modificada\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/plantas/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "plantas",
+                "1"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "Text",
+              "header": [],
+              "cookie": [],
+              "body": "{\"id_planta\": 1, \"nombre\": \"Planta modificada\", \"estado_planta\": \"DISPONIBLE\"}"
+            },
+            {
+              "name": "Modificar planta",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_usuario}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"nombre\": \"Planta modificada\"}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/plantas/1",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "plantas",
+                    "1"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Thu, 24 Sep 2026 22:24:07 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "504"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"id_planta\": 1,\n  \"nombre\": \"Planta modificada\",\n  \"tamano\": \"Pequeña\",\n  \"nivel_cuidado\": \"Bajo\",\n  \"estado_salud\": \"Saludable\",\n  \"necesidad_luz\": \"Indirecta\",\n  \"necesidad_agua\": \"Moderada\",\n  \"descripcion\": null,\n  \"ubicacion\": \"Balcon\",\n  \"estado_planta\": \"DISPONIBLE\",\n  \"fecha_publicacion\": \"2026-09-24T11:12:12.322238-06:00\",\n  \"visible\": true,\n  \"eliminada\": false,\n  \"motivo_moderacion\": null,\n  \"fecha_moderacion\": null,\n  \"id_administrador_moderador\": null,\n  \"id_usuario\": 1,\n  \"id_categoria\": 1,\n  \"fotografia_url\": null,\n  \"puede_solicitar\": true,\n  \"categoria\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "Retirar planta",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_usuario}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/plantas/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "plantas",
+                "1"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "204 No Content",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "No Content",
+              "code": 204,
+              "_postman_previewlanguage": "Text",
+              "header": [],
+              "cookie": [],
+              "body": ""
+            },
+            {
+              "name": "Retirar planta",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/plantas/5",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "plantas",
+                    "5"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Fri, 25 Sep 2026 00:37:12 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "438"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"estado_salud\": \"Saludable\",\n  \"visible\": false,\n  \"necesidad_luz\": \"Indirecta\",\n  \"eliminada\": true,\n  \"necesidad_agua\": \"Moderada\",\n  \"motivo_moderacion\": null,\n  \"descripcion\": null,\n  \"fecha_moderacion\": null,\n  \"nombre\": \"Nueva planta\",\n  \"ubicacion\": \"Balcón\",\n  \"id_administrador_moderador\": null,\n  \"id_planta\": 5,\n  \"estado_planta\": \"DISPONIBLE\",\n  \"id_usuario\": 1,\n  \"tamano\": \"Pequeña\",\n  \"fecha_publicacion\": \"2026-09-24T16:48:38.248515-06:00\",\n  \"id_categoria\": 1,\n  \"nivel_cuidado\": \"Bajo\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "05 Fotografias",
+      "item": [
+        {
+          "name": "Listar fotografias de una planta",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_usuario}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/fotografias?id_planta=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "fotografias"
+              ],
+              "query": [
+                {
+                  "key": "id_planta",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "Text",
+              "header": [],
+              "cookie": [],
+              "body": "[{\"id_fotografia\": 1, \"url\": \"http://...\", \"es_principal\": true}]"
+            },
+            {
+              "name": "Listar fotografias de una planta",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/fotografias?id_planta=1",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "fotografias"
+                  ],
+                  "query": [
+                    {
+                      "key": "id_planta",
+                      "value": "1"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Thu, 24 Sep 2026 22:40:07 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "139"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "[\n  {\n    \"id_fotografia\": 1,\n    \"url\": \"http://ejemplo.com/foto.jpg\",\n    \"tipo\": null,\n    \"fecha_subida\": \"2026-09-24T16:38:36.607564-06:00\",\n    \"es_principal\": true\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Subir fotografia",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_usuario}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_usuario}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"id_planta\": 1, \"url\": \"http://ejemplo.com/foto.jpg\", \"es_principal\": true}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/fotografias",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "fotografias"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "Text",
+              "header": [],
+              "cookie": [],
+              "body": "{\"id_fotografia\": 1, \"url\": \"http://ejemplo.com/foto.jpg\", \"es_principal\": true}"
+            },
+            {
+              "name": "Subir fotografia",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_usuario}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"id_planta\": 1, \"url\": \"http://ejemplo.com/foto.jpg\", \"es_principal\": true}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/fotografias",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "fotografias"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Thu, 24 Sep 2026 22:38:35 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "137"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"id_fotografia\": 1,\n  \"url\": \"http://ejemplo.com/foto.jpg\",\n  \"tipo\": null,\n  \"fecha_subida\": \"2026-09-24T16:38:36.607564-06:00\",\n  \"es_principal\": true\n}"
+            }
+          ]
+        },
+        {
+          "name": "Eliminar fotografia",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_usuario}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/fotografias/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "fotografias",
+                "1"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "204 No Content",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "No Content",
+              "code": 204,
+              "_postman_previewlanguage": "Text",
+              "header": [],
+              "cookie": [],
+              "body": ""
+            },
+            {
+              "name": "Eliminar fotografia",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/fotografias/1",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "fotografias",
+                    "1"
+                  ]
+                }
+              },
+              "status": "No Content",
+              "code": 204,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Thu, 24 Sep 2026 22:41:42 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:8000"
+    },
+    {
+      "key": "token_usuario",
+      "value": ""
+    },
+    {
+      "key": "id_planta",
+      "value": "1"
+    }
+  ]
+}
