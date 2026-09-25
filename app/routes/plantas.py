@@ -6,11 +6,47 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.models import Categoria, Planta, Usuario
-from app.schemas import PlantaCreate, PlantaRespuesta, PlantaUpdate
-from app.security import obtener_usuario_actual
+from app.models import Categoria, Fotografia, Planta, Usuario
+from app.schemas import CatalogoResponse, CategoriaRespuesta, PlantaCreate, PlantaRespuesta, PlantaUpdate
+from app.dependencies import obtener_usuario_actual
 
 router = APIRouter(prefix="/plantas", tags=["Plantas"])
+
+
+def _planta_a_respuesta(db: Session, planta: Planta, usuario: Usuario | None = None) -> PlantaRespuesta:
+    datos = {k: v for k, v in planta.__dict__.items() if not k.startswith("_")}
+    fot = db.execute(select(Fotografia).where(Fotografia.id_planta == planta.id_planta, Fotografia.es_principal == True)).scalar_one_or_none()
+    url = fot.url if fot else None
+    puede = planta.estado_planta == "DISPONIBLE" and not planta.eliminada and (usuario is None or planta.id_usuario != usuario.id_usuario)
+    datos["fotografia_url"] = url
+    datos["puede_solicitar"] = puede
+    datos["categoria"] = None
+    return PlantaRespuesta(**datos)
+
+
+@router.get("", response_model=CatalogoResponse)
+def catalogo(
+    db: Session = Depends(get_db),
+    busqueda: Optional[str] = Query(None, max_length=100),
+    estado: Optional[str] = Query(None),
+    pagina: int = Query(1, ge=1),
+    limite: int = Query(20, ge=1, le=100),
+):
+    consulta = select(Planta).where(Planta.eliminada == False, Planta.visible == True)
+
+    if busqueda:
+        consulta = consulta.where(Planta.nombre.ilike(f"%{busqueda}%"))
+    if estado:
+        consulta = consulta.where(Planta.estado_planta == estado)
+
+    offset = (pagina - 1) * limite
+    total = len(db.execute(consulta).scalars().unique().all())
+    plantas = db.execute(
+        consulta.offset(offset).limit(limite)
+    ).scalars().unique().all()
+
+    resultado = [_planta_a_respuesta(db, p) for p in plantas]
+    return CatalogoResponse(total=total, pagina=pagina, limite=limite, plantas=resultado)
 
 
 @router.get("/mias", response_model=List[PlantaRespuesta])
@@ -30,12 +66,31 @@ def consultar_mias(
         consulta = consulta.where(Planta.estado_planta == estado)
 
     offset = (pagina - 1) * limite
-    total = db.execute(consulta).scalars().unique().count()
+    total = len(db.execute(consulta).scalars().unique().all())
     plantas = db.execute(
         consulta.offset(offset).limit(limite)
     ).scalars().unique().all()
 
     return plantas
+
+
+@router.get("/{id_planta}", response_model=PlantaRespuesta)
+def consultar_planta(
+    id_planta: int,
+    usuario_actual: Usuario = Depends(obtener_usuario_actual),
+    db: Session = Depends(get_db),
+):
+    planta = db.execute(
+        select(Planta).where(Planta.id_planta == id_planta)
+    ).scalar_one_or_none()
+
+    if planta is None or not planta.visible or planta.eliminada:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Planta no encontrada",
+        )
+
+    return _planta_a_respuesta(db, planta, usuario_actual)
 
 
 @router.patch("/{id_planta}", response_model=PlantaRespuesta)
@@ -126,8 +181,9 @@ def retirar_planta(
         )
 
     adopcion_en_curso = db.execute(
-        text("SELECT 1 FROM public.adopcion WHERE id_planta = :id AND estado IN ('EN_PROCESO', 'COMPLETADA') LIMIT 1")
-    ).params(id=id_planta).scalar_one_or_none()
+        text("SELECT 1 FROM public.adopcion WHERE id_planta = :id AND estado IN ('EN_PROCESO', 'COMPLETADA') LIMIT 1"),
+        {"id": id_planta},
+    ).scalar_one_or_none()
 
     if adopcion_en_curso is not None:
         raise HTTPException(
@@ -137,8 +193,9 @@ def retirar_planta(
 
     try:
         db.execute(
-            text("UPDATE public.solicitud_adopcion SET estado = 'RECHAZADA' WHERE id_planta = :id AND estado = 'PENDIENTE'")
-        ).params(id=id_planta)
+            text("UPDATE public.solicitud_adopcion SET estado = 'RECHAZADA' WHERE id_planta = :id AND estado = 'PENDIENTE'"),
+            {"id": id_planta},
+        )
 
         planta.eliminada = True
         planta.visible = False
