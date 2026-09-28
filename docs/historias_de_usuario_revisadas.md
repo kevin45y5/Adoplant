@@ -276,7 +276,7 @@ Dado que una persona consulta o gestiona una solicitud por su identificador, cua
 
 ## SCRUM-8 — Chat entre adoptante y donante
 
-Historia original: HU 6. Responsable: Fabrizio.
+Historia original: HU 6. Responsable: Manuel.
 
 Revisión: descripción o criterios ampliados.
 
@@ -326,7 +326,7 @@ Dado que existe un chat autorizado, cuando se consulta su historial después de 
 
 ## SCRUM-9 — Gestión del punto de encuentro en mapa
 
-Historia original: HU 7. Responsable: Fabrizio.
+Historia original: HU 7. Responsable: Krisler.
 
 Revisión: descripción o criterios ampliados.
 

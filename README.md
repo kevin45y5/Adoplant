@@ -4,13 +4,15 @@ Proyecto académico: API REST monolítica compartida por la futura web y aplicac
 
 Documentación vigente:
 
+- `docs/entrega_classroom.md`: requisitos de entrega grupal e individual y guía de Postman.
+- `docs/despliegue_render.md`: configuración y actualización del servicio público.
 - `docs/historias_de_usuario_revisadas.md`: las 17 historias y criterios actuales.
 - `docs/subtareas_backend_jira.md`: desglose del trabajo entre los cinco integrantes.
 - `docs/revision_historias_backend.md`: decisiones tomadas para conservar el diagrama y la base.
 - `docs/guia_tecnica.md`: arquitectura y tecnologías acordadas.
 
 Avance implementado: registro e inicio de sesión por correo o teléfono con hash
-Argon2 y JWT, consulta y edición de cuenta propia, y envío de solicitudes de
+Argon2 y JWT, consulta y edición de cuenta propia, administración de usuarios y envío de solicitudes de
 adopción con notificación interna al donante. SCRUM-6 incluye consultas privadas,
 corrección del mensaje y retiro de solicitudes pendientes.
 
@@ -53,7 +55,7 @@ tabla técnica. La primera revisión no elimina tablas al intentar revertirla.
 Futuros cambios: crear una revisión con `alembic revision -m "descripcion"`, escribir
 y revisar upgrade/downgrade, luego aplicar `alembic upgrade head`. Usar el Python
 del entorno como en los comandos anteriores. No usar --autogenerate por ahora:
-solo usuario tiene modelo; las demás tablas también deben conservarse.
+no todas las tablas tienen modelo; las demás tablas también deben conservarse.
 
 ## Ejecutar y comprobar
 
@@ -78,6 +80,11 @@ Endpoints funcionales actuales:
 
 - `POST /api/auth/registro`
 - `POST /api/auth/login`
+- `GET /api/usuarios/me`
+- `PATCH /api/usuarios/me`
+- `GET /api/admin/usuarios`
+- `GET /api/admin/usuarios/{id_usuario}`
+- `PATCH /api/admin/usuarios/{id_usuario}/estado`
 - `POST /api/solicitudes` (SCRUM-6: envío autenticado y notificación interna).
 - `GET /api/solicitudes` (enviadas/recibidas, filtros y paginación).
 - `GET /api/solicitudes/{id}` (detalle privado para adoptante y donante).
@@ -89,3 +96,11 @@ local con `python -m scripts.preparar_postman` usando el Python de `.venv`.
 
 Los endpoints de diagnóstico no cuentan como funciones del negocio. Las operaciones
 pendientes se encuentran en las historias y subtareas vigentes.
+
+## Enlaces del avance publicado
+
+- API: https://adopplant-api.onrender.com
+- Swagger: https://adopplant-api.onrender.com/docs
+- Postman (SCRUM-1 y SCRUM-18): https://documenter.getpostman.com/view/58260475/2sBYB4LSGg
+
+El enlace de Postman indicado no cubre todavía todos los módulos del equipo.

@@ -42,8 +42,8 @@ esta revisión no pretende convertir uno en copia exacta del otro.
 | SCRUM-5 | Fabiola | Añade consulta de propias, edición mientras disponible y retiro lógico con rechazo de pendientes. |
 | SCRUM-6 | Kevin | Añade consulta de propias/por ID, corrección del mensaje y retiro físico solo si pendiente y sin adopción. |
 | SCRUM-7 | Kevin | Precisa consulta autorizada por ID y aceptación transaccional con control de concurrencia. |
-| SCRUM-8 | Fabrizio | Formaliza acceso tras aceptación y conserva historial; no añade borrado de chats o mensajes para forzar un CRUD. |
-| SCRUM-9 | Fabrizio | Amplía a gestionar puntos: consultar, corregir y retirar, conservando el mensaje de conversación. |
+| SCRUM-8 | Manuel | Formaliza acceso tras aceptación y conserva historial; no añade borrado de chats o mensajes para forzar un CRUD. |
+| SCRUM-9 | Krisler | Amplía a gestionar puntos: consultar, corregir y retirar, conservando el mensaje de conversación. |
 | SCRUM-10 | Fabiola | Sin cambio funcional. Catálogo, filtros y carga progresiva ya están descritos. |
 | SCRUM-11 | Fabiola | Sin cambio funcional. El detalle ya cubre consulta individual de planta. |
 | SCRUM-13 | Kevin | Sin cambio funcional. Conserva historial de donaciones y adopciones. |
@@ -66,7 +66,7 @@ operaciones del recurso, no un CRUD obligatorio dentro de cada historia.
 | Krisler: usuario | Registro | Buscar usuarios, solo administrador | Perfil propio o detalle administrativo por ID | Datos personales propios | Administrador bloquea/reactiva sin borrar usuario |
 | Fabiola: planta | Publicación con foto | Catálogo y publicaciones propias | Detalle | Datos y fotos de propia disponible | Retiro lógico de propia disponible |
 | Kevin: solicitud | Solicitar planta | Enviadas/recibidas y filtros | Detalle autorizado | Mensaje propio pendiente; donante acepta/rechaza | Retirar únicamente propia pendiente sin adopción |
-| Fabrizio: punto de encuentro | Compartir punto como mensaje | Puntos de un chat propio | Punto por ID | Corregir punto propio mientras adopción en proceso | Retirar punto propio, dejando aviso en el chat |
+| Krisler: punto de encuentro | Compartir punto como mensaje | Puntos de un chat propio | Punto por ID | Corregir punto propio mientras adopción en proceso | Retirar punto propio, dejando aviso en el chat |
 | Manuel: categoría | Crear categoría | Buscar/listar categorías | Categoría por ID | Renombrar | Desactivar; borrar físicamente solo sin referencias |
 
 Para usuarios se sigue el ejemplo del profesor de actualizar el estatus. El bloqueo
@@ -123,3 +123,7 @@ el archivo revisado. Conservar sus códigos y responsables. No marcar como hecha
 funciones que solo se definieron aquí. Después redactar el nuevo desglose de
 subtareas; el anterior era preliminar y no incorpora todas estas ampliaciones.
 No volver a usar el objetivo anterior de seis endpoints como backend completo.
+
+Reparto actualizado el 28-09-2026: Manuel asume SCRUM-8, Krisler SCRUM-9 y
+Fabrizio conserva SCRUM-14. El cumplimiento del CRUD individual de Fabrizio
+queda por confirmar con el docente; notificaciones no demuestra por sí sola las cinco operaciones.

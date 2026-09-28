@@ -20,6 +20,45 @@ de pruebas y documentación son parte del trabajo del responsable del módulo.
 
 # Krisler
 
+## SCRUM-9 Gestión del Punto de Encuentro
+
+### Subtarea 1 — Crear punto como mensaje de ubicación
+
+**Título:** Backend: compartir punto mediante POST /api/chats/{id}/mensajes
+
+**Descripción:** Aceptar tipo UBICACION con latitud, longitud y descripción opcional. Validar
+rangos, participante y adopción EN_PROCESO. Guardar mensaje y punto juntos en una transacción.
+
+### Subtarea 2 — Listar y obtener puntos privados
+
+**Título:** Backend: implementar GET /api/chats/{id}/puntos y GET /api/puntos-encuentro/{id}
+
+**Descripción:** Permitir únicamente a los participantes listar y consultar sus puntos. Devolver
+coordenadas estáticas para que web o móvil abra un mapa externo. No rastrear ubicación real.
+
+### Subtarea 3 — Corregir punto propio
+
+**Título:** Backend: implementar PATCH /api/puntos-encuentro/{id}
+
+**Descripción:** Permitir al remitente corregir coordenadas y descripción mientras la adopción
+siga EN_PROCESO. Mantener el mismo mensaje, autor y fecha. Validar rangos y titularidad.
+
+### Subtarea 4 — Retirar punto propio
+
+**Título:** Backend: implementar DELETE /api/puntos-encuentro/{id}
+
+**Descripción:** Permitir al remitente retirar el punto durante una adopción EN_PROCESO. Eliminar
+el registro de coordenadas y convertir su mensaje a TEXTO con «Punto de encuentro retirado por
+el remitente», conservando ID, autor y fecha. No borrar la conversación.
+
+### Subtarea 5 — Probar y documentar puntos de encuentro
+
+**Título:** Pruebas y Postman: crear, consultar, modificar y retirar puntos
+
+**Descripción:** Probar coordenadas, descripción, permisos, adopción completada, retiro y
+privacidad frente al catálogo y terceros. Documentar el JSON y respuestas.
+
+
 ## SCRUM-1 Registro, inicio de sesión y gestión de cuenta
 
 ### Subtarea 1 — Implementar registro de usuarios
@@ -69,7 +108,10 @@ de recuperación. Requerir cuenta activa.
 Aplicar las mismas validaciones del registro y controlar duplicados. No permitir cambiar ID,
 estado, fecha, permisos o contraseña desde este endpoint.
 
-### Subtarea 6 — Probar y documentar gestión de cuenta
+### Pruebas y documentación de SCRUM-1 — integradas en las subtareas 1 a 5
+
+Las pruebas y la documentación forman parte de las subtareas funcionales 1 a 5;
+no constituyen una subtarea adicional obligatoria.
 
 **Título:** Pruebas y Postman: registro, login, perfil y autenticación
 
@@ -416,6 +458,43 @@ estados finales e historial. Documentar ambos endpoints.
 
 # Fabrizio
 
+
+
+## SCRUM-14 Notificaciones
+
+### Subtarea 1 — Preparar servicio común
+
+**Título:** Backend: crear servicio reutilizable de notificaciones
+
+**Descripción:** Representar la tabla y crear una función para registrar destinatario, tipo,
+mensaje, fecha y referencias a planta o solicitud. Permitir que solicitudes, aceptación y
+moderación la utilicen dentro de sus transacciones.
+
+### Subtarea 2 — Consultar notificaciones propias
+
+**Título:** Backend: implementar GET /api/notificaciones y GET /api/notificaciones/{id}
+
+**Descripción:** Listar y consultar únicamente notificaciones del usuario autenticado. Incluir
+referencias necesarias para navegar al recurso autorizado y tratar enlaces retirados.
+
+### Subtarea 3 — Marcar notificación como leída
+
+**Título:** Backend: implementar PATCH /api/notificaciones/{id}
+
+**Descripción:** Permitir que el destinatario cambie `leida` a verdadero. Rechazar notificación
+inexistente o ajena. No permitir cambiar destinatario, contenido o referencias arbitrariamente.
+
+### Subtarea 4 — Probar y documentar notificaciones
+
+**Título:** Pruebas y Postman: generación, consulta y lectura de notificaciones
+
+**Descripción:** Probar interés en planta, aceptación, moderación, privacidad, lectura y solicitud
+retirada. Documentar las rutas. Las notificaciones push externas quedan fuera de este backend.
+
+---
+
+# Manuel
+
 ## SCRUM-8 Chat entre adoptante y donante
 
 ### Subtarea 1 — Preparar modelos y acceso al chat
@@ -453,78 +532,6 @@ necesaria para abrirlas. No incluir chats ni ubicaciones de terceros.
 **Descripción:** Probar acceso tras aceptación, ausencia de aceptación, envío, historial,
 paginación, mensaje vacío, usuario ajeno y adopción completada. Documentar el flujo REST.
 
-## SCRUM-9 Gestión del Punto de Encuentro
-
-### Subtarea 1 — Crear punto como mensaje de ubicación
-
-**Título:** Backend: compartir punto mediante POST /api/chats/{id}/mensajes
-
-**Descripción:** Aceptar tipo UBICACION con latitud, longitud y descripción opcional. Validar
-rangos, participante y adopción EN_PROCESO. Guardar mensaje y punto juntos en una transacción.
-
-### Subtarea 2 — Listar y obtener puntos privados
-
-**Título:** Backend: implementar GET /api/chats/{id}/puntos y GET /api/puntos-encuentro/{id}
-
-**Descripción:** Permitir únicamente a los participantes listar y consultar sus puntos. Devolver
-coordenadas estáticas para que web o móvil abra un mapa externo. No rastrear ubicación real.
-
-### Subtarea 3 — Corregir punto propio
-
-**Título:** Backend: implementar PATCH /api/puntos-encuentro/{id}
-
-**Descripción:** Permitir al remitente corregir coordenadas y descripción mientras la adopción
-siga EN_PROCESO. Mantener el mismo mensaje, autor y fecha. Validar rangos y titularidad.
-
-### Subtarea 4 — Retirar punto propio
-
-**Título:** Backend: implementar DELETE /api/puntos-encuentro/{id}
-
-**Descripción:** Permitir al remitente retirar el punto durante una adopción EN_PROCESO. Eliminar
-el registro de coordenadas y convertir su mensaje a TEXTO con «Punto de encuentro retirado por
-el remitente», conservando ID, autor y fecha. No borrar la conversación.
-
-### Subtarea 5 — Probar y documentar puntos de encuentro
-
-**Título:** Pruebas y Postman: crear, consultar, modificar y retirar puntos
-
-**Descripción:** Probar coordenadas, descripción, permisos, adopción completada, retiro y
-privacidad frente al catálogo y terceros. Documentar el JSON y respuestas.
-
-## SCRUM-14 Notificaciones
-
-### Subtarea 1 — Preparar servicio común
-
-**Título:** Backend: crear servicio reutilizable de notificaciones
-
-**Descripción:** Representar la tabla y crear una función para registrar destinatario, tipo,
-mensaje, fecha y referencias a planta o solicitud. Permitir que solicitudes, aceptación y
-moderación la utilicen dentro de sus transacciones.
-
-### Subtarea 2 — Consultar notificaciones propias
-
-**Título:** Backend: implementar GET /api/notificaciones y GET /api/notificaciones/{id}
-
-**Descripción:** Listar y consultar únicamente notificaciones del usuario autenticado. Incluir
-referencias necesarias para navegar al recurso autorizado y tratar enlaces retirados.
-
-### Subtarea 3 — Marcar notificación como leída
-
-**Título:** Backend: implementar PATCH /api/notificaciones/{id}
-
-**Descripción:** Permitir que el destinatario cambie `leida` a verdadero. Rechazar notificación
-inexistente o ajena. No permitir cambiar destinatario, contenido o referencias arbitrariamente.
-
-### Subtarea 4 — Probar y documentar notificaciones
-
-**Título:** Pruebas y Postman: generación, consulta y lectura de notificaciones
-
-**Descripción:** Probar interés en planta, aceptación, moderación, privacidad, lectura y solicitud
-retirada. Documentar las rutas. Las notificaciones push externas quedan fuera de este backend.
-
----
-
-# Manuel
 
 ## SCRUM-17 Moderación de Publicaciones
 
@@ -653,3 +660,10 @@ desactivación, eliminación libre, rechazo con referencias y permisos administr
 - Petición guardada y descrita en la colección compartida de Postman.
 - Commit con el código Jira y el nombre del responsable en el formato solicitado.
 - Enlace al commit y evidencia añadidos a la subtarea de Jira.
+
+## Reasignación vigente del 28-09-2026
+
+- SCRUM-8, chat: Manuel.
+- SCRUM-9, puntos de encuentro: Krisler.
+- Fabrizio (Edwin en su colección de Postman) conserva únicamente SCRUM-14, notificaciones.
+- El cambio de reparto no cambia los criterios funcionales ni acredita por sí solo el CRUD individual requerido.
