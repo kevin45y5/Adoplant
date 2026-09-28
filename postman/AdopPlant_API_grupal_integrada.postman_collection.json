@@ -1,0 +1,5310 @@
+{
+  "info": {
+    "_postman_id": "ea12afe2-d401-40c9-9451-6c19551a05ef",
+    "name": "AdopPlant API — grupal integrada",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Colección del código integrado el 28-09-2026. Incluye los módulos recibidos, no las 17 historias completas. Usar baseUrl local o Render después de desplegar este commit. Configurar IDs, correos y contraseñas como valores LOCALES; no compartir secretos. Registro y login capturan IDs/tokens. Categorías y aceptación de solicitudes no fueron recibidos; plantas y chat necesitan esos datos previos. Los ejemplos conservados son históricos locales. Consultar docs/integracion_grupal.md."
+  },
+  "item": [
+    {
+      "name": "Diagnóstico",
+      "item": [
+        {
+          "name": "Inicio",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ""
+              ]
+            },
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Respuestas documentadas: 200"
+          },
+          "response": []
+        },
+        {
+          "name": "Probar Base Datos",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/prueba-db",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "prueba-db"
+              ]
+            },
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Diagnóstico técnico; no cuenta como operación CRUD. Sin ejemplos de ejecución incluidos.\n\n\n\nRespuestas documentadas: 200"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Krisler — Usuarios SCRUM-1 y SCRUM-18",
+      "item": [
+        {
+          "name": "Registrar Usuario",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/registro",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "registro"
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "**SCRUM-1 — Registro de usuarios.**  \nCrea una cuenta ACTIVA con nombre, apellido, correo, teléfono, contraseña y confirmación. La contraseña requiere entre 8 y 128 caracteres, al menos una letra y un número, y ambas deben coincidir.  \n**201:** usuario creado, sin contraseña ni hash en la respuesta.  \n**409:** correo o teléfono ya registrado.  \n**422:** campos ausentes o inválidos, o contraseñas que incumplen las reglas.  \nNo requiere autenticación.\nLos datos de prueba ya existen localmente: repetirlos devuelve 409.\n\n\n\nRespuestas documentadas: 201, 422\nLos ejemplos guardados son históricos locales; sus IDs y cuentas pueden diferir de Render.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"{{nombre_usuario}}\",\n  \"apellido\": \"{{apellido_usuario}}\",\n  \"correo\": \"{{correo_usuario}}\",\n  \"telefono\": \"{{telefono_usuario}}\",\n  \"contrasena\": \"{{contrasena_usuario}}\",\n  \"confirmar_contrasena\": \"{{contrasena_usuario}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "name": "Histórico local — Registro-Exitoso",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Lucia\",\n  \"apellido\": \"Prueba\",\n  \"correo\": \"lucia.prueba@example.com\",\n  \"telefono\": \"72223344\",\n  \"contrasena\": \"PlantaPrueba123!\",\n  \"confirmar_contrasena\": \"PlantaPrueba123!\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/registro",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "registro"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sat, 19 Sep 2026 21:02:38 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "181"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"id_usuario\": 4,\n  \"nombre\": \"Lucia\",\n  \"apellido\": \"Prueba\",\n  \"correo\": \"lucia.prueba@example.com\",\n  \"telefono\": \"72223344\",\n  \"estado\": \"ACTIVO\",\n  \"fecha_registro\": \"2026-09-19T15:02:39.150536-06:00\"\n}"
+            },
+            {
+              "name": "Histórico local — Registro-Correo ya registrado",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Lucia\",\n  \"apellido\": \"Prueba\",\n  \"correo\": \"lucia.prueba@example.com\",\n  \"telefono\": \"73334455\",\n  \"contrasena\": \"PlantaPrueba123!\",\n  \"confirmar_contrasena\": \"PlantaPrueba123!\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/registro",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "registro"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sat, 19 Sep 2026 21:40:35 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "55"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"El correo electrónico ya está registrado\"\n}"
+            },
+            {
+              "name": "Histórico local — Registro-Telefono ya en uso",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Lucia\",\n  \"apellido\": \"Prueba\",\n  \"correo\": \"lucia.segunda@example.com\",\n  \"telefono\": \"72223344\",\n  \"contrasena\": \"PlantaPrueba123!\",\n  \"confirmar_contrasena\": \"PlantaPrueba123!\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/registro",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "registro"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sat, 19 Sep 2026 21:45:11 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "56"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"El número de teléfono ya está registrado\"\n}"
+            },
+            {
+              "name": "Histórico local — Registro-Contraseñas no coinciden",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Lucia\",\n  \"apellido\": \"Prueba\",\n  \"correo\": \"lucia.segunda@example.com\",\n  \"telefono\": \"72223344\",\n  \"contrasena\": \"PlantaPrueba123!\",\n  \"confirmar_contrasena\": \"AlantaPrueba123!\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/registro",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "registro"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sat, 19 Sep 2026 21:49:10 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "101"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"body\"\n      ],\n      \"msg\": \"Value error, Las contraseñas no coinciden\",\n      \"type\": \"value_error\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Histórico local — Registro-Contraseña corta",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Lucia\",\n  \"apellido\": \"Prueba\",\n  \"correo\": \"lucia.segunda@example.com\",\n  \"telefono\": \"72223344\",\n  \"contrasena\": \"Abc1231\",\n  \"confirmar_contrasena\": \"Abc123!\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/registro",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "registro"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sat, 19 Sep 2026 21:53:33 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "232"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"body\",\n        \"contrasena\"\n      ],\n      \"msg\": \"String should have at least 8 characters\",\n      \"type\": \"string_too_short\"\n    },\n    {\n      \"loc\": [\n        \"body\",\n        \"confirmar_contrasena\"\n      ],\n      \"msg\": \"String should have at least 8 characters\",\n      \"type\": \"string_too_short\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Histórico local — Registro-Contraseña sin numero",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Lucia\",\n  \"apellido\": \"Prueba\",\n  \"correo\": \"lucia.segunda@example.com\",\n  \"telefono\": \"72223344\",\n  \"contrasena\": \"SoloLetra\",\n  \"confirmar_contrasena\": \"SoloLetra\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/registro",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "registro"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sat, 19 Sep 2026 21:55:55 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "145"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"body\",\n        \"contrasena\"\n      ],\n      \"msg\": \"Value error, La contraseña debe contener al menos una letra y un número\",\n      \"type\": \"value_error\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Histórico local — Registro-Contraseña sin letra",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Lucia\",\n  \"apellido\": \"Prueba\",\n  \"correo\": \"lucia.segunda@example.com\",\n  \"telefono\": \"12345678\",\n  \"contrasena\": \"12345678\",\n  \"confirmar_contrasena\": \"SoloLetra\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/registro",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "registro"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sat, 19 Sep 2026 21:57:35 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "145"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"body\",\n        \"contrasena\"\n      ],\n      \"msg\": \"Value error, La contraseña debe contener al menos una letra y un número\",\n      \"type\": \"value_error\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Histórico local — Registro-Correo Invalido",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Lucia\",\n  \"apellido\": \"Prueba\",\n  \"correo\": \"correo-invalido\",\n  \"telefono\": \"72223344\",\n  \"contrasena\": \"PlantaSegura123!\",\n  \"confirmar_contrasena\": \"PlantaSegura123!\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/registro",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "registro"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sat, 19 Sep 2026 22:03:02 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "141"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"body\",\n        \"correo\"\n      ],\n      \"msg\": \"value is not a valid email address: An email address must have an @-sign.\",\n      \"type\": \"value_error\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Histórico local — Registro-Nombre vacio",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"\",\n  \"apellido\": \"Prueba\",\n  \"correo\": \"lucia.prueba@example.com\",\n  \"telefono\": \"72223344\",\n  \"contrasena\": \"PlantaSegura123!\",\n  \"confirmar_contrasena\": \"PlantaSegura123!\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/registro",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "registro"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sat, 19 Sep 2026 22:34:06 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "112"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"body\",\n        \"nombre\"\n      ],\n      \"msg\": \"String should have at least 1 character\",\n      \"type\": \"string_too_short\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Histórico local — Registro-Apellido vacio",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Lucia\",\n  \"apellido\": \"\",\n  \"correo\": \"lucia.prueba@example.com\",\n  \"telefono\": \"72223344\",\n  \"contrasena\": \"PlantaSegura123!\",\n  \"confirmar_contrasena\": \"PlantaSegura123!\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/registro",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "registro"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sun, 20 Sep 2026 01:43:35 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "114"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"body\",\n        \"apellido\"\n      ],\n      \"msg\": \"String should have at least 1 character\",\n      \"type\": \"string_too_short\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Histórico local — Registro-Telefono vacio",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Lucia\",\n  \"apellido\": \"Prueba\",\n  \"correo\": \"lucia.prueba@example.com\",\n  \"telefono\": \"\",\n  \"contrasena\": \"PlantaSegura123!\",\n  \"confirmar_contrasena\": \"PlantaSegura123!\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/registro",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "registro"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sun, 20 Sep 2026 04:56:37 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "114"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"body\",\n        \"telefono\"\n      ],\n      \"msg\": \"String should have at least 1 character\",\n      \"type\": \"string_too_short\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Histórico local — Registro-Telefono ausente",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Lucia\",\n  \"apellido\": \"Prueba\",\n  \"correo\": \"lucia.prueba@example.com\",\n  \"contrasena\": \"PlantaSegura123!\",\n  \"confirmar_contrasena\": \"PlantaSegura123!\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/registro",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "registro"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sun, 20 Sep 2026 04:58:16 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "80"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"body\",\n        \"telefono\"\n      ],\n      \"msg\": \"Field required\",\n      \"type\": \"missing\"\n    }\n  ]\n}"
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code >= 200 && pm.response.code < 300) { pm.collectionVariables.set(\"id_usuario\", pm.response.json().id_usuario); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Iniciar Sesion",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Autentica una cuenta activa por correo o teléfono. Guarda el token en token_usuario. Para un administrador usa la petición Login administrador. Las cuentas locales no existen automáticamente en Render.\nLos ejemplos guardados son históricos locales; sus IDs y cuentas pueden diferir de Render.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificador\": \"{{correo_usuario}}\",\n  \"contrasena\": \"{{contrasena_usuario}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "name": "Histórico local — Login-Correcto",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificador\": \"ana@example.com\",\n  \"contrasena\": \"PlantaSegura123!\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "login"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sat, 19 Sep 2026 19:42:21 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "182"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"access_token\": \"TOKEN_OCULTO\",\n  \"token_type\": \"bearer\"\n}"
+            },
+            {
+              "name": "Histórico local — Login-Incorrecto",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificador\": \"ana@example.com\",\n  \"contrasena\": \"Incorrecto123!\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "login"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sat, 19 Sep 2026 19:48:45 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "36"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"Credenciales inválidas\"\n}"
+            },
+            {
+              "name": "Histórico local — Login-Telefono correcto",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificador\": \"72223344\",\n  \"contrasena\": \"PlantaPrueba123!\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "login"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sun, 20 Sep 2026 05:35:56 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "182"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"access_token\": \"TOKEN_OCULTO\",\n  \"token_type\": \"bearer\"\n}"
+            },
+            {
+              "name": "Histórico local — Login-Campos ausentes",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "login"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sun, 20 Sep 2026 06:53:09 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "155"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"body\",\n        \"identificador\"\n      ],\n      \"msg\": \"Field required\",\n      \"type\": \"missing\"\n    },\n    {\n      \"loc\": [\n        \"body\",\n        \"contrasena\"\n      ],\n      \"msg\": \"Field required\",\n      \"type\": \"missing\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Histórico local — Login-Cuenta bloqueada",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificador\": \"lucia.prueba@example.com\",\n  \"contrasena\": \"PlantaPrueba123!\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "login"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Wed, 23 Sep 2026 00:42:58 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "38"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"detail\": \"La cuenta está bloqueada\"\n}"
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) { pm.collectionVariables.set(\"token_usuario\", pm.response.json().access_token); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login administrador",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Inicia sesión con una cuenta que ya tenga permisos de administrador. Guarda el token en token_admin. No concede permisos.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificador\": \"{{correo_admin}}\",\n  \"contrasena\": \"{{contrasena_admin}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) { pm.collectionVariables.set(\"token_admin\", pm.response.json().access_token); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Consultar mi cuenta",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/usuarios/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "usuarios",
+                "me"
+              ]
+            },
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_usuario}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Devuelve el perfil de la cuenta identificada por el token Bearer. Requiere un usuario ACTIVO. No recibe Body ni un ID de usuario.  \n**200:** ID, nombre, apellido, correo, teléfono, estado y fecha de registro. No devuelve contraseña ni hash.  \n**401:** token ausente, inválido o vencido, o usuario inexistente.  \n**403:** cuenta bloqueada.\n\n\n\nRespuestas documentadas: 200\nLos ejemplos guardados son históricos locales; sus IDs y cuentas pueden diferir de Render."
+          },
+          "response": [
+            {
+              "name": "Histórico local — Perfil-Consulta correcta",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/usuarios/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "usuarios",
+                    "me"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sun, 20 Sep 2026 17:46:18 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "181"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"id_usuario\": 4,\n  \"nombre\": \"Lucia\",\n  \"apellido\": \"Prueba\",\n  \"correo\": \"lucia.prueba@example.com\",\n  \"telefono\": \"72223344\",\n  \"estado\": \"ACTIVO\",\n  \"fecha_registro\": \"2026-09-19T15:02:39.150536-06:00\"\n}"
+            },
+            {
+              "name": "Histórico local — Perfil-Sin token",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/usuarios/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "usuarios",
+                    "me"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sun, 20 Sep 2026 17:54:17 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "www-authenticate",
+                  "value": "Bearer"
+                },
+                {
+                  "key": "content-length",
+                  "value": "47"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"Token ausente, inválido o vencido\"\n}"
+            },
+            {
+              "name": "Histórico local — Perfil-Token invalido",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/usuarios/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "usuarios",
+                    "me"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sun, 20 Sep 2026 18:06:08 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "www-authenticate",
+                  "value": "Bearer"
+                },
+                {
+                  "key": "content-length",
+                  "value": "47"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"detail\": \"Token ausente, inválido o vencido\"\n}"
+            },
+            {
+              "name": "Histórico local — Cuenta bloqueada — token previo (403)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/api/usuarios/me",
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"La cuenta está bloqueada\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Modificar mis datos personales",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "{{baseUrl}}/api/usuarios/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "usuarios",
+                "me"
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_usuario}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Modifica los datos de la cuenta identificada por el token Bearer. Requiere una cuenta ACTIVA.  \nPermite enviar uno o varios campos: nombre, apellido, correo y teléfono. Los campos omitidos conservan su valor.  \nNo permite modificar ID, estado, fecha, permisos ni contraseña.  \n**200:** devuelve el perfil actualizado, sin contraseña ni hash.  \n**409:** correo o teléfono ocupado; se cancelan todos los cambios de la petición.  \n**422:** campos inválidos, no permitidos o petición vacía.  \n**401:** token ausente, inválido o vencido, o usuario inexistente.  \n**403:** cuenta bloqueada.\n\n\n\nRespuestas documentadas: 200, 422\nLos ejemplos guardados son históricos locales; sus IDs y cuentas pueden diferir de Render.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Prueba actualizada\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "name": "Histórico local — Edicion-Nombre",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"nombre\": \"Lucia Maria\"}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/usuarios/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "usuarios",
+                    "me"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Mon, 21 Sep 2026 00:42:57 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "187"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"id_usuario\": 4,\n    \"nombre\": \"Lucia Maria\",\n    \"apellido\": \"Prueba\",\n    \"correo\": \"lucia.prueba@example.com\",\n    \"telefono\": \"72223344\",\n    \"estado\": \"ACTIVO\",\n    \"fecha_registro\": \"2026-09-19T15:02:39.150536-06:00\"\n}"
+            },
+            {
+              "name": "Histórico local — Edicion-Correo ocupado",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"correo\": \"ana@example.com\"}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/usuarios/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "usuarios",
+                    "me"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Mon, 21 Sep 2026 04:04:24 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "55"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"detail\": \"El correo electrónico ya está registrado\"\n}"
+            },
+            {
+              "name": "Histórico local — Edicion-Telefono ocupado",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"telefono\": \"70000000\"}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/usuarios/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "usuarios",
+                    "me"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Mon, 21 Sep 2026 04:15:46 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "56"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"detail\": \"El número de teléfono ya está registrado\"\n}"
+            },
+            {
+              "name": "Histórico local — Edición — nombre vacío (422)",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"nombre\": \"   \"}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/usuarios/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "usuarios",
+                    "me"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Mon, 21 Sep 2026 04:18:48 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "112"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"detail\": [\n        {\n            \"loc\": [\n                \"body\",\n                \"nombre\"\n            ],\n            \"msg\": \"String should have at least 1 character\",\n            \"type\": \"string_too_short\"\n        }\n    ]\n}"
+            },
+            {
+              "name": "Histórico local — Edicion-Correo invalido",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"correo\": \"correo-invalido\"}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/usuarios/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "usuarios",
+                    "me"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Mon, 21 Sep 2026 04:19:36 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "141"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"detail\": [\n        {\n            \"loc\": [\n                \"body\",\n                \"correo\"\n            ],\n            \"msg\": \"value is not a valid email address: An email address must have an @-sign.\",\n            \"type\": \"value_error\"\n        }\n    ]\n}"
+            },
+            {
+              "name": "Histórico local — Edición — teléfono null (422)",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"telefono\": null}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/usuarios/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "usuarios",
+                    "me"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Mon, 21 Sep 2026 04:22:12 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "109"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"detail\": [\n        {\n            \"loc\": [\n                \"body\",\n                \"telefono\"\n            ],\n            \"msg\": \"Value error, El campo no puede ser null\",\n            \"type\": \"value_error\"\n        }\n    ]\n}"
+            },
+            {
+              "name": "Histórico local — Edición — cuerpo sin cambios (422)",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/usuarios/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "usuarios",
+                    "me"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Mon, 21 Sep 2026 04:27:25 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "118"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"detail\": [\n        {\n            \"loc\": [\n                \"body\"\n            ],\n            \"msg\": \"Value error, Debes enviar al menos un campo para actualizar\",\n            \"type\": \"value_error\"\n        }\n    ]\n}"
+            },
+            {
+              "name": "Histórico local — Edicion-Cambiar estados sin permiso",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"estado\": \"BLOQUEADO\"}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/usuarios/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "usuarios",
+                    "me"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Mon, 21 Sep 2026 04:28:23 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "102"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"detail\": [\n        {\n            \"loc\": [\n                \"body\",\n                \"estado\"\n            ],\n            \"msg\": \"Extra inputs are not permitted\",\n            \"type\": \"extra_forbidden\"\n        }\n    ]\n}"
+            },
+            {
+              "name": "Histórico local — Edicion-Cambio de contra por esta ruta",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"contrasena\": \"OtraPlanta123!\"}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/usuarios/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "usuarios",
+                    "me"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Mon, 21 Sep 2026 04:29:49 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "106"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"detail\": [\n        {\n            \"loc\": [\n                \"body\",\n                \"contrasena\"\n            ],\n            \"msg\": \"Extra inputs are not permitted\",\n            \"type\": \"extra_forbidden\"\n        }\n    ]\n}"
+            },
+            {
+              "name": "Histórico local — Edicion-Datos personales actualizados",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"apellido\": \"Prueba Actualizada\",\r\n  \"correo\": \"lucia.actualizada@example.com\",\r\n  \"telefono\": \"74445566\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/usuarios/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "usuarios",
+                    "me"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Mon, 21 Sep 2026 16:59:11 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "204"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"id_usuario\": 4,\n    \"nombre\": \"Lucia Maria\",\n    \"apellido\": \"Prueba Actualizada\",\n    \"correo\": \"lucia.actualizada@example.com\",\n    \"telefono\": \"74445566\",\n    \"estado\": \"ACTIVO\",\n    \"fecha_registro\": \"2026-09-19T15:02:39.150536-06:00\"\n}"
+            },
+            {
+              "name": "Histórico local — Edicion-Conflicto cancela cambios",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"nombre\": \"No debe guardarse\",\r\n  \"correo\": \"ana@example.com\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/usuarios/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "usuarios",
+                    "me"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Mon, 21 Sep 2026 17:13:33 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "55"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"detail\": \"El correo electrónico ya está registrado\"\n}"
+            },
+            {
+              "name": "Histórico local — Edicion-Sin token",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"nombre\": \"No debe guardarse\"}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/usuarios/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "usuarios",
+                    "me"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Mon, 21 Sep 2026 17:16:27 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "www-authenticate",
+                  "value": "Bearer"
+                },
+                {
+                  "key": "content-length",
+                  "value": "47"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"detail\": \"Token ausente, inválido o vencido\"\n}"
+            },
+            {
+              "name": "Histórico local — Edicion-Token invalido",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"nombre\": \"No debe guardarse\"}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/usuarios/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "usuarios",
+                    "me"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Mon, 21 Sep 2026 17:42:17 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "www-authenticate",
+                  "value": "Bearer"
+                },
+                {
+                  "key": "content-length",
+                  "value": "47"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"detail\": \"Token ausente, inválido o vencido\"\n}"
+            },
+            {
+              "name": "Histórico local — Cuenta bloqueada — token previo (403)",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/api/usuarios/me",
+                "auth": {
+                  "type": "noauth"
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Cambio bloqueado\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"La cuenta está bloqueada\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Buscar usuarios",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/usuarios",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "usuarios"
+              ],
+              "query": [
+                {
+                  "key": "buscar",
+                  "value": "",
+                  "disabled": true,
+                  "description": ""
+                },
+                {
+                  "key": "pagina",
+                  "value": "1",
+                  "disabled": true,
+                  "description": ""
+                },
+                {
+                  "key": "limite",
+                  "value": "20",
+                  "disabled": true,
+                  "description": ""
+                }
+              ]
+            },
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_admin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Requiere un administrador activo y token Bearer. Busca por nombre, apellido, correo o ID mediante `buscar`. Admite `pagina` y `limite`. Devuelve total y usuarios sin contraseñas ni hashes. Respuestas: 200 éxito, 401 sin autenticación válida, 403 sin permisos o cuenta bloqueada, 422 parámetros inválidos.\n\n\n\nRespuestas documentadas: 200, 422\nLos ejemplos guardados son históricos locales; sus IDs y cuentas pueden diferir de Render."
+          },
+          "response": [
+            {
+              "name": "Histórico local — Búsqueda — Listado (200)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/api/admin/usuarios",
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"total\": 2,\n  \"pagina\": 1,\n  \"limite\": 20,\n  \"usuarios\": [\n    {\n      \"id_usuario\": 1,\n      \"nombre\": \"Ana\",\n      \"apellido\": \"Lopez\",\n      \"correo\": \"ana@example.com\",\n      \"telefono\": \"70000000\",\n      \"estado\": \"ACTIVO\",\n      \"fecha_registro\": \"2026-09-18T11:53:43.461046-06:00\"\n    },\n    {\n      \"id_usuario\": 4,\n      \"nombre\": \"Lucia Maria\",\n      \"apellido\": \"Prueba\",\n      \"correo\": \"lucia.prueba@example.com\",\n      \"telefono\": \"72223344\",\n      \"estado\": \"ACTIVO\",\n      \"fecha_registro\": \"2026-09-19T15:02:39.150536-06:00\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Histórico local — Búsqueda — Nombre (200)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/api/admin/usuarios?buscar=Lucia",
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"total\": 1,\n  \"pagina\": 1,\n  \"limite\": 20,\n  \"usuarios\": [\n    {\n      \"id_usuario\": 4,\n      \"nombre\": \"Lucia Maria\",\n      \"apellido\": \"Prueba\",\n      \"correo\": \"lucia.prueba@example.com\",\n      \"telefono\": \"72223344\",\n      \"estado\": \"ACTIVO\",\n      \"fecha_registro\": \"2026-09-19T15:02:39.150536-06:00\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Histórico local — Búsqueda — Correo (200)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/api/admin/usuarios?buscar=lucia.prueba@example.com",
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"total\": 1,\n  \"pagina\": 1,\n  \"limite\": 20,\n  \"usuarios\": [\n    {\n      \"id_usuario\": 4,\n      \"nombre\": \"Lucia Maria\",\n      \"apellido\": \"Prueba\",\n      \"correo\": \"lucia.prueba@example.com\",\n      \"telefono\": \"72223344\",\n      \"estado\": \"ACTIVO\",\n      \"fecha_registro\": \"2026-09-19T15:02:39.150536-06:00\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Histórico local — Búsqueda — ID (200)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/api/admin/usuarios?buscar=4",
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"total\": 1,\n  \"pagina\": 1,\n  \"limite\": 20,\n  \"usuarios\": [\n    {\n      \"id_usuario\": 4,\n      \"nombre\": \"Lucia Maria\",\n      \"apellido\": \"Prueba\",\n      \"correo\": \"lucia.prueba@example.com\",\n      \"telefono\": \"72223344\",\n      \"estado\": \"ACTIVO\",\n      \"fecha_registro\": \"2026-09-19T15:02:39.150536-06:00\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Histórico local — Búsqueda — Paginación (200)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/api/admin/usuarios?pagina=1&limite=1",
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"total\": 2,\n  \"pagina\": 1,\n  \"limite\": 1,\n  \"usuarios\": [\n    {\n      \"id_usuario\": 1,\n      \"nombre\": \"Ana\",\n      \"apellido\": \"Lopez\",\n      \"correo\": \"ana@example.com\",\n      \"telefono\": \"70000000\",\n      \"estado\": \"ACTIVO\",\n      \"fecha_registro\": \"2026-09-18T11:53:43.461046-06:00\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Histórico local — Búsqueda — sin permisos (403)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/api/admin/usuarios",
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"Se requieren permisos de administrador\"\n}"
+            },
+            {
+              "name": "Histórico local — Búsqueda — sin token (401)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/api/admin/usuarios",
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"Token ausente, inválido o vencido\"\n}"
+            },
+            {
+              "name": "Histórico local — Búsqueda — paginación inválida (422)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/api/admin/usuarios?pagina=0",
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"query\",\n        \"pagina\"\n      ],\n      \"msg\": \"Input should be greater than or equal to 1\",\n      \"type\": \"greater_than_equal\"\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Consultar usuario por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/usuarios/{{id_usuario}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "usuarios",
+                "{{id_usuario}}"
+              ]
+            },
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_admin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "SCRUM-18. Requiere administrador ACTIVO. Consulta un perfil por ID sin contraseña ni hash. 200: éxito; 401: autenticación inválida; 403: sin permisos; 404: usuario inexistente; 422: ID inválido.\n\n\n\nRespuestas documentadas: 200, 422\nLos ejemplos guardados son históricos locales; sus IDs y cuentas pueden diferir de Render."
+          },
+          "response": [
+            {
+              "name": "Histórico local — Consulta — usuario encontrado (200)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/api/admin/usuarios/4",
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"id_usuario\": 4,\n  \"nombre\": \"Lucia Maria\",\n  \"apellido\": \"Prueba\",\n  \"correo\": \"lucia.prueba@example.com\",\n  \"telefono\": \"72223344\",\n  \"estado\": \"ACTIVO\",\n  \"fecha_registro\": \"2026-09-19T15:02:39.150536-06:00\"\n}"
+            },
+            {
+              "name": "Histórico local — Consulta — usuario inexistente (404)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/api/admin/usuarios/2147483647",
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"Usuario no encontrado\"\n}"
+            },
+            {
+              "name": "Histórico local — Consulta — sin permisos (403)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/api/admin/usuarios/4",
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"Se requieren permisos de administrador\"\n}"
+            },
+            {
+              "name": "Histórico local — Consulta — sin token (401)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/api/admin/usuarios/4",
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"Token ausente, inválido o vencido\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Bloquear o reactivar usuario",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/usuarios/{{id_usuario}}/estado",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "usuarios",
+                "{{id_usuario}}",
+                "estado"
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_admin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Requiere un administrador activo y token Bearer. Recibe `estado` con valor ACTIVO o BLOQUEADO. Conserva los datos del usuario. El bloqueo impide el login y el uso de tokens anteriores mientras la cuenta permanezca bloqueada. Respuestas: 200 éxito, 401 sin autenticación válida, 403 sin permisos o cuenta bloqueada, 404 usuario inexistente, 422 datos inválidos.\n\n\n\nRespuestas documentadas: 200, 422\nLos ejemplos guardados son históricos locales; sus IDs y cuentas pueden diferir de Render.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"ACTIVO\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "name": "Histórico local — Admin-Usuario sin permisos cambia estado",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"estado\":\"BLOQUEADO\"}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/usuarios/4/estado",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "usuarios",
+                    "4",
+                    "estado"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Wed, 23 Sep 2026 02:35:20 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "51"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"detail\": \"Se requieren permisos de administrador\"\n}"
+            },
+            {
+              "name": "Histórico local — Admin-Estado no permitido",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"estado\":\"ELIMINADO\"}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/usuarios/4/estado",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "usuarios",
+                    "4",
+                    "estado"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Wed, 23 Sep 2026 02:37:38 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "109"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"detail\": [\n        {\n            \"loc\": [\n                \"body\",\n                \"estado\"\n            ],\n            \"msg\": \"Input should be 'ACTIVO' or 'BLOQUEADO'\",\n            \"type\": \"literal_error\"\n        }\n    ]\n}"
+            },
+            {
+              "name": "Histórico local — Admin-Usuario no encontrado",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"estado\":\"ACTIVO\"}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/usuarios/2147483647/estado",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "usuarios",
+                    "2147483647",
+                    "estado"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Wed, 23 Sep 2026 02:40:40 GMT"
+                },
+                {
+                  "key": "server",
+                  "value": "uvicorn"
+                },
+                {
+                  "key": "content-length",
+                  "value": "34"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"detail\": \"Usuario no encontrado\"\n}"
+            },
+            {
+              "name": "Histórico local — Estado — bloquear usuario (200)",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/api/admin/usuarios/4/estado",
+                "auth": {
+                  "type": "noauth"
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"estado\": \"BLOQUEADO\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"id_usuario\": 4,\n  \"nombre\": \"Lucia Maria\",\n  \"apellido\": \"Prueba\",\n  \"correo\": \"lucia.prueba@example.com\",\n  \"telefono\": \"72223344\",\n  \"estado\": \"BLOQUEADO\",\n  \"fecha_registro\": \"2026-09-19T15:02:39.150536-06:00\"\n}"
+            },
+            {
+              "name": "Histórico local — Estado — reactivar usuario (200)",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/api/admin/usuarios/4/estado",
+                "auth": {
+                  "type": "noauth"
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"estado\": \"ACTIVO\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"id_usuario\": 4,\n  \"nombre\": \"Lucia Maria\",\n  \"apellido\": \"Prueba\",\n  \"correo\": \"lucia.prueba@example.com\",\n  \"telefono\": \"72223344\",\n  \"estado\": \"ACTIVO\",\n  \"fecha_registro\": \"2026-09-19T15:02:39.150536-06:00\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Kevin — Solicitudes SCRUM-6",
+      "item": [
+        {
+          "name": "Listar Solicitudes",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/solicitudes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "solicitudes"
+              ],
+              "query": [
+                {
+                  "key": "tipo",
+                  "value": "enviadas",
+                  "disabled": true,
+                  "description": ""
+                },
+                {
+                  "key": "estado",
+                  "value": "",
+                  "disabled": true,
+                  "description": ""
+                },
+                {
+                  "key": "id_planta",
+                  "value": "{{id_planta}}",
+                  "disabled": true,
+                  "description": ""
+                },
+                {
+                  "key": "limite",
+                  "value": "20",
+                  "disabled": true,
+                  "description": ""
+                },
+                {
+                  "key": "offset",
+                  "value": "0",
+                  "disabled": true,
+                  "description": ""
+                }
+              ]
+            },
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_usuario}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "**SCRUM-6 — Listar solicitudes.**  \nLista únicamente solicitudes autorizadas. `tipo=enviadas` devuelve las del adoptante; `tipo=recibidas`, las de plantas pertenecientes al donante. Permite filtrar por estado e ID de planta y paginar con límite y offset.  \n**200:** lista, incluso vacía. **401/403:** autenticación. **422:** filtros inválidos.\n\nLista privada, ordenada de más reciente a más antigua, con filtros y paginación.\n\nRespuestas documentadas: 200, 422\nLos ejemplos guardados son históricos locales; sus IDs y cuentas pueden diferir de Render."
+          },
+          "response": [
+            {
+              "name": "Histórico local — Listar-Enviadas",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/solicitudes?tipo=enviadas&estado=PENDIENTE&id_planta={{planta_disponible}}&limite=20&offset=0",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "solicitudes"
+                  ],
+                  "query": [
+                    {
+                      "key": "tipo",
+                      "value": "enviadas"
+                    },
+                    {
+                      "key": "estado",
+                      "value": "PENDIENTE"
+                    },
+                    {
+                      "key": "id_planta",
+                      "value": "{{planta_disponible}}"
+                    },
+                    {
+                      "key": "limite",
+                      "value": "20"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    }
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "[\n  {\n    \"id_solicitud\": 15,\n    \"id_planta\": 3,\n    \"id_adoptante\": 7,\n    \"mensaje\": \"Tengo espacio y tiempo para cuidar esta planta.\",\n    \"estado\": \"PENDIENTE\",\n    \"fecha_solicitud\": \"2026-09-23T10:30:00-06:00\"\n  }\n]"
+            },
+            {
+              "name": "Histórico local — Listar-Recibidas",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/solicitudes?tipo=enviadas&estado=PENDIENTE&id_planta={{planta_disponible}}&limite=20&offset=0",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "solicitudes"
+                  ],
+                  "query": [
+                    {
+                      "key": "tipo",
+                      "value": "enviadas"
+                    },
+                    {
+                      "key": "estado",
+                      "value": "PENDIENTE"
+                    },
+                    {
+                      "key": "id_planta",
+                      "value": "{{planta_disponible}}"
+                    },
+                    {
+                      "key": "limite",
+                      "value": "20"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    }
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "[\n  {\n    \"id_solicitud\": 15,\n    \"id_planta\": 3,\n    \"id_adoptante\": 7,\n    \"mensaje\": \"Tengo espacio y tiempo para cuidar esta planta.\",\n    \"estado\": \"PENDIENTE\",\n    \"fecha_solicitud\": \"2026-09-23T10:30:00-06:00\"\n  }\n]"
+            },
+            {
+              "name": "Histórico local — Listar-Sin resultados",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/solicitudes?tipo=enviadas&estado=PENDIENTE&id_planta={{planta_disponible}}&limite=20&offset=0",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "solicitudes"
+                  ],
+                  "query": [
+                    {
+                      "key": "tipo",
+                      "value": "enviadas"
+                    },
+                    {
+                      "key": "estado",
+                      "value": "PENDIENTE"
+                    },
+                    {
+                      "key": "id_planta",
+                      "value": "{{planta_disponible}}"
+                    },
+                    {
+                      "key": "limite",
+                      "value": "20"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    }
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "[]"
+            },
+            {
+              "name": "Histórico local — Listar-Filtros inválidos",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/solicitudes?tipo=enviadas&estado=PENDIENTE&id_planta={{planta_disponible}}&limite=20&offset=0",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "solicitudes"
+                  ],
+                  "query": [
+                    {
+                      "key": "tipo",
+                      "value": "enviadas"
+                    },
+                    {
+                      "key": "estado",
+                      "value": "PENDIENTE"
+                    },
+                    {
+                      "key": "id_planta",
+                      "value": "{{planta_disponible}}"
+                    },
+                    {
+                      "key": "limite",
+                      "value": "20"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    }
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"query\",\n        \"estado\"\n      ],\n      \"msg\": \"Input should be PENDIENTE, ACEPTADA or RECHAZADA\",\n      \"type\": \"literal_error\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Histórico local — Listar-Sin token",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/solicitudes?tipo=enviadas&estado=PENDIENTE&id_planta={{planta_disponible}}&limite=20&offset=0",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "solicitudes"
+                  ],
+                  "query": [
+                    {
+                      "key": "tipo",
+                      "value": "enviadas"
+                    },
+                    {
+                      "key": "estado",
+                      "value": "PENDIENTE"
+                    },
+                    {
+                      "key": "id_planta",
+                      "value": "{{planta_disponible}}"
+                    },
+                    {
+                      "key": "limite",
+                      "value": "20"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    }
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"Token ausente, inválido o vencido\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Crear Solicitud",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/solicitudes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "solicitudes"
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_usuario}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "**SCRUM-6 — Enviar solicitud.**  \nCrea una solicitud PENDIENTE para una planta DISPONIBLE ajena y genera una notificación al donante. La planta permanece DISPONIBLE. El adoptante se obtiene del token; no se envían estado, fecha ni usuario.  \n**201:** creada. **401:** token inválido. **403:** planta propia/cuenta bloqueada. **404:** planta inexistente, oculta o eliminada. **409:** planta no disponible o solicitud activa duplicada. **422:** mensaje vacío, mayor de 500 caracteres o campos adicionales.\n\n\n\nRespuestas documentadas: 201, 401, 403, 404, 409, 503, 422\nLos ejemplos guardados son históricos locales; sus IDs y cuentas pueden diferir de Render.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_planta\": {{id_planta}},\n  \"mensaje\": \"Me gustaría adoptar esta planta\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "name": "Histórico local — Solicitud-Creada",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id_planta\": \"{{planta_disponible}}\",\n  \"mensaje\": \"Tengo espacio y tiempo para cuidar esta planta.\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/solicitudes",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "solicitudes"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"id_solicitud\": 15,\n  \"id_planta\": 3,\n  \"id_adoptante\": 7,\n  \"mensaje\": \"Tengo espacio y tiempo para cuidar esta planta.\",\n  \"estado\": \"PENDIENTE\",\n  \"fecha_solicitud\": \"2026-09-23T10:30:00-06:00\"\n}"
+            },
+            {
+              "name": "Histórico local — Solicitud-Duplicada",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id_planta\": \"{{planta_disponible}}\",\n  \"mensaje\": \"Tengo espacio y tiempo para cuidar esta planta.\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/solicitudes",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "solicitudes"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"Ya tienes una solicitud activa para esta planta\"\n}"
+            },
+            {
+              "name": "Histórico local — Solicitud-Planta propia",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id_planta\": \"{{planta_disponible}}\",\n  \"mensaje\": \"Tengo espacio y tiempo para cuidar esta planta.\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/solicitudes",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "solicitudes"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"No puedes solicitar tu propia planta\"\n}"
+            },
+            {
+              "name": "Histórico local — Solicitud-Planta no disponible",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id_planta\": \"{{planta_disponible}}\",\n  \"mensaje\": \"Tengo espacio y tiempo para cuidar esta planta.\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/solicitudes",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "solicitudes"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"La planta no está disponible\"\n}"
+            },
+            {
+              "name": "Histórico local — Solicitud-Planta no encontrada",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id_planta\": \"{{planta_disponible}}\",\n  \"mensaje\": \"Tengo espacio y tiempo para cuidar esta planta.\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/solicitudes",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "solicitudes"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"Planta no encontrada\"\n}"
+            },
+            {
+              "name": "Histórico local — Solicitud-Mensaje vacío o mayor de 500",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id_planta\": \"{{planta_disponible}}\",\n  \"mensaje\": \"Tengo espacio y tiempo para cuidar esta planta.\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/solicitudes",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "solicitudes"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"body\",\n        \"mensaje\"\n      ],\n      \"msg\": \"String should have at least 1 character\",\n      \"type\": \"string_too_short\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Histórico local — Solicitud-Sin token",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id_planta\": \"{{planta_disponible}}\",\n  \"mensaje\": \"Tengo espacio y tiempo para cuidar esta planta.\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/solicitudes",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "solicitudes"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"Token ausente, inválido o vencido\"\n}"
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code >= 200 && pm.response.code < 300) { pm.collectionVariables.set(\"id_solicitud\", pm.response.json().id_solicitud); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Consultar Solicitud",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/solicitudes/{{id_solicitud}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "solicitudes",
+                "{{id_solicitud}}"
+              ]
+            },
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_usuario}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "**SCRUM-6 — Consultar solicitud.**  \nDevuelve el detalle únicamente al adoptante o al dueño de la planta. Un tercero recibe 404 para no revelar información privada.  \n**200:** detalle autorizado. **401/403:** autenticación. **404:** inexistente o ajena. **422:** ID inválido.\n\n\n\nRespuestas documentadas: 200, 404, 422\nLos ejemplos guardados son históricos locales; sus IDs y cuentas pueden diferir de Render."
+          },
+          "response": [
+            {
+              "name": "Histórico local — Consultar-Como adoptante",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/solicitudes/{{solicitud_id}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "solicitudes",
+                    "{{solicitud_id}}"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"id_solicitud\": 15,\n  \"id_planta\": 3,\n  \"id_adoptante\": 7,\n  \"mensaje\": \"Tengo espacio y tiempo para cuidar esta planta.\",\n  \"estado\": \"PENDIENTE\",\n  \"fecha_solicitud\": \"2026-09-23T10:30:00-06:00\"\n}"
+            },
+            {
+              "name": "Histórico local — Consultar-Como donante",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/solicitudes/{{solicitud_id}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "solicitudes",
+                    "{{solicitud_id}}"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"id_solicitud\": 15,\n  \"id_planta\": 3,\n  \"id_adoptante\": 7,\n  \"mensaje\": \"Tengo espacio y tiempo para cuidar esta planta.\",\n  \"estado\": \"PENDIENTE\",\n  \"fecha_solicitud\": \"2026-09-23T10:30:00-06:00\"\n}"
+            },
+            {
+              "name": "Histórico local — Consultar-Solicitud ajena o inexistente",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/solicitudes/{{solicitud_id}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "solicitudes",
+                    "{{solicitud_id}}"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"Solicitud no encontrada\"\n}"
+            },
+            {
+              "name": "Histórico local — Consultar-Sin token",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/solicitudes/{{solicitud_id}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "solicitudes",
+                    "{{solicitud_id}}"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"Token ausente, inválido o vencido\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Corregir Solicitud",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "{{baseUrl}}/api/solicitudes/{{id_solicitud}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "solicitudes",
+                "{{id_solicitud}}"
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_usuario}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "**SCRUM-6 — Corregir mensaje.**  \nPermite al adoptante cambiar únicamente el mensaje de una solicitud PENDIENTE cuya planta siga DISPONIBLE y sin adopción asociada. Conserva adoptante, planta, fecha y estado.  \n**200:** mensaje corregido. **404:** ajena/inexistente. **409:** solicitud o planta incompatible. **422:** mensaje inválido o intento de cambiar otro campo.\n\nModifica únicamente el mensaje; conserva autor, planta, fecha y estado.\n\nRespuestas documentadas: 200, 404, 409, 503, 422\nLos ejemplos guardados son históricos locales; sus IDs y cuentas pueden diferir de Render.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mensaje\": \"Mensaje actualizado\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "name": "Histórico local — Corregir-Exitoso",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"mensaje\": \"Ahora tengo más espacio para cuidarla.\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/solicitudes/{{solicitud_id}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "solicitudes",
+                    "{{solicitud_id}}"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"id_solicitud\": 15,\n  \"id_planta\": 3,\n  \"id_adoptante\": 7,\n  \"mensaje\": \"Ahora tengo más espacio para cuidarla.\",\n  \"estado\": \"PENDIENTE\",\n  \"fecha_solicitud\": \"2026-09-23T10:30:00-06:00\"\n}"
+            },
+            {
+              "name": "Histórico local — Corregir-Mensaje vacío o mayor de 500",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"mensaje\": \"Ahora tengo más espacio para cuidarla.\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/solicitudes/{{solicitud_id}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "solicitudes",
+                    "{{solicitud_id}}"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"body\",\n        \"mensaje\"\n      ],\n      \"msg\": \"String should have at least 1 character\",\n      \"type\": \"string_too_short\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Histórico local — Corregir-Cambio de estado no permitido",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"mensaje\": \"Ahora tengo más espacio para cuidarla.\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/solicitudes/{{solicitud_id}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "solicitudes",
+                    "{{solicitud_id}}"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"body\",\n        \"estado\"\n      ],\n      \"msg\": \"Extra inputs are not permitted\",\n      \"type\": \"extra_forbidden\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Histórico local — Corregir-Solicitud decidida",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"mensaje\": \"Ahora tengo más espacio para cuidarla.\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/solicitudes/{{solicitud_id}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "solicitudes",
+                    "{{solicitud_id}}"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"Solo puedes modificar o retirar solicitudes pendientes\"\n}"
+            },
+            {
+              "name": "Histórico local — Corregir-Planta no disponible",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"mensaje\": \"Ahora tengo más espacio para cuidarla.\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/solicitudes/{{solicitud_id}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "solicitudes",
+                    "{{solicitud_id}}"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"La planta no está disponible\"\n}"
+            },
+            {
+              "name": "Histórico local — Corregir-Solicitud ajena",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"mensaje\": \"Ahora tengo más espacio para cuidarla.\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/solicitudes/{{solicitud_id}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "solicitudes",
+                    "{{solicitud_id}}"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"Solicitud no encontrada\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Retirar Solicitud",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/solicitudes/{{id_solicitud}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "solicitudes",
+                "{{id_solicitud}}"
+              ]
+            },
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_usuario}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "**SCRUM-6 — Retirar solicitud.**  \nEl adoptante elimina únicamente una solicitud propia PENDIENTE sin adopción asociada. La notificación se conserva, pierde el enlace a la solicitud e indica el retiro. No crea un estado CANCELADA ni cambia la planta.  \n**204:** retirada, sin cuerpo. **404:** ajena/inexistente o retiro repetido. **409:** aceptada, rechazada o con adopción asociada.\n\nRetira una solicitud pendiente y conserva sus avisos sin enlace a ella.\n\nRespuestas documentadas: 204, 404, 409, 503, 422\nLos ejemplos guardados son históricos locales; sus IDs y cuentas pueden diferir de Render."
+          },
+          "response": [
+            {
+              "name": "Histórico local — Retirar-Exitoso",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/solicitudes/{{solicitud_id}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "solicitudes",
+                    "{{solicitud_id}}"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "No Content",
+              "code": 204,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "cookie": [],
+              "body": ""
+            },
+            {
+              "name": "Histórico local — Retirar-Solicitud aceptada o rechazada",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/solicitudes/{{solicitud_id}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "solicitudes",
+                    "{{solicitud_id}}"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"Solo puedes modificar o retirar solicitudes pendientes\"\n}"
+            },
+            {
+              "name": "Histórico local — Retirar-Con adopción asociada",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/solicitudes/{{solicitud_id}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "solicitudes",
+                    "{{solicitud_id}}"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"La solicitud tiene una adopción asociada\"\n}"
+            },
+            {
+              "name": "Histórico local — Retirar-Solicitud ajena o inexistente",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/solicitudes/{{solicitud_id}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "solicitudes",
+                    "{{solicitud_id}}"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"Solicitud no encontrada\"\n}"
+            },
+            {
+              "name": "Histórico local — Retirar-Repetido",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/solicitudes/{{solicitud_id}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "solicitudes",
+                    "{{solicitud_id}}"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"Solicitud no encontrada\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Fabiola — Plantas y fotografías",
+      "item": [
+        {
+          "name": "Catalogo",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/plantas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "plantas"
+              ],
+              "query": [
+                {
+                  "key": "busqueda",
+                  "value": "",
+                  "disabled": true,
+                  "description": ""
+                },
+                {
+                  "key": "estado",
+                  "value": "",
+                  "disabled": true,
+                  "description": ""
+                },
+                {
+                  "key": "pagina",
+                  "value": "1",
+                  "disabled": true,
+                  "description": ""
+                },
+                {
+                  "key": "limite",
+                  "value": "20",
+                  "disabled": true,
+                  "description": ""
+                }
+              ]
+            },
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Respuestas documentadas: 200, 422"
+          },
+          "response": []
+        },
+        {
+          "name": "Consultar Mias",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/plantas/mias",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "plantas",
+                "mias"
+              ],
+              "query": [
+                {
+                  "key": "busqueda",
+                  "value": "",
+                  "disabled": true,
+                  "description": ""
+                },
+                {
+                  "key": "estado",
+                  "value": "",
+                  "disabled": true,
+                  "description": ""
+                },
+                {
+                  "key": "pagina",
+                  "value": "1",
+                  "disabled": true,
+                  "description": ""
+                },
+                {
+                  "key": "limite",
+                  "value": "20",
+                  "disabled": true,
+                  "description": ""
+                }
+              ]
+            },
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_usuario}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Respuestas documentadas: 200, 422"
+          },
+          "response": []
+        },
+        {
+          "name": "Consultar Planta",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/plantas/{{id_planta}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "plantas",
+                "{{id_planta}}"
+              ]
+            },
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_usuario}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Respuestas documentadas: 200, 422"
+          },
+          "response": []
+        },
+        {
+          "name": "Modificar Planta",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "{{baseUrl}}/api/plantas/{{id_planta}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "plantas",
+                "{{id_planta}}"
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_usuario}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Respuestas documentadas: 200, 422",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Planta actualizada\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Retirar Planta",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/plantas/{{id_planta}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "plantas",
+                "{{id_planta}}"
+              ]
+            },
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_usuario}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Respuestas documentadas: 200, 422"
+          },
+          "response": []
+        },
+        {
+          "name": "Crear Planta",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/plantas/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "plantas",
+                ""
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_usuario}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Respuestas documentadas: 201, 422\nRequiere id_categoria existente y ACTIVA; el módulo de categorías aún no fue recibido.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Planta de prueba\",\n  \"tamano\": \"Pequeña\",\n  \"nivel_cuidado\": \"Bajo\",\n  \"estado_salud\": \"Saludable\",\n  \"necesidad_luz\": \"Indirecta\",\n  \"necesidad_agua\": \"Moderada\",\n  \"ubicacion\": \"Punto público de prueba\",\n  \"id_categoria\": {{id_categoria}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code >= 200 && pm.response.code < 300) { pm.collectionVariables.set(\"id_planta\", pm.response.json().id_planta); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Listar Fotografias",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/fotografias?id_planta={{id_planta}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "fotografias"
+              ],
+              "query": [
+                {
+                  "key": "id_planta",
+                  "value": "{{id_planta}}",
+                  "disabled": false,
+                  "description": ""
+                }
+              ]
+            },
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Respuestas documentadas: 200, 422\nLa implementación recibida registra URLs; no carga archivos ni conserva tipo/es_principal. id_fotografia corresponde a id_foto y fecha_subida a fecha_carga en la base existente."
+          },
+          "response": []
+        },
+        {
+          "name": "Subir Fotografia",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/fotografias",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "fotografias"
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_usuario}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Respuestas documentadas: 201, 422\nLa implementación recibida registra URLs; no carga archivos ni conserva tipo/es_principal. id_fotografia corresponde a id_foto y fecha_subida a fecha_carga en la base existente.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_planta\": {{id_planta}},\n  \"url\": \"https://example.com/foto.jpg\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code >= 200 && pm.response.code < 300) { pm.collectionVariables.set(\"id_fotografia\", pm.response.json().id_fotografia); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Eliminar Fotografia",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/fotografias/{{id_fotografia}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "fotografias",
+                "{{id_fotografia}}"
+              ]
+            },
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_usuario}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Respuestas documentadas: 204, 422\nLa implementación recibida registra URLs; no carga archivos ni conserva tipo/es_principal. id_fotografia corresponde a id_foto y fecha_subida a fecha_carga en la base existente."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Fabrizio (Edwin) — Notificaciones SCRUM-14",
+      "item": [
+        {
+          "name": "Listar Notificaciones",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/notificaciones",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "notificaciones"
+              ]
+            },
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_usuario}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Respuestas documentadas: 200"
+          },
+          "response": []
+        },
+        {
+          "name": "Consultar Notificacion",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/notificaciones/{{id_notificacion}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "notificaciones",
+                "{{id_notificacion}}"
+              ]
+            },
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_usuario}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Respuestas documentadas: 200, 422"
+          },
+          "response": []
+        },
+        {
+          "name": "Marcar Notificacion Leida",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "{{baseUrl}}/api/notificaciones/{{id_notificacion}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "notificaciones",
+                "{{id_notificacion}}"
+              ]
+            },
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_usuario}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Respuestas documentadas: 200, 422"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Manuel — Chat, moderación y reportes",
+      "item": [
+        {
+          "name": "Listar Chats Propios",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/chats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "chats"
+              ]
+            },
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_usuario}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Respuestas documentadas: 200\nRequiere una solicitud ACEPTADA y adopción asociada. El endpoint de aceptación no se recibió; la prueba positiva requiere datos preparados. Sin ellos la respuesta de creación será 403."
+          },
+          "response": []
+        },
+        {
+          "name": "Crear U Obtener Chat",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/chats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "chats"
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_usuario}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Respuestas documentadas: 201, 200, 422\nRequiere una solicitud ACEPTADA y adopción asociada. El endpoint de aceptación no se recibió; la prueba positiva requiere datos preparados. Sin ellos la respuesta de creación será 403.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_planta\": {{id_planta}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code >= 200 && pm.response.code < 300) { pm.collectionVariables.set(\"id_chat\", pm.response.json().id_chat); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Enviar Mensaje",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/chats/{{id_chat}}/mensajes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "chats",
+                "{{id_chat}}",
+                "mensajes"
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_usuario}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Respuestas documentadas: 201, 422\nRequiere una solicitud ACEPTADA y adopción asociada. El endpoint de aceptación no se recibió; la prueba positiva requiere datos preparados. Sin ellos la respuesta de creación será 403.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"contenido\": \"Hola, coordinemos la entrega\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar Mensajes",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/chats/{{id_chat}}/mensajes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "chats",
+                "{{id_chat}}",
+                "mensajes"
+              ],
+              "query": [
+                {
+                  "key": "pagina",
+                  "value": "1",
+                  "disabled": true,
+                  "description": ""
+                },
+                {
+                  "key": "tamano_pagina",
+                  "value": "20",
+                  "disabled": true,
+                  "description": ""
+                }
+              ]
+            },
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_usuario}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Respuestas documentadas: 200, 422\nRequiere una solicitud ACEPTADA y adopción asociada. El endpoint de aceptación no se recibió; la prueba positiva requiere datos preparados. Sin ellos la respuesta de creación será 403."
+          },
+          "response": []
+        },
+        {
+          "name": "Listar todas las publicaciones administrativas",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/plantas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "plantas"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "",
+                  "disabled": true,
+                  "description": "Buscar por nombre de planta"
+                },
+                {
+                  "key": "skip",
+                  "value": "0",
+                  "disabled": true,
+                  "description": "Registro inicial para paginación"
+                },
+                {
+                  "key": "limit",
+                  "value": "100",
+                  "disabled": true,
+                  "description": "Máximo de registros a devolver"
+                }
+              ]
+            },
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_admin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Listar todas las publicaciones, incluidas ocultas o eliminadas lógicamente.\nRequiere rol de administrador. No expone chats ni puntos de encuentro.\n\nRespuestas documentadas: 200, 422"
+          },
+          "response": []
+        },
+        {
+          "name": "Consultar planta por ID (administrador)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/plantas/{{id_planta}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "plantas",
+                "{{id_planta}}"
+              ]
+            },
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_admin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Consultar una publicación por ID, incluyendo las ocultas o eliminadas.\nRequiere rol de administrador. No expone chats ni puntos de encuentro.\n\nRespuestas documentadas: 200, 422"
+          },
+          "response": []
+        },
+        {
+          "name": "Moderar publicación",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/plantas/{{id_planta}}/moderacion",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "plantas",
+                "{{id_planta}}",
+                "moderacion"
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_admin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Aplicar borrado u ocultamiento lógico a una publicación.\nRequiere motivo no vacío y rol de administrador.\nUsa los campos visible=False y/o eliminada=True.\nRegistra la fecha, ID del administrador y el motivo.\nConserva fotos, solicitudes y historial de adopciones.\nDispara notificación al donante explicando el motivo.\n\nRespuestas documentadas: 200, 422",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"motivo\": \"Revisión de publicación\",\n  \"visible\": false,\n  \"eliminada\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reportar a un usuario",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/reportes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reportes"
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_usuario}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Registra un reporte en estado EN_REVISION.\n\nEl reportante se obtiene del token. No permite reportarse a sí mismo\nni reportar un usuario inexistente.\n\nRespuestas documentadas: 201, 422",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_reportado\": {{id_reportado}},\n  \"motivo\": \"Reporte de prueba\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code >= 200 && pm.response.code < 300) { pm.collectionVariables.set(\"id_reporte\", pm.response.json().id_reporte); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Buscar reportes",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/reportes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "reportes"
+              ],
+              "query": [
+                {
+                  "key": "id_reportante",
+                  "value": "{{id_reportante}}",
+                  "disabled": true,
+                  "description": ""
+                },
+                {
+                  "key": "id_reportado",
+                  "value": "{{id_reportado}}",
+                  "disabled": true,
+                  "description": ""
+                },
+                {
+                  "key": "estado",
+                  "value": "",
+                  "disabled": true,
+                  "description": ""
+                },
+                {
+                  "key": "skip",
+                  "value": "0",
+                  "disabled": true,
+                  "description": ""
+                },
+                {
+                  "key": "limit",
+                  "value": "100",
+                  "disabled": true,
+                  "description": ""
+                }
+              ]
+            },
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_admin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Permite a administradores buscar por usuario o estado, con paginación.\n\nRespuestas documentadas: 200, 422"
+          },
+          "response": []
+        },
+        {
+          "name": "Consultar reporte por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/reportes/{{id_reporte}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "reportes",
+                "{{id_reporte}}"
+              ]
+            },
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_admin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Devuelve el detalle con reportante, reportado, motivo y fecha.\n\nRespuestas documentadas: 200, 422"
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar estado del reporte",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/reportes/{{id_reporte}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "reportes",
+                "{{id_reporte}}"
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_admin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Cambia entre EN_REVISION y RESUELTO y asocia al administrador que lo gestiona.\n\nRespuestas documentadas: 200, 422",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"RESUELTO\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://adopplant-api.onrender.com",
+      "type": "string"
+    },
+    {
+      "key": "token_usuario",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "token_admin",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "correo_usuario",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "contrasena_usuario",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "correo_admin",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "contrasena_admin",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "nombre_usuario",
+      "value": "Prueba",
+      "type": "string"
+    },
+    {
+      "key": "apellido_usuario",
+      "value": "Grupal",
+      "type": "string"
+    },
+    {
+      "key": "telefono_usuario",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "id_usuario",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "id_planta",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "id_solicitud",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "id_categoria",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "id_fotografia",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "id_notificacion",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "id_chat",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "id_reportado",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "id_reportante",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "id_reporte",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}

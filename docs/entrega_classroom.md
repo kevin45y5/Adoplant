@@ -137,3 +137,10 @@ Referencia: [Importar datos en Postman](https://learning.postman.com/docs/gettin
 5. Verificar acceso del docente y correspondencia entre documentación, Main y despliegue.
 
 Los documentos personales de preparación del video no forman parte de este repositorio.
+
+## Integración posterior del 28-09-2026
+
+Se preparó la integración de los módulos recibidos y la colección grupal de 38 peticiones.
+Consultar `integracion_grupal.md` para las fuentes, 142 pruebas aprobadas, límites y
+pasos de despliegue. El estado público descrito en la sección 7 corresponde a la
+verificación anterior; debe comprobarse nuevamente tras Manual Deploy en Render.

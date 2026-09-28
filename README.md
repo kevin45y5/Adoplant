@@ -104,3 +104,11 @@ pendientes se encuentran en las historias y subtareas vigentes.
 - Postman (SCRUM-1 y SCRUM-18): https://documenter.getpostman.com/view/58260475/2sBYB4LSGg
 
 El enlace de Postman indicado no cubre todavía todos los módulos del equipo.
+
+## Integración del equipo (28-09-2026)
+
+Ver `docs/integracion_grupal.md` para procedencia, pruebas, límites y despliegue.
+Se integran plantas, fotografías por URL, notificaciones, chat, moderación y reportes,
+además de usuarios y solicitudes. OpenAPI reúne 35 operaciones de negocio.
+Importar `postman/AdopPlant_API_grupal_integrada.postman_collection.json` como colección nueva.
+Categorías y aceptación de solicitudes aún no tienen endpoints recibidos.
