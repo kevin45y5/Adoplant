@@ -55,11 +55,6 @@ async def manejar_error_validacion(request, error):
     )
 
 
-@app.get("/")
-def inicio():
-    return {"mensaje": "La API de AdopPlant está funcionando"}
-
-
 @app.get("/", response_class=FileResponse, include_in_schema=False)
 def inicio():
     return FileResponse(INDEX_PATH)

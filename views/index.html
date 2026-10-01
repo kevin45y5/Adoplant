@@ -3,346 +3,207 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PlantHaven - Iniciar Sesión y Registro</title>
+    <title>AdopPlant - Iniciar Sesión y Registro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        phGreenDark: '#1B432C',
+                        phGreenDark: '#0D3B23',
                         phGreenMedium: '#235B3B',
                         phGreenLight: '#2D724A',
                         phCream: '#F8F5EE',
-                        phCreamDark: '#EFEAE0',
-                        phAccentYellow: '#E3C165'
+                        phInputBg: '#F3F1EA'
                     },
-                    fontFamily: {
-                        serif: ['Playfair Display', 'serif'],
-                        sans: ['Inter', 'sans-serif']
-                    }
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
                 }
             }
         }
     </script>
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #F8F5EE; }
-        .serif-title { font-family: 'Playfair Display', serif; }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #F8F5EE; }
-        ::-webkit-scrollbar-thumb { background: #1B432C; border-radius: 4px; }
     </style>
 </head>
-<body class="min-h-screen text-gray-800 antialiased flex flex-col justify-between selection:bg-phGreenDark selection:text-white">
+<body class="min-h-screen text-gray-800 antialiased">
 
-    <div id="app" class="min-h-screen flex flex-col lg:flex-row w-full relative">
+    <div class="min-h-screen flex flex-col lg:flex-row">
 
-        <div class="lg:w-1/2 bg-phGreenDark text-white p-8 lg:p-14 flex flex-col justify-between min-h-[480px] lg:min-h-screen relative overflow-hidden">
-            <div class="flex items-center space-x-3 z-10">
-                <div class="text-emerald-400 text-3xl"><i class="fa-solid fa-leaf"></i></div>
-                <span class="text-2xl lg:text-3xl font-bold tracking-tight text-white font-serif">PlantHaven</span>
-            </div>
-            <div class="my-auto py-10 z-10 max-w-xl">
-                <h1 class="serif-title text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-6 text-white">
-                    Conecta plantas con hogares que las aman
-                </h1>
-                <p class="text-emerald-100/80 text-base sm:text-lg font-normal leading-relaxed max-w-lg">
-                    Adopción responsable y cuidado consciente entre hogares que comparten la pasión por las plantas.
-                </p>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 z-10 mt-6">
-                <div class="bg-phGreenMedium/70 backdrop-blur-md p-4 rounded-xl flex flex-col items-center text-center border border-emerald-700/30 shadow-sm transition-transform hover:-translate-y-1">
-                    <div class="text-emerald-300 text-2xl mb-1"><i class="fa-solid fa-seedling"></i></div>
-                    <span class="font-bold text-lg text-white">400+</span>
-                    <span class="text-xs text-emerald-100/70">plantas disponibles</span>
-                </div>
-                <div class="bg-phGreenMedium/70 backdrop-blur-md p-4 rounded-xl flex flex-col items-center text-center border border-emerald-700/30 shadow-sm transition-transform hover:-translate-y-1">
-                    <div class="text-purple-300 text-2xl mb-1"><i class="fa-solid fa-user-group"></i></div>
-                    <span class="font-bold text-lg text-white">1,200+</span>
-                    <span class="text-xs text-emerald-100/70">usuarios activos</span>
-                </div>
-                <div class="bg-phGreenMedium/70 backdrop-blur-md p-4 rounded-xl flex flex-col items-center text-center border border-emerald-700/30 shadow-sm transition-transform hover:-translate-y-1">
-                    <div class="text-amber-300 text-2xl mb-1"><i class="fa-solid fa-handshake"></i></div>
-                    <span class="font-bold text-lg text-white">800+</span>
-                    <span class="text-xs text-emerald-100/70">adopciones exitosas</span>
-                </div>
-            </div>
-            <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-emerald-600/10 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="absolute -top-24 -right-24 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
-        </div>
+        <div class="w-full bg-[#F8F5EE] p-6 lg:p-12 flex flex-col justify-center items-center relative min-h-screen">
+            <div class="w-full max-w-md">
 
-        <div class="lg:w-1/2 bg-phCream p-8 lg:p-16 flex flex-col justify-center items-center relative min-h-screen">
-            <div class="w-full max-w-md space-y-6">
-
-                <div id="loginView" class="transition-all duration-300">
-                    <div class="text-center lg:text-left mb-8">
-                        <h2 class="serif-title text-3xl lg:text-4xl font-bold text-gray-900 mb-2">Bienvenido de vuelta</h2>
-                        <p class="text-gray-600 text-sm">Inicia sesión para continuar en PlantHaven</p>
+                <div class="flex flex-col items-center text-center mb-8">
+                    <div class="w-20 h-20 bg-[#E2ECE9] rounded-full flex items-center justify-center mb-5 shadow-sm overflow-hidden">
+                        <img src="/views/icon.jpeg" alt="Logo AdopPlant" class="w-full h-full object-cover">
                     </div>
-                    <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-5">
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Correo electrónico o teléfono <span class="text-red-500">*</span></label>
-                            <input type="text" id="loginEmail" required placeholder="tu@correo.com o +503 7000-0000"
-                                class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-phGreenDark focus:border-transparent transition-all shadow-sm">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Contraseña <span class="text-red-500">*</span></label>
-                            <div class="relative">
-                                <input type="password" id="loginPassword" required placeholder="••••••••"
-                                    class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-phGreenDark focus:border-transparent transition-all shadow-sm pr-20">
-                                <button type="button" onclick="togglePasswordVisibility('loginPassword', 'toggleLoginPassBtn')" id="toggleLoginPassBtn"
-                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-gray-500 hover:text-phGreenDark py-1 px-2 rounded focus:outline-none">Mostrar</button>
-                            </div>
-                        </div>
-                        <div class="flex justify-start">
-                            <a href="#" onclick="showNotification('Instrucciones enviadas a tu correo de recuperación.')" class="text-sm font-medium text-phGreenDark hover:underline">¿Olvidaste tu contraseña?</a>
-                        </div>
-                        <button type="submit" id="loginBtn"
-                            class="w-full py-3.5 bg-phGreenDark hover:bg-phGreenMedium text-white font-semibold rounded-full shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center space-x-2">
-                            <span>Iniciar sesión</span>
-                        </button>
-                    </form>
-                    <div class="text-center mt-6">
-                        <p class="text-sm text-gray-600">¿No tienes cuenta?
-                            <button onclick="toggleForm('register')" class="font-bold text-phGreenDark hover:underline">Regístrate gratis</button>
-                        </p>
-                    </div>
+                    <h2 id="pageTitle" class="text-3xl lg:text-4xl font-extrabold text-[#0D3B23] mb-2 tracking-tight">Bienvenido de nuevo</h2>
+                    <p id="pageSubtitle" class="text-gray-500 text-sm">Ingresa tus credenciales para acceder</p>
                 </div>
 
-                <div id="registerView" class="hidden transition-all duration-300">
-                    <div class="text-center lg:text-left mb-6">
-                        <h2 class="serif-title text-3xl lg:text-4xl font-bold text-gray-900 mb-2">Crea tu cuenta</h2>
-                        <p class="text-gray-600 text-sm">Únete a la comunidad de amantes de las plantas</p>
-                    </div>
-                    <form id="registerForm" onsubmit="handleRegister(event)" class="space-y-4">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="bg-white rounded-[2rem] p-6 sm:p-8 shadow-xl shadow-emerald-900/5 border border-gray-100/80">
+
+                    <div id="loginView" class="transition-all duration-300">
+                        <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
                             <div>
-                                <label class="block text-xs font-semibold text-gray-700 mb-1">Nombre <span class="text-red-500">*</span></label>
-                                <input type="text" id="regFirstName" required placeholder="María"
-                                    class="w-full px-3.5 py-2.5 rounded-lg border border-gray-300 bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-phGreenDark text-sm">
+                                <label class="block text-xs font-bold text-gray-800 mb-1.5">Correo o teléfono</label>
+                                <div class="relative flex items-center">
+                                    <span class="absolute left-4 text-gray-400 text-sm"><i class="fa-regular fa-user"></i></span>
+                                    <input type="text" id="loginEmail" required placeholder="tu@correo.com o +503 7000-0000"
+                                        class="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-phInputBg text-gray-800 placeholder-gray-400 border border-transparent focus:border-phGreenDark focus:bg-white focus:outline-none transition-all text-sm font-medium">
+                                </div>
                             </div>
+
                             <div>
-                                <label class="block text-xs font-semibold text-gray-700 mb-1">Apellido <span class="text-red-500">*</span></label>
-                                <input type="text" id="regLastName" required placeholder="Gómez"
-                                    class="w-full px-3.5 py-2.5 rounded-lg border border-gray-300 bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-phGreenDark text-sm">
+                                <label class="block text-xs font-bold text-gray-800 mb-1.5">Contraseña</label>
+                                <div class="relative flex items-center">
+                                    <span class="absolute left-4 text-gray-400 text-sm"><i class="fa-solid fa-lock"></i></span>
+                                    <input type="password" id="loginPassword" required placeholder="••••••••"
+                                        class="w-full pl-11 pr-11 py-3.5 rounded-2xl bg-phInputBg text-gray-800 placeholder-gray-400 border border-phGreenDark/40 focus:border-phGreenDark focus:bg-white focus:outline-none transition-all text-sm font-medium">
+                                    <button type="button" onclick="togglePasswordVisibility('loginPassword', 'toggleLoginPassIcon')"
+                                        class="absolute right-4 text-gray-400 hover:text-phGreenDark focus:outline-none p-1">
+                                        <i id="toggleLoginPassIcon" class="fa-regular fa-eye-slash text-sm"></i>
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-700 mb-1">Correo electrónico <span class="text-red-500">*</span></label>
-                            <input type="email" id="regEmail" required placeholder="tu@correo.com"
-                                class="w-full px-3.5 py-2.5 rounded-lg border border-gray-300 bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-phGreenDark text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-700 mb-1">Número de teléfono <span class="text-red-500">*</span></label>
-                            <input type="tel" id="regPhone" required placeholder="+503 7000-0000"
-                                class="w-full px-3.5 py-2.5 rounded-lg border border-gray-300 bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-phGreenDark text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-700 mb-1">Contraseña <span class="text-red-500">*</span></label>
-                            <div class="relative">
-                                <input type="password" id="regPassword" required minlength="8" placeholder="Mín. 8 caract., letras y números"
-                                    class="w-full px-3.5 py-2.5 rounded-lg border border-gray-300 bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-phGreenDark text-sm pr-16">
-                                <button type="button" onclick="togglePasswordVisibility('regPassword', 'toggleRegPassBtn')" id="toggleRegPassBtn"
-                                    class="absolute right-2 top-1/2 -translate-y-1/2 text-xs font-semibold text-gray-500 hover:text-phGreenDark py-1 px-1 rounded">Mostrar</button>
+
+                            <div class="flex justify-end pt-0.5">
+                                <a href="#" onclick="showNotification('Instrucciones enviadas a tu correo.'); return false;"
+                                   class="text-xs font-semibold text-gray-500 hover:text-phGreenDark transition-colors">
+                                   ¿Olvidaste tu contraseña?
+                                </a>
                             </div>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-700 mb-1">Confirmar contraseña <span class="text-red-500">*</span></label>
-                            <input type="password" id="regPasswordConfirm" required placeholder="Repite tu contraseña"
-                                class="w-full px-3.5 py-2.5 rounded-lg border border-gray-300 bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-phGreenDark text-sm">
-                        </div>
-                        <button type="submit" id="registerBtn"
-                            class="w-full py-3 bg-phGreenDark hover:bg-phGreenMedium text-white font-semibold rounded-full shadow-md hover:shadow-lg transition-all duration-200 text-sm mt-2">
-                            Crear mi cuenta
-                        </button>
-                    </form>
-                    <div class="text-center mt-4">
-                        <p class="text-xs text-gray-600">¿Ya tienes cuenta?
-                            <button onclick="toggleForm('login')" class="font-bold text-phGreenDark hover:underline">Inicia sesión</button>
-                        </p>
+
+                            <button type="submit" id="loginBtn"
+                                class="w-full py-4 bg-phGreenDark hover:bg-phGreenMedium text-white font-bold rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center space-x-2 text-base mt-3">
+                                <span>Iniciar Sesión</span>
+                                <i class="fa-solid fa-arrow-right text-sm"></i>
+                            </button>
+                        </form>
                     </div>
+
+                    <div id="registerView" class="hidden transition-all duration-300">
+                        <form id="registerForm" onsubmit="handleRegister(event)" class="space-y-3.5">
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-800 mb-1.5">Nombres</label>
+                                    <div class="relative flex items-center">
+                                        <span class="absolute left-4 text-gray-400 text-sm"><i class="fa-regular fa-user"></i></span>
+                                        <input type="text" id="regFirstName" required placeholder="maria"
+                                            class="w-full pl-11 pr-3 py-3 rounded-2xl bg-phInputBg text-gray-800 placeholder-gray-400 border border-transparent focus:border-phGreenDark focus:bg-white focus:outline-none text-sm font-medium">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-800 mb-1.5">Apellidos</label>
+                                    <div class="relative flex items-center">
+                                        <span class="absolute left-4 text-gray-400 text-sm"><i class="fa-regular fa-user"></i></span>
+                                        <input type="text" id="regLastName" required placeholder="gomez"
+                                            class="w-full pl-11 pr-3 py-3 rounded-2xl bg-phInputBg text-gray-800 placeholder-gray-400 border border-transparent focus:border-phGreenDark focus:bg-white focus:outline-none text-sm font-medium">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-gray-800 mb-1.5">Teléfono </label>
+                                <div class="relative flex items-center">
+                                    <span class="absolute left-4 text-gray-400 text-sm"><i class="fa-solid fa-phone"></i></span>
+                                    <input type="tel" id="regPhone" required placeholder="+503 75341256"
+                                        class="w-full pl-11 pr-4 py-3 rounded-2xl bg-phInputBg text-gray-800 placeholder-gray-400 border border-transparent focus:border-phGreenDark focus:bg-white focus:outline-none text-sm font-medium">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-gray-800 mb-1.5">Correo electrónico</label>
+                                <div class="relative flex items-center">
+                                    <span class="absolute left-4 text-gray-400 text-sm"><i class="fa-regular fa-envelope"></i></span>
+                                    <input type="email" id="regEmail" required placeholder="mariagomez@gmail.com"
+                                        class="w-full pl-11 pr-4 py-3 rounded-2xl bg-phInputBg text-gray-800 placeholder-gray-400 border border-transparent focus:border-phGreenDark focus:bg-white focus:outline-none text-sm font-medium">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-gray-800 mb-1.5">Contraseña</label>
+                                <div class="relative flex items-center">
+                                    <span class="absolute left-4 text-gray-400 text-sm"><i class="fa-solid fa-lock"></i></span>
+                                    <input type="password" id="regPassword" required minlength="8" placeholder="•••••••••"
+                                        class="w-full pl-11 pr-11 py-3 rounded-2xl bg-phInputBg text-gray-800 placeholder-gray-400 border border-transparent focus:border-phGreenDark focus:bg-white focus:outline-none text-sm font-medium">
+                                    <button type="button" onclick="togglePasswordVisibility('regPassword', 'toggleRegPassIcon')"
+                                        class="absolute right-4 text-gray-400 hover:text-phGreenDark focus:outline-none p-1">
+                                        <i id="toggleRegPassIcon" class="fa-regular fa-eye-slash text-sm"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-gray-800 mb-1.5">Confirmar contraseña</label>
+                                <div class="relative flex items-center">
+                                    <span class="absolute left-4 text-gray-400 text-sm"><i class="fa-solid fa-lock"></i></span>
+                                    <input type="password" id="regPasswordConfirm" required placeholder="•••••••••"
+                                        class="w-full pl-11 pr-11 py-3 rounded-2xl bg-phInputBg text-gray-800 placeholder-gray-400 border border-transparent focus:border-phGreenDark focus:bg-white focus:outline-none text-sm font-medium">
+                                    <button type="button" onclick="togglePasswordVisibility('regPasswordConfirm', 'toggleRegConfirmPassIcon')"
+                                        class="absolute right-4 text-gray-400 hover:text-phGreenDark focus:outline-none p-1">
+                                        <i id="toggleRegConfirmPassIcon" class="fa-regular fa-eye-slash text-sm"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center space-x-2.5 pt-1">
+                                <input type="checkbox" id="termsCheck" required
+                                    class="w-4 h-4 rounded border-gray-300 text-phGreenDark focus:ring-phGreenDark accent-phGreenDark cursor-pointer">
+                                <label for="termsCheck" class="text-xs font-medium text-gray-700 cursor-pointer">
+                                    Acepto los <a href="#" onclick="return false;" class="font-extrabold text-phGreenDark underline">Términos y Condiciones</a>
+                                </label>
+                            </div>
+
+                            <button type="submit" id="registerBtn"
+                                class="w-full py-4 bg-phGreenDark hover:bg-phGreenMedium text-white font-bold rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center space-x-2 text-base mt-3">
+                                <span>Registrarse</span>
+                                <i class="fa-solid fa-arrow-right text-sm"></i>
+                            </button>
+                        </form>
+                    </div>
+
                 </div>
+
+                <div class="text-center mt-6">
+                    <p id="toggleLoginText" class="text-sm font-medium text-gray-600">
+                        ¿No tienes cuenta?
+                        <button onclick="toggleForm('register')" class="font-extrabold text-[#0D3B23] hover:underline ml-1">Regístrate</button>
+                    </p>
+                    <p id="toggleRegisterText" class="text-sm font-medium text-gray-600 hidden">
+                        ¿Ya tienes cuenta?
+                        <button onclick="toggleForm('login')" class="font-extrabold text-[#0D3B23] hover:underline ml-1">Inicia sesión</button>
+                    </p>
+                </div>
+
             </div>
         </div>
     </div>
 
-    <div id="welcomeModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-2xl max-w-md w-full p-6 text-center shadow-2xl border border-emerald-100 transform transition-all scale-95 opacity-0 duration-200" id="modalContent">
+    
+    <div id="welcomeModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 text-center shadow-2xl border border-emerald-100 transform transition-all duration-200 scale-95 opacity-0" id="modalContent">
             <div class="w-16 h-16 bg-emerald-100 text-phGreenDark rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
                 <i class="fa-solid fa-circle-check"></i>
             </div>
-            <h3 class="serif-title text-2xl font-bold text-gray-900 mb-2" id="modalTitle">¡Bienvenido a PlantHaven!</h3>
+            <h3 class="text-2xl font-bold text-gray-900 mb-2" id="modalTitle">¡Bienvenido!</h3>
             <p class="text-gray-600 text-sm mb-6" id="modalMessage">Has iniciado sesión correctamente.</p>
             <button onclick="closeWelcomeModal()" class="w-full py-3 bg-phGreenDark hover:bg-phGreenMedium text-white font-semibold rounded-xl shadow transition-colors">
-                Continuar al Panel
+                Continuar
             </button>
         </div>
     </div>
 
-    <div id="toast" class="fixed top-5 right-5 bg-gray-900 text-white px-5 py-3 rounded-xl shadow-lg transform translate-y-[-100px] opacity-0 transition-all duration-300 z-50 flex items-center space-x-3">
+    
+    <div id="toast" class="fixed top-5 right-5 bg-gray-900 text-white px-5 py-3 rounded-xl shadow-lg translate-y-[-100px] opacity-0 transition-all duration-300 z-50 flex items-center space-x-3">
         <i class="fa-solid fa-circle-info text-emerald-400"></i>
         <span id="toastMessage" class="text-sm">Notificación</span>
     </div>
 
-    <script>
-        const API_URL = 'http://127.0.0.1:8000/api';
-
-        function togglePasswordVisibility(inputId, buttonId) {
-            const input = document.getElementById(inputId);
-            const button = document.getElementById(buttonId);
-            if (input.type === 'password') {
-                input.type = 'text';
-                button.textContent = 'Ocultar';
-            } else {
-                input.type = 'password';
-                button.textContent = 'Mostrar';
-            }
-        }
-
-        function toggleForm(view) {
-            const loginView = document.getElementById('loginView');
-            const registerView = document.getElementById('registerView');
-            if (view === 'register') {
-                loginView.classList.add('hidden');
-                registerView.classList.remove('hidden');
-            } else {
-                registerView.classList.add('hidden');
-                loginView.classList.remove('hidden');
-            }
-        }
-
-        async function handleLogin(event) {
-            event.preventDefault();
-            const email = document.getElementById('loginEmail').value.trim();
-            const pass = document.getElementById('loginPassword').value;
-
-            if (!email || !pass) {
-                showNotification('Completa todos los campos');
-                return;
-            }
-
-            const btn = document.getElementById('loginBtn');
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Conectando...';
-
-            try {
-                const res = await fetch(`${API_URL}/auth/login`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ identificador: email, contrasena: pass })
-                });
-
-                const data = await res.json();
-
-                if (res.ok) {
-                    localStorage.setItem('token', data.access_token);
-                    localStorage.setItem('user', email);
-                    openWelcomeModal('¡Bienvenido de nuevo!', `Has iniciado sesión correctamente como ${email}.`);
-                } else {
-                    showNotification(data.detail || 'Credenciales inválidas');
-                }
-            } catch (err) {
-                showNotification('No se pudo conectar con el servidor');
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<span>Iniciar sesión</span>';
-            }
-        }
-
-        async function handleRegister(event) {
-            event.preventDefault();
-            const firstName = document.getElementById('regFirstName').value.trim();
-            const lastName = document.getElementById('regLastName').value.trim();
-            const email = document.getElementById('regEmail').value.trim();
-            const phone = document.getElementById('regPhone').value.trim();
-            const pass = document.getElementById('regPassword').value;
-            const passConfirm = document.getElementById('regPasswordConfirm').value;
-
-            if (pass !== passConfirm) {
-                showNotification('Las contraseñas no coinciden');
-                return;
-            }
-
-            const hasLetter = /[a-zA-Z]/.test(pass);
-            const hasNumber = /[0-9]/.test(pass);
-            if (pass.length < 8 || !hasLetter || !hasNumber) {
-                showNotification('La contraseña debe tener mínimo 8 caracteres, al menos una letra y un número');
-                return;
-            }
-
-            const btn = document.getElementById('registerBtn');
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Creando cuenta...';
-
-            try {
-                const res = await fetch(`${API_URL}/auth/registro`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        nombre: firstName,
-                        apellido: lastName,
-                        correo: email,
-                        telefono: phone,
-                        contrasena: pass,
-                        confirmar_contrasena: passConfirm
-                    })
-                });
-
-                const data = await res.json();
-
-                if (res.ok) {
-                    openWelcomeModal('¡Cuenta creada con éxito!', `Bienvenido a PlantHaven, ${firstName} ${lastName}. Tu cuenta ha sido registrada.`);
-                    toggleForm('login');
-                } else {
-                    if (Array.isArray(data.detail)) {
-                        showNotification(data.detail.map(e => e.msg).join(', '));
-                    } else {
-                        showNotification(data.detail || 'Error al registrar');
-                    }
-                }
-            } catch (err) {
-                showNotification('No se pudo conectar con el servidor');
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = 'Crear mi cuenta';
-            }
-        }
-
-        function openWelcomeModal(title, message) {
-            const modal = document.getElementById('welcomeModal');
-            const modalContent = document.getElementById('modalContent');
-            document.getElementById('modalTitle').textContent = title;
-            document.getElementById('modalMessage').textContent = message;
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                modalContent.classList.remove('scale-95', 'opacity-0');
-                modalContent.classList.add('scale-100', 'opacity-100');
-            }, 10);
-        }
-
-        function closeWelcomeModal() {
-            const modal = document.getElementById('welcomeModal');
-            const modalContent = document.getElementById('modalContent');
-            modalContent.classList.remove('scale-100', 'opacity-100');
-            modalContent.classList.add('scale-95', 'opacity-0');
-            setTimeout(() => { modal.classList.add('hidden'); }, 200);
-        }
-
-        function showNotification(msg) {
-            const toast = document.getElementById('toast');
-            const toastMsg = document.getElementById('toastMessage');
-            toastMsg.textContent = msg;
-            toast.classList.remove('translate-y-[-100px]', 'opacity-0');
-            toast.classList.add('translate-y-0', 'opacity-100');
-            setTimeout(() => {
-                toast.classList.remove('translate-y-0', 'opacity-100');
-                toast.classList.add('translate-y-[-100px]', 'opacity-0');
-            }, 3500);
-        }
-    </script>
+    <script src="/views/main.js"></script>
 </body>
 </html>
