@@ -118,6 +118,19 @@ class Usuario(Base):
     )
 
 
+class RecuperacionContrasena(Base):
+    __tablename__ = "recuperacion_contrasena"
+    __table_args__ = {"schema": "public"}
+
+    id_recuperacion = Column(Integer, primary_key=True, autoincrement=True)
+    id_usuario = Column(Integer, ForeignKey("public.usuario.id_usuario"), nullable=False)
+    codigo_hash = Column(String(255), nullable=False)
+    fecha_creacion = Column(DateTime(timezone=True), nullable=False, server_default=text("CURRENT_TIMESTAMP"))
+    fecha_expiracion = Column(DateTime(timezone=True), nullable=False)
+    utilizado = Column(Boolean, nullable=False, server_default=text("false"))
+    intentos = Column(SmallInteger, nullable=False, server_default=text("0"))
+
+
 class Fotografia(Base):
     __tablename__ = "fotografia"
     __table_args__ = {"schema": "public"}

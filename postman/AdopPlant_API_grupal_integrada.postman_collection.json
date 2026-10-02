@@ -2864,6 +2864,79 @@
       ]
     },
     {
+      "name": "SCRUM-2 — Recuperación de contraseña",
+      "item": [
+        {
+          "name": "Solicitar código",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"correo-registrado@example.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/recuperacion",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "recuperacion"
+              ]
+            },
+            "description": "SCRUM-2, subtarea 1. Responde 202 de forma genérica. Requiere Brevo configurado en la API. El código llega solo al correo registrado; no se publica en esta colección."
+          },
+          "response": []
+        },
+        {
+          "name": "Restablecer contraseña",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"correo-registrado@example.com\",\n  \"codigo\": \"00000000\",\n  \"nueva_contrasena\": \"NuevaClave123\",\n  \"confirmar_contrasena\": \"NuevaClave123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/restablecer-contrasena",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "restablecer-contrasena"
+              ]
+            },
+            "description": "SCRUM-2, subtareas 2 y 3. Sustituir correo y código por los de una cuenta de prueba. El código dura 15 minutos y solo se puede usar una vez. Éxito: 200. Inválido, vencido o reutilizado: 400. Contraseña inválida: 422. No guardar ejemplos con códigos reales."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
       "name": "Kevin — Solicitudes SCRUM-6",
       "item": [
         {

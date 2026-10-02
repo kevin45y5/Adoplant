@@ -62,6 +62,41 @@ class UsuarioLogin(BaseModel):
         return valor.strip() if isinstance(valor, str) else valor
 
 
+class SolicitudRecuperacion(BaseModel):
+    correo: EmailStr = Field(max_length=150)
+
+    @field_validator("correo", mode="before")
+    @classmethod
+    def limpiar_correo(cls, valor):
+        return valor.strip() if isinstance(valor, str) else valor
+
+
+class RestablecimientoContrasena(SolicitudRecuperacion):
+    codigo: str = Field(min_length=8, max_length=8)
+    nueva_contrasena: str = Field(min_length=8, max_length=128, repr=False, exclude=True)
+    confirmar_contrasena: str = Field(min_length=8, max_length=128, repr=False, exclude=True)
+
+    @field_validator("codigo")
+    @classmethod
+    def validar_codigo(cls, valor: str) -> str:
+        if not valor.isascii() or not valor.isdecimal():
+            raise ValueError("El código debe contener ocho números")
+        return valor
+
+    @field_validator("nueva_contrasena")
+    @classmethod
+    def validar_nueva_contrasena(cls, valor: str) -> str:
+        if not any(letra.isalpha() for letra in valor) or not any(numero.isdecimal() for numero in valor):
+            raise ValueError("La contraseña debe contener al menos una letra y un número")
+        return valor
+
+    @model_validator(mode="after")
+    def comprobar_confirmacion(self):
+        if self.nueva_contrasena != self.confirmar_contrasena:
+            raise ValueError("Las contraseñas no coinciden")
+        return self
+
+
 class TokenRespuesta(BaseModel):
     access_token: str
     token_type: str = "bearer"
