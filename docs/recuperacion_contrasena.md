@@ -2,14 +2,14 @@
 
 La API usa la tabla existente `recuperacion_contrasena`; este cambio no requiere migración. Las dos rutas se comparten entre la aplicación móvil y el portal web.
 
-## Configurar el envío por Brevo
+## Configurar el envío por Mailjet
 
-1. Crear una cuenta en Brevo y verificar un correo remitente en **Senders & IPs**.
-2. Generar una clave **API v3** en Brevo. No compartirla por chat ni guardarla en Git.
-3. En el servicio web de Render, abrir **Environment** y agregar `BREVO_API_KEY` y `BREVO_SENDER_EMAIL` (el correo verificado). Guardar y esperar el nuevo despliegue.
+1. Crear una cuenta gratuita en Mailjet y validar un correo remitente en **Account Settings → Senders & Domains**. La dirección usada para registrarse suele quedar validada automáticamente.
+2. En **Account Settings → API Keys**, consultar la clave pública y generar/guardar la clave secreta. No compartirlas por chat ni guardarlas en Git.
+3. En el servicio web de Render, abrir **Environment** y agregar `MAILJET_API_KEY`, `MAILJET_SECRET_KEY` y `MAILJET_SENDER_EMAIL` (el correo verificado). Guardar y esperar el nuevo despliegue.
 4. Para probar localmente, agregar las mismas variables al `.env` personal. No subir ese archivo.
 
-El servicio de Render Free no permite SMTP tradicional; se usa la API HTTPS de Brevo. Si falta la configuración, la solicitud devuelve `503`. Si Brevo falla, la API no guarda un código utilizable y registra el error del lado del servidor.
+El servicio de Render Free no permite SMTP tradicional; se usa la API HTTPS de Mailjet. Brevo permanece como alternativa con `BREVO_API_KEY` y `BREVO_SENDER_EMAIL`. Si ambos están configurados, Mailjet tiene prioridad. Si falta la configuración, la solicitud devuelve `503`. Si el proveedor falla, la API no guarda un código utilizable y registra el error del lado del servidor.
 
 ## Flujo en Postman
 
@@ -22,4 +22,4 @@ El código caduca en 15 minutos; un nuevo pedido se limita a uno por minuto por 
 
 ## Prueba automática
 
-En una base PostgreSQL **local** con el esquema ya instalado, ejecutar `SCRUM2_TEST_DB=1` y `pytest -q tests/test_recuperacion_postgres.py`. Las pruebas interceptan el envío de correo y revierten sus datos de prueba; no usan Brevo ni la base de Render.
+En una base PostgreSQL **local** con el esquema ya instalado, ejecutar `SCRUM2_TEST_DB=1` y `pytest -q tests/test_recuperacion_postgres.py`. Las pruebas interceptan el envío de correo y revierten sus datos de prueba; no usan Mailjet ni la base de Render.

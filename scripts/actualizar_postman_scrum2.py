@@ -30,7 +30,7 @@ def peticion(nombre, ruta, cuerpo, descripcion):
 carpeta["item"] = [
     peticion("Solicitar código", "recuperacion",
              {"correo": "correo-registrado@example.com"},
-             "SCRUM-2, subtarea 1. Responde 202 de forma genérica. Requiere Brevo configurado en la API. El código llega solo al correo registrado; no se publica en esta colección."),
+             "SCRUM-2, subtarea 1. Responde 202 de forma genérica. Requiere Mailjet o Brevo configurado en la API. El código llega solo al correo registrado; no se publica en esta colección."),
     peticion("Restablecer contraseña", "restablecer-contrasena",
              {"correo": "correo-registrado@example.com", "codigo": "00000000",
               "nueva_contrasena": "NuevaClave123", "confirmar_contrasena": "NuevaClave123"},

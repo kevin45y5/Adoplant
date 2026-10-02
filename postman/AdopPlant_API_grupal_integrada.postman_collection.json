@@ -2896,7 +2896,7 @@
                 "recuperacion"
               ]
             },
-            "description": "SCRUM-2, subtarea 1. Responde 202 de forma genérica. Requiere Brevo configurado en la API. El código llega solo al correo registrado; no se publica en esta colección."
+            "description": "SCRUM-2, subtarea 1. Responde 202 de forma genérica. Requiere Mailjet o Brevo configurado en la API. El código llega solo al correo registrado; no se publica en esta colección."
           },
           "response": []
         },
