@@ -9,7 +9,7 @@ from app.models import Categoria, Fotografia, Planta, Usuario
 from app.schemas import CatalogoResponse, CategoriaRespuesta, PlantaCreate, PlantaRespuesta, PlantaUpdate
 from app.dependencies import obtener_usuario_actual
 from app.imagenes import preparar_imagen, subir_imagen, eliminar_imagen
-from app.publicacion_entrada import entrada_crear, entrada_editar, documentacion_entrada
+from app.publicacion_entrada import entrada_crear, entrada_editar, documentacion_entrada, SeleccionFotos, MAX_FOTOS
 
 router = APIRouter(prefix="/plantas", tags=["Plantas"])
 
@@ -159,31 +159,41 @@ def modificar_planta(
     datos_dict = datos.model_dump(exclude_unset=True)
     if "id_categoria" in datos_dict and datos_dict["id_categoria"] is None:
         raise HTTPException(422, "La categoría no puede estar vacía")
-    foto = db.scalar(select(Fotografia).where(Fotografia.id_planta == id_planta).order_by(Fotografia.id_fotografia).limit(1))
-    if foto is None and archivo is None:
-        raise HTTPException(422, "La publicación debe conservar al menos una fotografía")
-    asset = None
-    if archivo is not None:
-        contenido = preparar_imagen(archivo)
-        url, asset = subir_imagen(contenido)
-        if foto is None:
-            db.add(Fotografia(id_planta=id_planta, url=url))
-        else:
-            foto.url = url
-
-    for campo, valor in datos_dict.items():
-        setattr(planta, campo, valor)
-
+    fotos = list(db.scalars(select(Fotografia).where(Fotografia.id_planta == id_planta).order_by(Fotografia.id_fotografia)))
+    archivos = archivo.archivos if isinstance(archivo, SeleccionFotos) else ([archivo] if archivo else [])
+    conservar = archivo.conservar if isinstance(archivo, SeleccionFotos) else None
+    if conservar is not None and not set(conservar) <= {f.url for f in fotos}:
+        raise HTTPException(422, "Solo puedes conservar fotografías actuales de esta publicación")
+    quitar = [f for f in fotos if conservar is not None and f.url not in conservar]
+    # La carga singular antigua sigue reemplazando únicamente la primera foto.
+    if archivo is not None and not isinstance(archivo, SeleccionFotos) and fotos:
+        quitar = [fotos[0]]
+    total = len(fotos) - len(quitar) + len(archivos)
+    if not 1 <= total <= MAX_FOTOS:
+        raise HTTPException(422, "La publicación debe conservar entre una y cinco fotografías")
+    contenidos = [preparar_imagen(f) for f in archivos]
+    assets = []
     try:
+        for contenido in contenidos:
+            url, asset = subir_imagen(contenido)
+            assets.append(asset)
+            if archivo is not None and not isinstance(archivo, SeleccionFotos) and fotos:
+                fotos[0].url = url
+                quitar = []
+            else:
+                db.add(Fotografia(id_planta=id_planta, url=url))
+        for foto in quitar:
+            db.delete(foto)
+        for campo, valor in datos_dict.items():
+            setattr(planta, campo, valor)
         db.commit()
-    except Exception:
+    except Exception as error:
         db.rollback()
-        if asset:
+        for asset in assets:
             eliminar_imagen(asset)
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Error al actualizar la publicación",
-        )
+        if isinstance(error, HTTPException):
+            raise
+        raise HTTPException(400, "Error al actualizar la publicación; no se guardaron cambios parciales") from None
 
     return _planta_a_respuesta(db, planta, usuario_actual)
 
@@ -274,16 +284,28 @@ def crear_planta(
         id_usuario=usuario_actual.id_usuario,
     )
 
-    contenido = preparar_imagen(archivo)
-    url, asset = subir_imagen(contenido)
+    archivos = archivo.archivos if isinstance(archivo, SeleccionFotos) else [archivo]
+    if not 1 <= len(archivos) <= MAX_FOTOS:
+        raise HTTPException(422, "Adjunta entre una y cinco fotografías")
+    contenidos = [preparar_imagen(f) for f in archivos]
+    assets = []
     try:
+        urls = []
+        for contenido in contenidos:
+            url, asset = subir_imagen(contenido)
+            assets.append(asset)
+            urls.append(url)
         db.add(planta)
         db.flush()
-        db.add(Fotografia(id_planta=planta.id_planta, url=url))
+        for url in urls:
+            db.add(Fotografia(id_planta=planta.id_planta, url=url))
         db.commit()
-    except Exception:
+    except Exception as error:
         db.rollback()
-        eliminar_imagen(asset)
+        for asset in assets:
+            eliminar_imagen(asset)
+        if isinstance(error, HTTPException):
+            raise
         raise HTTPException(500, "No se pudo guardar la publicación; no se guardaron datos incompletos") from None
 
     return _planta_a_respuesta(db, planta, usuario_actual)
