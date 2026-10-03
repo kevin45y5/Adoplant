@@ -8,9 +8,9 @@ from sqlalchemy import select, delete, text
 from sqlalchemy.orm import Session
 from app.database import engine
 from app.models import Adopcion, Fotografia, Notificacion, Planta, SolicitudAdopcion, Usuario
-from app.routes.solicitudes import decidir_solicitud
+from app.routes.solicitudes import decidir_solicitud, corregir_solicitud, retirar_solicitud
 from app.routes.plantas import modificar_planta, retirar_planta
-from app.schemas import PlantaUpdate
+from app.schemas import PlantaUpdate, SolicitudMensaje
 from scripts.preparar_postman import crear_datos
 
 pytestmark = pytest.mark.skipif(os.getenv('SCRUM6_TEST_DB') != '1', reason='PostgreSQL local')
@@ -43,7 +43,7 @@ def carrera():
             db.execute(delete(Usuario).where(Usuario.id_usuario.in_([u['id'] for u in datos['usuarios'].values()])))
             db.commit()
 
-@pytest.mark.parametrize('rival', ['aceptar', 'retirar', 'editar'])
+@pytest.mark.parametrize('rival', ['aceptar', 'retirar', 'editar', 'retirar_solicitud', 'editar_solicitud'])
 def test_operaciones_simultaneas(carrera, rival):
     datos, ids = carrera
     pid = datos['plantas']['disponible']
@@ -59,6 +59,12 @@ def test_operaciones_simultaneas(carrera, rival):
                     decidir_solicitud(db, ids[0 if primera else 1], uid, 'ACEPTADA')
                 elif rival == 'retirar':
                     retirar_planta(pid, usuario, db)
+                elif rival in ('retirar_solicitud', 'editar_solicitud'):
+                    adoptante = db.get(Usuario, datos['usuarios']['adoptante']['id'])
+                    if rival == 'retirar_solicitud':
+                        retirar_solicitud(ids[0], adoptante, db)
+                    else:
+                        corregir_solicitud(ids[0], SolicitudMensaje(mensaje='Corregido antes de aceptar'), adoptante, db)
                 else:
                     modificar_planta(pid, (PlantaUpdate(nombre='Editada antes de aceptar'), None), usuario, db)
                 return 200
@@ -76,6 +82,15 @@ def test_operaciones_simultaneas(carrera, rival):
             assert sorted(resultados) == [200, 409]
         elif rival == 'retirar':
             assert sorted(resultados) in ([200, 403], [200, 409])
+        elif rival == 'editar_solicitud':
+            assert resultados[0] == 200 and resultados[1] in (200, 409)
+        elif rival == 'retirar_solicitud':
+            assert resultados in ([200, 409], [404, 200])
+            if resultados[1] == 200:
+                assert planta.estado == 'DISPONIBLE' and not adopciones
+                assert all(s.estado == 'PENDIENTE' for s in solicitudes)
+                assert db.get(SolicitudAdopcion, ids[0]) is None
+                return
         else:
             assert resultados[0] == 200 and resultados[1] in (200, 403)
         if planta.eliminada:
