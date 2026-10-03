@@ -56,3 +56,16 @@ test('confirmación distinta no envía petición; 404 no se presenta como códig
   assert.match(s.el('message').textContent,/servicio de recuperación/);
   assert.equal(s.el('resetForm').hidden,true);
 });
+
+test('respuesta ilegible no anuncia contraseña actualizada', async()=> {
+  const s=setup();
+  s.el('email').value='prueba@example.com';
+  await s.submit('requestForm');
+  s.el('code').value='00123456';
+  s.el('password').value=s.el('confirmation').value='NuevaPrueba123';
+  s.reply({ok:true,status:200,json:async()=>{throw new SyntaxError('Invalid JSON');}});
+  await s.submit('resetForm');
+  assert.equal(s.el('success').hidden,true);
+  assert.equal(s.el('resetForm').hidden,false);
+  assert.match(s.el('message').textContent,/respuesta/i);
+});

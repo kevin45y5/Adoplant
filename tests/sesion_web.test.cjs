@@ -19,6 +19,13 @@ function setup(file, token) {
   return {el,calls,redirects,values,context,reply:r=>response=r};
 }
 const tick = () => new Promise(resolve=>setImmediate(resolve));
+test('registro acepta letras Unicode como el backend',async()=>{
+  const s=setup('main.js');
+  for (const [id,value] of Object.entries({regFirstName:'Ana',regLastName:'Prueba',regEmail:'ana@example.com',regPhoneCode:'+503',regPhone:'12345678',regPassword:'ñññññññ1',regPasswordConfirm:'ñññññññ1'})) s.el(id).value=value;
+  await s.context.handleRegister({preventDefault(){}});
+  assert.equal(s.calls.length,1);
+  assert.equal(s.calls[0].url,'/api/auth/registro');
+});
 test('login con teléfono guarda sesión y abre inicio; credenciales inválidas no redirigen',async()=>{
   const s=setup('main.js'); s.el('loginEmail').value='11113333';s.el('loginPassword').value='Prueba123';
   await s.context.handleLogin({preventDefault(){}});

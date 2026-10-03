@@ -23,7 +23,10 @@ async function request(path, body) {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body), signal: controller.signal,
     });
-    const data = await response.json().catch(() => ({}));
+    const data = await response.json().catch(() => {
+      if (response.ok) throw new Error('No se pudo confirmar la respuesta del servidor. Intenta nuevamente.');
+      return {};
+    });
     if (!response.ok) {
       if (response.status === 404) throw new Error('No se encontró el servicio de recuperación. Comprueba que la web esté actualizada.');
       if (response.status >= 500) throw new Error('El servicio no está disponible en este momento. Intenta nuevamente.');

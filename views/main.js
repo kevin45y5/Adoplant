@@ -87,8 +87,8 @@ async function handleRegister(event) {
         return;
     }
 
-    const hasLetter = /[a-zA-Z]/.test(pass);
-    const hasNumber = /[0-9]/.test(pass);
+    const hasLetter = /\p{L}/u.test(pass);
+    const hasNumber = /\p{Nd}/u.test(pass);
     if (pass.length < 8 || !hasLetter || !hasNumber) {
         showNotification('La contraseña debe tener mínimo 8 caracteres, al menos una letra y un número.');
         return;
