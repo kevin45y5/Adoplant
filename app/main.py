@@ -1,4 +1,5 @@
 import logging
+from pathlib import Path
 
 from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy import text
@@ -6,6 +7,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 
 from app.database import get_db
 from app.routes.api import api_router
@@ -17,6 +19,8 @@ app = FastAPI(
     description="API para la adopción de plantas.",
     version="0.1.0",
 )
+
+app.mount("/views", StaticFiles(directory=Path(__file__).resolve().parent.parent / "views"), name="views")
 
 
 @app.exception_handler(RequestValidationError)

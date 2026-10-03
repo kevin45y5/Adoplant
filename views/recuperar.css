@@ -1,0 +1,25 @@
+:root { color-scheme: light; font-family: system-ui, sans-serif; color: #23372b; background: #f7f7f0; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+header { padding: 24px max(24px, calc((100% - 1100px)/2)); background: #1e422b; }
+header a { color: white; font-size: 23px; font-weight: 700; text-decoration: none; }
+main { width: min(540px, calc(100% - 32px)); margin: 40px auto; padding: 32px; background: white; border: 1px solid #dde5da; border-radius: 24px; box-shadow: 0 12px 40px #1e422b0b; }
+h1 { font-size: clamp(26px, 5vw, 34px); line-height: 1.15; margin: 12px 0; letter-spacing: -1px; }
+h2 { font-size: 23px; }
+p { line-height: 1.55; color: #546458; }
+a { color: #1e422b; }
+.back { font-size: 14px; }
+.eyebrow { margin-top: 30px; font-size: 11px; font-weight: 700; letter-spacing: 1.8px; }
+label { display: block; font-weight: 600; margin: 20px 0 7px; }
+input:not([type=checkbox]) { width: 100%; padding: 13px; border: 1px solid #b7c7b9; border-radius: 10px; background: #fbfcf9; font: inherit; }
+input:focus-visible, button:focus-visible, a:focus-visible { outline: 3px solid #74a578; outline-offset: 3px; }
+button, .button { display: inline-block; width: 100%; padding: 14px; margin-top: 22px; border: 0; border-radius: 24px; background: #1e422b; color: white; font: inherit; font-weight: 600; text-align: center; text-decoration: none; cursor: pointer; }
+button:disabled { opacity: .6; cursor: wait; }
+.secondary { background: #edf3e9; color: #1e422b; font-size: 14px; margin-top: 12px; }
+.actions { display: flex; gap: 10px; margin-bottom: 16px; }
+small { display: block; color: #546458; font-size: 12px; line-height: 1.5; margin-top: 8px; }
+.check { font-weight: 400; font-size: 14px; }
+#message { margin-top: 20px; padding: 14px; border-radius: 10px; background: #edf3e9; line-height: 1.5; overflow-wrap: anywhere; }
+#message.error { background: #fff0ec; color: #8b2d1d; }
+[hidden] { display: none !important; }
+@media (max-width: 400px) { main { padding: 24px 18px; margin: 20px auto; } .actions { flex-direction: column; gap: 0; } }

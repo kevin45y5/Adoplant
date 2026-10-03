@@ -20,6 +20,26 @@ El servicio de Render Free no permite SMTP tradicional; se usa la API HTTPS de M
 
 El código caduca en 15 minutos; un nuevo pedido se limita a uno por minuto por cuenta. Solo se almacena el hash del código. Las contraseñas se validan con la misma política del registro y nunca se devuelven en las respuestas.
 
-## Prueba automática
+## Interfaz web de SCRUM-2
+
+La rama `scrum-2-recuperacion-web` incorpora los archivos `views` de
+`feature/bienvenida` (6010267, trabajo de Fabiola), conservando el backend actual.
+No integra los cambios antiguos de `app/main.py` de esa rama.
+
+Abrir `/views/index.html` para login o `/views/recuperar.html` directamente.
+FastAPI sirve las páginas y `/api` en el mismo origen, tanto localmente como
+en Render: no abrir los HTML con `file://` ni con Live Server en otro puerto.
+El inicio `/` conserva la respuesta JSON de salud de la API.
+
+La recuperación solicita el correo, luego el código y ambas contraseñas en un
+formulario. La validación del código ocurre al guardar. No existe una llamada
+intermedia a un endpoint de verificación. No se guardan códigos o contraseñas
+en el navegador. Se puede reenviar el código tras un minuto o cambiar de correo.
+
+Pruebas de interfaz lógica: `node --test tests/recuperacion_web.test.cjs`.
+Prueba de rutas estáticas: `python -m pytest tests/test_web_recuperacion.py`.
+Pendiente la prueba manual con correo real tras integrar y desplegar esta rama.
+
+## Pruebas del backend
 
 En una base PostgreSQL **local** con el esquema ya instalado, ejecutar `SCRUM2_TEST_DB=1` y `pytest -q tests/test_recuperacion_postgres.py`. Las pruebas interceptan el envío de correo y revierten sus datos de prueba; no usan Mailjet ni la base de Render.

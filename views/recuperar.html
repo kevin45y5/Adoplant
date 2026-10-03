@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Recuperar contraseña · PlantHaven</title>
+  <link rel="stylesheet" href="/views/recuperar.css">
+  <script src="/views/recuperar.js" defer></script>
+</head>
+<body>
+  <header><a href="/views/index.html">🌿 PlantHaven</a></header>
+  <main>
+    <a class="back" href="/views/index.html">← Volver a iniciar sesión</a>
+    <p class="eyebrow">RECUPERACIÓN DE CUENTA</p>
+    <h1>Vuelve a tu comunidad verde</h1>
+    <p>Te enviaremos un código para que puedas crear una nueva contraseña.</p>
+    <div id="message" role="status" aria-live="polite" tabindex="-1" hidden></div>
+    <form id="requestForm">
+      <label for="email">Correo electrónico</label>
+      <input id="email" name="correo" type="email" autocomplete="email" maxlength="150" required placeholder="tu@correo.com">
+      <button type="submit">Enviar código</button>
+    </form>
+    <form id="resetForm" hidden>
+      <h2>Revisa tu correo</h2>
+      <p>Si la cuenta está activa y registrada, recibirás un código. Revisa también spam. El código dura 15 minutos.</p>
+      <p id="destination"></p>
+      <label for="code">Código de ocho dígitos</label>
+      <input id="code" name="codigo" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{8}" minlength="8" maxlength="8" required placeholder="00000000">
+      <label for="password">Nueva contraseña</label>
+      <input id="password" name="nueva_contrasena" type="password" autocomplete="new-password" minlength="8" maxlength="128" aria-describedby="passwordHelp" required>
+      <small id="passwordHelp">Entre 8 y 128 caracteres, con al menos una letra y un número.</small>
+      <label for="confirmation">Confirmar contraseña</label>
+      <input id="confirmation" name="confirmar_contrasena" type="password" autocomplete="new-password" minlength="8" maxlength="128" required>
+      <label class="check"><input id="showPassword" type="checkbox"> Mostrar contraseñas</label>
+      <button type="submit">Guardar nueva contraseña</button>
+      <div class="actions">
+        <button type="button" id="resend" class="secondary">Reenviar código</button>
+        <button type="button" id="changeEmail" class="secondary">Cambiar correo</button>
+      </div>
+      <small>Al recibir un código nuevo, usa el más reciente. Se comprueba al guardar la nueva contraseña.</small>
+    </form>
+    <section id="success" hidden>
+      <h2>Contraseña actualizada</h2>
+      <p>Ya puedes iniciar sesión con tu nueva contraseña.</p>
+      <a class="button" href="/views/index.html">Ir a iniciar sesión</a>
+    </section>
+  </main>
+</body>
+</html>
