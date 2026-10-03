@@ -16,8 +16,9 @@ router = APIRouter(prefix="/plantas", tags=["Plantas"])
 
 def _planta_a_respuesta(db: Session, planta: Planta, usuario: Usuario | None = None) -> PlantaRespuesta:
     datos = PlantaRespuesta.model_validate(planta).model_dump()
-    fot = db.execute(select(Fotografia).where(Fotografia.id_planta == planta.id_planta).order_by(Fotografia.id_fotografia).limit(1)).scalar_one_or_none()
-    url = fot.url if fot else None
+    fotos = db.scalars(select(Fotografia).where(Fotografia.id_planta == planta.id_planta).order_by(Fotografia.id_fotografia)).all()
+    url = fotos[0].url if fotos else None
+    datos["fotografias"] = [foto.url for foto in fotos]
     puede = planta.estado_planta == "DISPONIBLE" and not planta.eliminada and (usuario is None or planta.id_usuario != usuario.id_usuario)
     datos["fotografia_url"] = url
     datos["puede_solicitar"] = puede

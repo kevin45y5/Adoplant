@@ -219,6 +219,13 @@ class PlantaRespuesta(BaseModel):
     id_usuario: int
     id_categoria: int
     fotografia_url: Optional[str] = None
+    fotografias: list[str] = Field(default_factory=list)
+
+    @field_validator("fotografias", mode="before")
+    @classmethod
+    def urls_fotografias(cls, value):
+        return [foto if isinstance(foto, str) else foto.url for foto in value]
+
     puede_solicitar: bool = True
     categoria: Optional[CategoriaRespuesta] = None
 
