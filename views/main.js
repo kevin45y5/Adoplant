@@ -1,5 +1,17 @@
 const API_URL = '/api';
 
+async function authRequest(path, options) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 60000);
+    try {
+        const response = await fetch(API_URL + path, {...options, signal: controller.signal});
+        const data = await response.json();
+        return {res: response, data};
+    } finally {
+        clearTimeout(timeout);
+    }
+}
+
 function togglePasswordVisibility(inputId, iconId) {
     const input = document.getElementById(inputId);
     const icon = document.getElementById(iconId);
@@ -30,18 +42,18 @@ async function handleLogin(event) {
     btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Conectando...';
 
     try {
-        const res = await fetch(API_URL + '/auth/login', {
+        const {res, data} = await authRequest('/auth/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ identificador: email, contrasena: pass })
         });
 
-        const data = await res.json();
-
         if (res.ok) {
-            localStorage.setItem('token', data.access_token);
-            localStorage.setItem('user', email);
-            openWelcomeModal('¡Bienvenido de nuevo!', 'Has iniciado sesión correctamente como ' + email + '.');
+            sessionStorage.setItem('token', data.access_token);
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            document.getElementById('loginPassword').value = '';
+            window.location.replace('/views/inicio.html');
         } else {
             showNotification(typeof data.detail === 'string' ? data.detail : 'Credenciales inválidas');
         }
@@ -92,7 +104,7 @@ async function handleRegister(event) {
     btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Creando...';
 
     try {
-        const res = await fetch(API_URL + '/auth/registro', {
+        const {res, data} = await authRequest('/auth/registro', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -104,8 +116,6 @@ async function handleRegister(event) {
                 confirmar_contrasena: passConfirm
             })
         });
-
-        const data = await res.json();
 
         if (res.ok) {
             window._redirectAfterModal = '/views/index.html';
@@ -170,7 +180,7 @@ function showNotification(msg) {
 }
 
 function showHelpModal() {
-    openWelcomeModal('¿Necesitas ayuda?', 'Si tienes problemas para acceder a tu cuenta de AdopPlant o requieres soporte, escríbenos a soporte@adoplant.com');
+    openWelcomeModal('¿Necesitas ayuda?', 'Puedes entrar con tu correo o con el teléfono completo que registraste, incluido el prefijo si lo agregaste. Si olvidaste tu contraseña, utiliza el enlace de recuperación del formulario.');
 }
 
 function alinearEncabezados() {
