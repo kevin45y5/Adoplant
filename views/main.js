@@ -53,6 +53,78 @@ async function handleLogin(event) {
     }
 }
 
+async function handleRegister(event) {
+    event.preventDefault();
+    const firstName = document.getElementById('regFirstName').value.trim();
+    const lastName = document.getElementById('regLastName').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
+    const codeSelect = document.getElementById('regPhoneCode');
+    const codigo = codeSelect ? codeSelect.value : '+503';
+    const numeroLocal = document.getElementById('regPhone').value.trim();
+    const phone = numeroLocal.charAt(0) === '+' ? numeroLocal : codigo + ' ' + numeroLocal;
+    const pass = document.getElementById('regPassword').value;
+    const passConfirm = document.getElementById('regPasswordConfirm').value;
+
+    if (!firstName || !lastName || !email || !numeroLocal || !pass || !passConfirm) {
+        showNotification('Completa todos los campos');
+        return;
+    }
+
+    if (pass !== passConfirm) {
+        showNotification('Las contraseñas no coinciden. Por favor verifica.');
+        return;
+    }
+
+    const hasLetter = /[a-zA-Z]/.test(pass);
+    const hasNumber = /[0-9]/.test(pass);
+    if (pass.length < 8 || !hasLetter || !hasNumber) {
+        showNotification('La contraseña debe tener mínimo 8 caracteres, al menos una letra y un número.');
+        return;
+    }
+
+    if (phone.length > 20) {
+        showNotification('El número de teléfono no puede superar 20 caracteres.');
+        return;
+    }
+
+    const btn = document.getElementById('registerBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Creando...';
+
+    try {
+        const res = await fetch(API_URL + '/auth/registro', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                nombre: firstName,
+                apellido: lastName,
+                correo: email,
+                telefono: phone,
+                contrasena: pass,
+                confirmar_contrasena: passConfirm
+            })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+            window._redirectAfterModal = '/';
+            openWelcomeModal('¡Cuenta Creada Con Éxito!', 'Bienvenido a PlantHaven, ' + firstName + ' ' + lastName + '. Tu cuenta con correo ' + email + ' ha sido registrada.');
+        } else {
+            if (Array.isArray(data.detail)) {
+                showNotification(data.detail.map(function(e){ return e.msg; }).join(', '));
+            } else {
+                showNotification(typeof data.detail === 'string' ? data.detail : 'Error al registrar');
+            }
+        }
+    } catch (err) {
+        showNotification('No se pudo conectar con el servidor');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span>Crear cuenta</span><i class="fa-solid fa-arrow-right text-xs"></i>';
+    }
+}
+
 function openWelcomeModal(title, message) {
     const modal = document.getElementById('welcomeModal');
     const modalContent = document.getElementById('modalContent');

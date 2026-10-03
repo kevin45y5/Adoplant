@@ -78,13 +78,10 @@
 
         
           <div class="mx-auto w-24 h-28 bg-white/70 backdrop-blur-sm rounded-2xl p-3 shadow-sm border border-white/60 flex flex-col items-center justify-center mb-6 relative">
-            <div class="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center mb-2 text-gray-700 overflow-hidden">
+            <div class="w-16 h-16 rounded-full border border-gray-300 flex items-center justify-center mb-2 text-gray-700 overflow-hidden">
               <img src="/views/icon.jpeg" alt="Logo PlantHaven" class="w-full h-full object-cover">
             </div>
             <span class="text-[10px] font-bold text-gray-800">PlantHaven</span>
-            <div class="absolute -bottom-2 -right-2 w-7 h-7 bg-[#1E422B] text-white rounded-full flex items-center justify-center shadow">
-              <i class="fa-solid fa-leaf text-xs"></i>
-            </div>
           </div>
 
           <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900 tracking-tight leading-snug">
@@ -112,11 +109,6 @@
             </div>
           </div>
         </div>
-
-
-        <div class="text-center text-[10px] text-gray-500 font-medium flex items-center justify-center gap-1.5">
-          <i class="fa-regular fa-shield text-gray-400"></i> Comunidad de adopción sostenible y responsable
-        </div>
       </div>
       <div class="p-8 md:p-12 flex flex-col justify-between bg-white">
         <div>
@@ -124,17 +116,17 @@
           <span class="text-[10px] font-bold tracking-wider text-gray-400 uppercase block mb-1">BIENVENIDO DE NUEVO</span>
           <h2 class="text-2xl md:text-3xl font-extrabold text-gray-900 tracking-tight">Iniciar sesión</h2>
           <p class="text-xs text-gray-500 mt-1 mb-8">
-            Ingresa tus credenciales para administrar tus plantas y solicitudes.
+            Ingresa tus credenciales para acceder
           </p>
 
     
-          <form class="space-y-4" onsubmit="event.preventDefault();">
+          <form class="space-y-4" onsubmit="handleLogin(event)">
 
             <div>
               <label class="block text-xs font-semibold text-gray-700 mb-1.5">Correo electrónico</label>
               <div class="relative flex items-center">
                 <i class="fa-regular fa-envelope absolute left-3.5 text-gray-400 text-sm"></i>
-                <input type="email" placeholder="ejemplo@correo.com"
+                <input type="email" id="loginEmail" required placeholder="ejemplo@correo.com"
                   class="w-full bg-input text-xs pl-10 pr-4 py-3 rounded-xl border-none outline-none focus:ring-2 focus:ring-[#1E422B] text-gray-700 placeholder-gray-400">
               </div>
             </div>
@@ -146,25 +138,47 @@
               </div>
               <div class="relative flex items-center">
                 <i class="fa-solid fa-lock absolute left-3.5 text-gray-400 text-sm"></i>
-                <input type="password" value="••••••••••••"
-                  class="w-full bg-input text-xs pl-10 pr-10 py-3 rounded-xl border-none outline-none focus:ring-2 focus:ring-[#1E422B] text-gray-700">
-                <i class="fa-regular fa-eye absolute right-3.5 text-gray-400 text-sm cursor-pointer"></i>
+                <input type="password" id="loginPassword" required placeholder="••••••••••••"
+                  class="w-full bg-input text-xs pl-10 pr-10 py-3 rounded-xl border-none outline-none focus:ring-2 focus:ring-[#1E422B] text-gray-700 placeholder-gray-400">
+                <i class="fa-regular fa-eye absolute right-3.5 text-gray-400 text-sm cursor-pointer"
+                  id="togglePassIcon" onclick="togglePasswordVisibility('loginPassword', 'togglePassIcon')"></i>
               </div>
             </div>
 
-            <button type="submit"
+            <button type="submit" id="loginBtn"
               class="w-full btn-primary text-white text-xs font-semibold py-3.5 rounded-full shadow-md flex items-center justify-center gap-2 transition duration-200 mt-2">
               Iniciar sesión <i class="fa-solid fa-arrow-right text-xs"></i>
             </button>
           </form>
 
           <div class="text-center text-xs text-gray-500 mt-6">
-            ¿No tienes cuenta? <a href="#" class="font-bold text-gray-900 hover:underline">Regístrate</a>
+            ¿No tienes cuenta? <a href="/views/register.html" class="font-bold text-gray-900 hover:underline">Regístrate</a>
           </div>
         </div>
       </div>
 
     </div>
   </main>
+
+  <div id="welcomeModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-5 text-center shadow-2xl border border-emerald-100 transform transition-all duration-200 scale-95 opacity-0" id="modalContent">
+      <div class="w-10 h-10 bg-emerald-100 text-[#1E422B] rounded-full flex items-center justify-center mx-auto mb-3 text-xl">
+        <i class="fa-solid fa-circle-check"></i>
+      </div>
+      <h3 class="text-xl font-bold text-gray-900 mb-2" id="modalTitle">¡Bienvenido!</h3>
+      <p class="text-gray-600 text-sm mb-6" id="modalMessage">Has iniciado sesión correctamente.</p>
+      <button onclick="closeWelcomeModal()"
+        class="w-full py-2 bg-[#1E422B] hover:bg-[#163220] text-white font-semibold rounded-xl transition-colors">
+        Continuar
+      </button>
+    </div>
+  </div>
+
+  <div id="toast" class="fixed top-2 right-2 bg-gray-900 text-white px-4 py-2 rounded-xl shadow-lg translate-y-[-60px] opacity-0 transition-all duration-300 z-50 flex items-center gap-2">
+    <i class="fa-solid fa-circle-info text-emerald-400"></i>
+    <span id="toastMessage" class="text-sm">Notificación</span>
+  </div>
+
+  <script src="/views/main.js"></script>
 </body>
 </html>
