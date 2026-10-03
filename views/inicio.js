@@ -19,7 +19,7 @@ async function checkSession() {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 60000);
   try {
-    const response = await fetch('/api/usuarios/me', {
+    const response = await fetch(window.ADOPPLANT_API_URL + '/usuarios/me', {
       headers: {Authorization: 'Bearer ' + token}, signal: controller.signal,
       cache: 'no-store',
     });

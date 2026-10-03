@@ -19,7 +19,7 @@ async function request(path, body) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 60000);
   try {
-    const response = await fetch('/api/auth/' + path, {
+    const response = await fetch(window.ADOPPLANT_API_URL + '/auth/' + path, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body), signal: controller.signal,
     });

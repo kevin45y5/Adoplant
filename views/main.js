@@ -1,4 +1,4 @@
-const API_URL = '/api';
+const API_URL = window.ADOPPLANT_API_URL;
 
 async function authRequest(path, options) {
     const controller = new AbortController();

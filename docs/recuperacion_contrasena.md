@@ -27,8 +27,10 @@ La rama `scrum-2-recuperacion-web` incorpora los archivos `views` de
 No integra los cambios antiguos de `app/main.py` de esa rama.
 
 Abrir `/views/index.html` para login o `/views/recuperar.html` directamente.
-FastAPI sirve las páginas y `/api` en el mismo origen, tanto localmente como
-en Render: no abrir los HTML con `file://` ni con Live Server en otro puerto.
+FastAPI sirve las páginas. `views/config.js` apunta siempre a la API de Render,
+también al abrir la web en localhost o 127.0.0.1. CORS permite esos orígenes HTTP.
+Live Server debe servir la raíz del repositorio para conservar las rutas `/views/`.
+No abrir los HTML con `file://`.
 El inicio `/` conserva la respuesta JSON de salud de la API.
 
 La recuperación solicita el correo, luego el código y ambas contraseñas en un
