@@ -8,8 +8,8 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.dependencies import obtener_usuario_actual
-from app.models import Notificacion, Planta, SolicitudAdopcion, Usuario
-from app.schemas import SolicitudCrear, SolicitudMensaje, SolicitudRespuesta
+from app.models import Adopcion, Notificacion, Planta, SolicitudAdopcion, Usuario
+from app.schemas import SolicitudCrear, SolicitudDecision, SolicitudMensaje, SolicitudRespuesta
 from app.services.notificaciones import notificar_solicitud
 
 logger = logging.getLogger(__name__)
@@ -28,8 +28,9 @@ def listar_solicitudes(
     offset: Annotated[int, Query(ge=0)] = 0,
 ):
     """Lista privada, ordenada de más reciente a más antigua, con filtros y paginación."""
-    consulta = select(SolicitudAdopcion).join(
-        Planta, Planta.id_planta == SolicitudAdopcion.id_planta)
+    consulta = select(SolicitudAdopcion, Planta.nombre, Usuario.nombre, Usuario.apellido).join(
+        Planta, Planta.id_planta == SolicitudAdopcion.id_planta).join(
+        Usuario, Usuario.id_usuario == SolicitudAdopcion.id_adoptante)
     condicion = (SolicitudAdopcion.id_adoptante == usuario.id_usuario
                  if tipo == "enviadas" else Planta.id_usuario == usuario.id_usuario)
     consulta = consulta.where(condicion)
@@ -37,9 +38,12 @@ def listar_solicitudes(
         consulta = consulta.where(SolicitudAdopcion.estado == estado)
     if id_planta is not None:
         consulta = consulta.where(SolicitudAdopcion.id_planta == id_planta)
-    return db.scalars(consulta.order_by(
+    filas = db.execute(consulta.order_by(
         SolicitudAdopcion.fecha_solicitud.desc(), SolicitudAdopcion.id_solicitud.desc()
     ).limit(limite).offset(offset)).all()
+    return [SolicitudRespuesta.model_validate(s).model_copy(update={
+        "nombre_planta": nombre, "nombre_adoptante": f"{n} {a}"
+    }) for s, nombre, n, a in filas]
 
 
 @router.get("/{id_solicitud}", response_model=SolicitudRespuesta,
@@ -85,10 +89,12 @@ def bloquear_solicitud_propia(db: Session, id_solicitud: int, id_usuario: int):
               responses={404: {"description": "Solicitud inexistente o ajena"},
                          409: {"description": "Solicitud o planta no permite edición"},
                          503: {"description": "No se pudo guardar el cambio"}})
-def corregir_solicitud(id_solicitud: IdSolicitud, datos: SolicitudMensaje,
+def corregir_solicitud(id_solicitud: IdSolicitud, datos: SolicitudMensaje | SolicitudDecision,
                       usuario: Usuario = Depends(obtener_usuario_actual),
                       db: Session = Depends(get_db)):
-    """Modifica únicamente el mensaje; conserva autor, planta, fecha y estado."""
+    """El adoptante corrige mensaje o el donante decide estado, nunca ambos juntos."""
+    if isinstance(datos, SolicitudDecision):
+        return decidir_solicitud(db, id_solicitud, usuario.id_usuario, datos.estado)
     try:
         solicitud, planta = bloquear_solicitud_propia(db, id_solicitud, usuario.id_usuario)
         if planta.estado != "DISPONIBLE":
@@ -104,6 +110,52 @@ def corregir_solicitud(id_solicitud: IdSolicitud, datos: SolicitudMensaje,
         db.rollback()
         logger.exception("No se pudo corregir la solicitud")
         raise HTTPException(503, "No se pudo guardar el cambio") from None
+
+
+def decidir_solicitud(db: Session, id_solicitud: int, id_donante: int, estado: str):
+    """Bloquea planta antes de solicitud, igual que publicación, envío y retiro."""
+    try:
+        id_planta = db.scalar(select(SolicitudAdopcion.id_planta).join(
+            Planta, Planta.id_planta == SolicitudAdopcion.id_planta).where(
+            SolicitudAdopcion.id_solicitud == id_solicitud,
+            Planta.id_usuario == id_donante))
+        if id_planta is None:
+            raise HTTPException(404, "Solicitud no encontrada")
+        planta = db.scalar(select(Planta).where(Planta.id_planta == id_planta)
+                           .with_for_update().execution_options(populate_existing=True))
+        solicitud = db.scalar(select(SolicitudAdopcion).where(
+            SolicitudAdopcion.id_solicitud == id_solicitud)
+            .with_for_update().execution_options(populate_existing=True))
+        if planta is None or solicitud is None or planta.id_usuario != id_donante:
+            raise HTTPException(404, "Solicitud no encontrada")
+        if solicitud.estado != "PENDIENTE" or planta.estado != "DISPONIBLE" or not planta.visible or planta.eliminada:
+            raise HTTPException(409, "La solicitud o la planta ya no permite esta decisión")
+        if db.scalar(select(Adopcion.id_adopcion).where(Adopcion.id_planta == id_planta)) is not None:
+            raise HTTPException(409, "La planta ya tiene una adopción")
+        if estado == "ACEPTADA":
+            db.execute(update(SolicitudAdopcion).where(
+                SolicitudAdopcion.id_planta == id_planta,
+                SolicitudAdopcion.id_solicitud != id_solicitud,
+                SolicitudAdopcion.estado == "PENDIENTE").values(estado="RECHAZADA"))
+            planta.estado = "SOLICITADA"
+            db.add(Adopcion(id_solicitud=id_solicitud, id_planta=id_planta,
+                           id_donante=id_donante, id_adoptante=solicitud.id_adoptante,
+                           estado="EN_PROCESO"))
+            db.add(Notificacion(tipo="SOLICITUD_ACEPTADA",
+                mensaje=f"Tu solicitud para {planta.nombre} fue aceptada.",
+                id_usuario=solicitud.id_adoptante, id_planta=id_planta,
+                id_solicitud=id_solicitud))
+        solicitud.estado = estado
+        respuesta = SolicitudRespuesta.model_validate(solicitud)
+        db.commit()
+        return respuesta
+    except HTTPException:
+        db.rollback()
+        raise
+    except SQLAlchemyError:
+        db.rollback()
+        logger.exception("No se pudo decidir la solicitud")
+        raise HTTPException(503, "No se pudo guardar la decisión; inténtalo nuevamente") from None
 
 
 @router.delete("/{id_solicitud}", status_code=204, response_class=Response,

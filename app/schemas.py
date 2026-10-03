@@ -132,6 +132,11 @@ class SolicitudCrear(SolicitudMensaje):
     id_planta: int = Field(strict=True, gt=0, le=2_147_483_647)
 
 
+class SolicitudDecision(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    estado: Literal["ACEPTADA", "RECHAZADA"]
+
+
 class SolicitudRespuesta(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
@@ -141,6 +146,8 @@ class SolicitudRespuesta(BaseModel):
     mensaje: str
     estado: str
     fecha_solicitud: datetime
+    nombre_planta: str | None = None
+    nombre_adoptante: str | None = None
 
 
 class UsuarioActualizacion(BaseModel):
