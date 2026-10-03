@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import get_db
 from app.routes.api import api_router
@@ -18,6 +19,15 @@ app = FastAPI(
     title="AdopPlant API",
     description="API para la adopción de plantas.",
     version="0.1.0",
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://adopplant-api.onrender.com"],
+    allow_origin_regex=r"http://(?:localhost|127\.0\.0\.1)(?::[0-9]{1,5})?",
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type"],
 )
 
 app.mount("/views", StaticFiles(directory=Path(__file__).resolve().parent.parent / "views"), name="views")

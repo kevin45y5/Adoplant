@@ -15,6 +15,7 @@ function setup(file, token) {
     localStorage:{removeItem(){}}, window:{addEventListener(){},location:{replace:u=>redirects.push(u)}},
     fetch:async(url,options)=>{calls.push({url,options});return response;},
     AbortController,setTimeout:()=>0,clearTimeout(){}};
+  vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../views/config.js'), 'utf8'), context);
   vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../views/',file),'utf8'),context);
   return {el,calls,redirects,values,context,reply:r=>response=r};
 }
@@ -23,7 +24,7 @@ test('login con teléfono guarda sesión y abre inicio; credenciales inválidas 
   const s=setup('main.js'); s.el('loginEmail').value='11113333';s.el('loginPassword').value='Prueba123';
   await s.context.handleLogin({preventDefault(){}});
   assert.equal(JSON.parse(s.calls[0].options.body).identificador,'11113333');
-  assert.equal(s.calls[0].url,'/api/auth/login');
+  assert.equal(s.calls[0].url,'https://adopplant-api.onrender.com/api/auth/login');
   assert.equal(s.values.get('token'),'test-token');
   assert.deepEqual(s.redirects,['/views/inicio.html']);
   s.redirects.length=0;
@@ -38,7 +39,7 @@ test('registro muestra conflicto sin anunciar éxito',async()=>{
   for (const [id,value] of Object.entries({regFirstName:'Ana',regLastName:'Prueba',regEmail:'ana@example.com',regPhoneCode:'+503',regPhone:'12345678',regPassword:'Prueba123',regPasswordConfirm:'Prueba123'})) s.el(id).value=value;
   s.reply({ok:false,status:409,json:async()=>({detail:'El correo ya está en uso'})});
   await s.context.handleRegister({preventDefault(){}});
-  assert.equal(s.calls[0].url,'/api/auth/registro');
+  assert.equal(s.calls[0].url,'https://adopplant-api.onrender.com/api/auth/registro');
   assert.equal(s.el('toastMessage').textContent,'El correo ya está en uso');
   assert.equal(s.context.window._redirectAfterModal,undefined);
   s.reply({ok:true,status:201,json:async()=>({})});
@@ -49,7 +50,7 @@ test('inicio requiere token y obtiene perfil real; cerrar sesión borra token',a
   const missing=setup('inicio.js');assert.deepEqual(missing.redirects,['/views/index.html']);
   assert.equal(missing.calls.length,0);
   const s=setup('inicio.js','test-token');await tick();
-  assert.equal(s.calls[0].url,'/api/usuarios/me');
+  assert.equal(s.calls[0].url,'https://adopplant-api.onrender.com/api/usuarios/me');
   assert.equal(s.calls[0].options.headers.Authorization,'Bearer test-token');
   assert.equal(s.el('greeting').textContent,'Hola, Ana');assert.equal(s.el('welcome').hidden,false);
   s.el('logout').handlers.click();assert.equal(s.values.has('token'),false);
