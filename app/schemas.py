@@ -71,10 +71,8 @@ class SolicitudRecuperacion(BaseModel):
         return valor.strip() if isinstance(valor, str) else valor
 
 
-class RestablecimientoContrasena(SolicitudRecuperacion):
+class VerificacionRecuperacion(SolicitudRecuperacion):
     codigo: str = Field(min_length=8, max_length=8)
-    nueva_contrasena: str = Field(min_length=8, max_length=128, repr=False, exclude=True)
-    confirmar_contrasena: str = Field(min_length=8, max_length=128, repr=False, exclude=True)
 
     @field_validator("codigo")
     @classmethod
@@ -82,6 +80,10 @@ class RestablecimientoContrasena(SolicitudRecuperacion):
         if not valor.isascii() or not valor.isdecimal():
             raise ValueError("El código debe contener ocho números")
         return valor
+
+class RestablecimientoContrasena(VerificacionRecuperacion):
+    nueva_contrasena: str = Field(min_length=8, max_length=128, repr=False, exclude=True)
+    confirmar_contrasena: str = Field(min_length=8, max_length=128, repr=False, exclude=True)
 
     @field_validator("nueva_contrasena")
     @classmethod

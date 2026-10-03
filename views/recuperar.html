@@ -4,47 +4,170 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Recuperar contraseña · PlantHaven</title>
-  <link rel="stylesheet" href="/views/recuperar.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Estilos incluidos para cargar el documento y su diseño como una sola versión. -->
+  <style>
+:root {
+  color-scheme: light;
+  font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
+  color: #193b27;
+  background: #fbf9f0;
+  font-synthesis: none;
+}
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; background: radial-gradient(ellipse at 0 26%, #edf4e4 0, transparent 38%), radial-gradient(ellipse at 96% 85%, #edf5e3, transparent 28%); }
+a { color: inherit; }
+header { height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 0 4%; border-bottom: 1px solid #eeeae0; background: #fcfaf4; }
+.brand { display: flex; align-items: center; gap: 10px; font-size: 19px; font-weight: 700; text-decoration: none; letter-spacing: -.6px; }
+.brand img { width: 32px; height: 32px; object-fit: cover; border-radius: 50%; }
+.brand small { margin: 2px 0 0; font-size: 8px; letter-spacing: 1.8px; }
+nav { display: flex; align-items: center; gap: 36px; font-size: 11px; }
+nav a { text-decoration: none; }
+.help { background: #efeee5; border-radius: 24px; padding: 9px 15px; text-decoration: none; font-size: 10px; white-space: nowrap; }
+main { width: min(920px, calc(100% - 64px)); margin: 54px auto 52px; }
+.topline { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin: 0 0 25px; }
+.back { font-size: 11px; text-decoration: none; }
+.badge { display: inline-flex; align-items: center; width: fit-content; padding: 5px 10px; border-radius: 20px; background: #dff1d9; color: #456d48; font-size: 9px; font-weight: 600; letter-spacing: .65px; }
+.recovery-card { display: grid; grid-template-columns: 42% 58%; border-radius: 28px; overflow: hidden; background: #fff; box-shadow: 0 16px 26px -12px #33402924; min-height: 550px; }
+aside { padding: 38px 40px; display: flex; flex-direction: column; align-items: flex-start; background: radial-gradient(ellipse at 100% 100%, #d6edcf, transparent 50%), #f0eee5; }
+aside .badge { font-size: 8px; padding: 5px 8px; margin-bottom: 20px; }
+h2 { margin: 0 0 12px; font-family: Georgia, serif; font-weight: 600; font-size: 21px; line-height: 1.35; letter-spacing: -.6px; }
+p { margin: 0 0 20px; font-size: 12px; line-height: 1.7; color: #73796d; }
+aside > p { font-size: 11px; line-height: 1.85; }
+.illustration { order: 3; align-self: center; width: 184px; height: 194px; padding: 12px; margin: 20px 0 28px; background: #fffdf7; border-radius: 18px; box-shadow: 0 10px 17px #44473308; }
+.illustration img { width: 100%; height: 100%; object-fit: cover; background: #f4f1e7; }
+aside h2 { order: 1; }
+aside > p { order: 2; }
+.custody { order: 4; width: 100%; display: flex; align-items: flex-start; gap: 9px; padding: 16px; border-radius: 23px; background: #ffffffdf; margin-top: auto; }
+.custody strong { display: block; font-family: Georgia, serif; font-size: 11px; margin-bottom: 3px; }
+small { display: block; font-size: 10px; line-height: 1.6; color: #7f8679; }
+.seal { flex-shrink: 0; display: inline-flex; width: 24px; height: 24px; border-radius: 50%; align-items: center; justify-content: center; color: #456e47; background: #e2f1df; }
+.form-panel { padding: 50px 52px 30px; min-width: 0; display: flex; flex-direction: column; justify-content: center; }
+.section-icon { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 12px; color: #2f673c; background: #e0f3de; margin-bottom: 14px; }
+.icon { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; vertical-align: middle; }
+h1 { font-size: 29px; line-height: 1.2; letter-spacing: -1.2px; margin: 0 0 12px; font-weight: 650; }
+label { display: block; font-size: 11px; margin: 22px 0 8px; color: #303b2e; }
+input:not([type=checkbox]) { width: 100%; min-width: 0; height: 45px; padding: 12px 16px; border: 1px solid transparent; border-radius: 25px; background: #f1efe5; color: #24432d; font: inherit; font-size: 11px; }
+input::placeholder { color: #9b9d91; }
+input:focus-visible, button:focus-visible, a:focus-visible { outline: 2px solid #719775; outline-offset: 3px; }
+button, .button { display: block; width: 100%; border: 0; border-radius: 25px; min-height: 43px; padding: 12px 16px; margin-top: 21px; background: #1d432a; color: #fff; font: inherit; font-size: 11px; font-weight: 500; text-align: center; text-decoration: none; cursor: pointer; box-shadow: 0 3px 5px #1d352e26; }
+button:hover, .button:hover { background: #11351e; }
+button:disabled { opacity: .6; cursor: wait; }
+button span { margin-left: 6px; }
+.notice { display: flex; align-items: flex-start; gap: 10px; padding: 16px 13px; border-radius: 13px; background: #f6f4ec; margin-top: 19px; }
+.notice .seal { width: 19px; height: 19px; }
+.notice small { color: #5e6659; font-size: 10px; }
+.login-hint { font-size: 10px; text-align: center; margin: 49px 0 0; }
+.login-hint a { text-decoration: none; font-weight: 600; }
+.privacy { text-align: center; color: #879081; font-size: 9px; margin: 20px 0 0; line-height: 1.7; }
+.privacy .icon { width: 12px; height: 12px; margin-right: 4px; }
+.kicker { font-size: 9px; letter-spacing: .7px; margin-left: 10px; }
+.destination { display: table; padding: 2px 7px; border-radius: 4px; background: #eeeee3; color: #4f6548; font-size: 10px; max-width: 100%; overflow-wrap: anywhere; margin-top: -12px; }
+.code-boxes { position: relative; }
+.code-slots { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; }
+.code-slots span { height: 47px; border: 1px solid #e3e2d8; box-shadow: inset 0 2px 2px #38452a0b; border-radius: 9px; display: grid; place-items: center; background: #f6f4eb; font-size: 20px; font-weight: 600; }
+.code-slots span:empty::after { content: '•'; color: #c7cabe; font-size: 18px; }
+.code-boxes:focus-within .code-slots span { border-color: #99ae98; }
+input.code-input { position: absolute; inset: 0; height: 100%; opacity: .01; caret-color: transparent; }
+.code-info { display: flex; align-items: center; justify-content: space-between; gap: 10px; border-radius: 12px; padding: 12px; background: #f6f4eb; margin-top: 18px; }
+.text-button { width: auto; min-height: 0; padding: 5px 0; margin: 0; border-radius: 5px; background: none; color: #456b43; font-size: 10px; box-shadow: none; }
+.text-button:hover { background: #eef4e9; }
+.change-email { margin: 22px auto 0; text-decoration: underline; color: #7b8375; }
+#codeHelp { font-size: 9px; margin-top: 10px; }
+.check { display: flex; align-items: center; gap: 7px; margin: 10px 0; font-size: 10px; }
+.strength { height: 4px; background: #efede3; border-radius: 4px; margin: 12px 0 8px; overflow: hidden; }
+.strength span { display: block; height: 100%; width: 0; background: #86ac7c; transition: width .2s; }
+#message { padding: 12px; margin-bottom: 15px; border-radius: 10px; background: #edf4e8; font-size: 11px; line-height: 1.6; overflow-wrap: anywhere; }
+#message.error { background: #fff0e9; color: #913d2a; }
+.benefits { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 30px; }
+.benefits > div { display: flex; align-items: center; gap: 10px; padding: 18px; background: #f4f2e9aa; border: 1px solid #f0ede2; border-radius: 15px; }
+.benefits p { margin: 0; line-height: 1.2; }
+.benefits strong { font-size: 10px; font-weight: 600; }
+.benefits small { font-size: 9px; margin-top: 3px; }
+.benefits .seal { background: #fffdf7; width: 29px; height: 29px; }
+footer { padding: 30px 4%; background: #f6f4eb; border-top: 1px solid #f1eee5; }
+footer .brand { font-size: 13px; letter-spacing: 0; }
+footer p { font-size: 10px; margin: 8px 0 2px; }
+footer small { font-size: 9px; }
+body[data-step='2'] aside, body[data-step='3'] aside { background: radial-gradient(ellipse at top left, #dfeeda, transparent 60%), #f0eee6; }
+body[data-step='2'] .illustration, body[data-step='3'] .illustration { order: 0; margin: 10px 0 27px; }
+body[data-step='2'] aside h2, body[data-step='3'] aside h2 { font-family: inherit; font-size: 20px; }
+[hidden] { display: none !important; }
+@media (max-width: 1000px) {
+  nav { gap: 18px; }
+  main { width: min(860px, calc(100% - 40px)); }
+  aside { padding: 32px; }
+  .form-panel { padding: 40px 35px 30px; }
+}
+@media (max-width: 620px) {
+  header { height: 64px; padding: 0 20px; }
+  header nav { display: none; }
+  .brand { font-size: 17px; }
+  main { width: calc(100% - 28px); margin: 24px auto 30px; }
+  .topline { margin-bottom: 18px; gap: 10px; }
+  .back { font-size: 10px; }
+  .topline .badge { max-width: 142px; text-align: center; font-size: 7px; }
+  .recovery-card { display: flex; flex-direction: column; border-radius: 22px; min-height: 0; }
+  aside { padding: 18px 24px; display: grid; grid-template-columns: 1fr 68px; gap: 8px 12px; align-items: center; }
+  aside .badge { margin: 0; font-size: 7px; align-self: end; }
+  aside h2, body[data-step] aside h2 { order: initial; font-family: Georgia, serif; font-size: 17px; margin: 0; align-self: start; }
+  aside > p, aside .custody { display: none; }
+  aside .illustration, body[data-step] aside .illustration { order: initial; grid-column: 2; grid-row: 1/3; width: 68px; height: 76px; padding: 5px; margin: 0; border-radius: 9px; }
+  .form-panel { padding: 28px 25px; }
+  h1 { font-size: 26px; }
+  .login-hint { margin-top: 28px; }
+  .benefits { gap: 8px; margin-top: 18px; }
+  .benefits > div { padding: 12px 8px; display: block; text-align: center; }
+  .benefits .seal { margin-bottom: 7px; }
+  .benefits strong { font-size: 9px; }
+  .benefits small { display: none; }
+  .code-slots { gap: 4px; }
+  .code-slots span { height: 40px; font-size: 17px; }
+  .kicker { font-size: 8px; margin-left: 7px; }
+  footer { padding: 22px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+  </style>
   <script src="/views/config.js" defer></script>
-  <script src="/views/recuperar.js" defer></script>
+  <script src="/views/recuperar.js?v=5" defer></script>
 </head>
-<body>
-  <header><a href="/views/index.html">🌿 PlantHaven</a></header>
+<body data-step="1">
+  <header><a class="brand" href="/views/index.html"><img src="/views/icon.jpeg" width="32" height="32" alt=""> <span>PlantHaven<small>HOGARES VERDES</small></span></a><nav aria-label="Principal"><a href="/views/inicio.html">Catálogo de Adopción</a><a href="/views/inicio.html">Adoptar una Planta</a><span>Guías de Cuidado</span><span>Comunidad Verde</span></nav><a class="help" href="/views/index.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4C10 2 3 6 5 14s14 8 15-10Z M5 20 15 10 M10 15v-5 M10 15h5"/></svg> Ayuda de acceso</a></header>
   <main>
-    <a class="back" href="/views/index.html">← Volver a iniciar sesión</a>
-    <p class="eyebrow">RECUPERACIÓN DE CUENTA</p>
-    <h1>Vuelve a tu comunidad verde</h1>
-    <p>Te enviaremos un código para que puedas crear una nueva contraseña.</p>
-    <div id="message" role="status" aria-live="polite" tabindex="-1" hidden></div>
-    <form id="requestForm">
-      <label for="email">Correo electrónico</label>
-      <input id="email" name="correo" type="email" autocomplete="email" maxlength="150" required placeholder="tu@correo.com">
-      <button type="submit">Enviar código</button>
-    </form>
-    <form id="resetForm" hidden>
-      <h2>Revisa tu correo</h2>
-      <p>Si la cuenta está activa y registrada, recibirás un código. Revisa también spam. El código dura 15 minutos.</p>
-      <p id="destination"></p>
-      <label for="code">Código de ocho dígitos</label>
-      <input id="code" name="codigo" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{8}" minlength="8" maxlength="8" required placeholder="00000000">
-      <label for="password">Nueva contraseña</label>
-      <input id="password" name="nueva_contrasena" type="password" autocomplete="new-password" minlength="8" maxlength="128" aria-describedby="passwordHelp" required>
-      <small id="passwordHelp">Entre 8 y 128 caracteres, con al menos una letra y un número.</small>
-      <label for="confirmation">Confirmar contraseña</label>
-      <input id="confirmation" name="confirmar_contrasena" type="password" autocomplete="new-password" minlength="8" maxlength="128" required>
-      <label class="check"><input id="showPassword" type="checkbox"> Mostrar contraseñas</label>
-      <button type="submit">Guardar nueva contraseña</button>
-      <div class="actions">
-        <button type="button" id="resend" class="secondary">Reenviar código</button>
-        <button type="button" id="changeEmail" class="secondary">Cambiar correo</button>
-      </div>
-      <small>Al recibir un código nuevo, usa el más reciente. Se comprueba al guardar la nueva contraseña.</small>
-    </form>
-    <section id="success" hidden>
-      <h2>Contraseña actualizada</h2>
-      <p>Ya puedes iniciar sesión con tu nueva contraseña.</p>
-      <a class="button" href="/views/index.html">Ir a iniciar sesión</a>
-    </section>
+    <div class="topline"><a class="back" href="/views/index.html">← Volver al inicio de sesión</a><span id="stepLabel" class="badge">PASO 1 DE 3 · RECUPERACIÓN SEGURA</span></div>
+    <div class="recovery-card">
+      <aside><span class="badge"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4C10 2 3 6 5 14s14 8 15-10Z M5 20 15 10 M10 15v-5 M10 15h5"/></svg> SEGURIDAD BOTÁNICA</span><div class="illustration"><img src="/views/icon.jpeg" width="160" height="170" alt="Logo PlantHaven"></div><h2 id="asideTitle">La llave de tu santuario verde</h2><p>Tu rincón de adopción y bitácora de cuidados están protegidos. Recupera el acceso y retoma el acompañamiento de tus plantas.</p><div class="custody"><span class="seal"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4C10 2 3 6 5 14s14 8 15-10Z M5 20 15 10 M10 15v-5 M10 15h5"/></svg></span><div><strong>Custodia responsable</strong><small>Cuidamos tu privacidad y el historial de tus plantas.</small></div></div></aside>
+      <section class="form-panel" aria-label="Recuperación de contraseña">
+        <div id="message" role="status" aria-live="polite" tabindex="-1" hidden></div>
+        <form id="requestForm">
+          <span class="section-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4C10 2 3 6 5 14s14 8 15-10Z M5 20 15 10 M10 15v-5 M10 15h5"/></svg></span><h1>Recuperar contraseña</h1><p>Ingresa el correo asociado a tu cuenta y te enviaremos un código para restablecer tu acceso.</p>
+          <label for="email">Correo electrónico</label><input id="email" name="correo" type="email" autocomplete="email" maxlength="150" required placeholder="ejemplo@correo.com">
+          <div class="notice"><span class="seal">✓</span><small>Te enviaremos un código temporal de <strong>8 dígitos</strong> válido por 15 minutos.</small></div>
+          <button type="submit" data-loading="Enviando código…">Enviar código <span aria-hidden="true">→</span></button>
+          <p class="login-hint">¿Recordaste tu clave? <a href="/views/index.html">Inicia sesión</a></p>
+        </form>
+        <form id="codeForm" hidden>
+          <span class="section-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18v14H3Z M3 6l9 7 9-7"/></svg></span><span class="kicker">CÓDIGO DE 8 DÍGITOS</span><h1>Ingresa el código de recuperación</h1><p>Si tu cuenta está registrada y activa, recibirás el código en tu correo. Revisa también spam.</p><p id="destination" class="destination"></p>
+          <label for="code">Código de recuperación</label><div class="code-boxes"><div class="code-slots" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><input id="code" name="codigo" class="code-input" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{8}" minlength="8" maxlength="8" required placeholder="00000000" aria-describedby="codeHelp"></div>
+          <div class="code-info"><small id="timer" aria-live="off">Válido por 15:00 min</small><button type="button" id="resend" class="text-button">Reenviar código</button></div>
+          <button type="submit" data-loading="Verificando código…">Verificar código <span aria-hidden="true">→</span></button><small id="codeHelp">Ingresa el código del correo más reciente. Solo ese código permite continuar.</small>
+          <button type="button" id="changeEmail" class="text-button change-email">Cambiar correo electrónico</button>
+        </form>
+        <form id="resetForm" hidden>
+          <span class="section-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 9a4 4 0 1 0-8 0 4 4 0 0 0 8 0Z M13 12l7 7 M17 16l2-2 M19 18l2-2"/></svg></span><h1>Crea una nueva contraseña</h1><p>Elige una contraseña segura para proteger tu cuenta.</p>
+          <label for="password">Nueva contraseña</label><input id="password" name="nueva_contrasena" type="password" autocomplete="new-password" minlength="8" maxlength="128" aria-describedby="passwordHelp" required placeholder="Introduce tu clave"><div class="strength" aria-hidden="true"><span id="strengthBar"></span></div><small id="passwordHelp">Entre 8 y 128 caracteres, con al menos una letra y un número.</small>
+          <label for="confirmation">Confirmar nueva contraseña</label><input id="confirmation" name="confirmar_contrasena" type="password" autocomplete="new-password" minlength="8" maxlength="128" required placeholder="Repite tu clave"><label class="check"><input id="showPassword" type="checkbox"> Mostrar contraseñas</label>
+          <button type="submit" data-loading="Guardando contraseña…">Guardar nueva contraseña <span aria-hidden="true">→</span></button><button type="button" id="backToCode" class="text-button change-email">Volver al código</button>
+        </form>
+        <section id="success" hidden><span class="section-icon">✓</span><h1>Contraseña actualizada</h1><p>Tu santuario verde te espera. Ya puedes iniciar sesión con tu nueva contraseña.</p><a class="button" href="/views/index.html">Ir a iniciar sesión →</a></section>
+        <p class="privacy"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4C10 2 3 6 5 14s14 8 15-10Z M5 20 15 10 M10 15v-5 M10 15h5"/></svg> Cuidamos tus datos con el mismo cariño que a nuestras plantas.</p>
+      </section>
+    </div>
+    <div class="benefits"><div><span class="seal"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4C10 2 3 6 5 14s14 8 15-10Z M5 20 15 10 M10 15v-5 M10 15h5"/></svg></span><p><strong>Privacidad y cuidado</strong><small>Protegemos el acceso a tu cuenta.</small></p></div><div><span class="seal"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8a8 8 0 1 1-1 8 M4 3v5h5 M12 7v5l3 2"/></svg></span><p><strong>Historial protegido</strong><small>Tus adopciones y registros a salvo.</small></p></div><div><span class="seal"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4C10 2 3 6 5 14s14 8 15-10Z M5 20 15 10 M10 15v-5 M10 15h5"/></svg></span><p><strong>Red botánica consciente</strong><small>Una comunidad que crece contigo.</small></p></div></div>
   </main>
+  <footer><a class="brand" href="/views/index.html">PlantHaven</a><p>Cultivamos lazos entre las personas y sus plantas.</p><small>Adopción responsable · Comunidad verde</small></footer>
 </body>
 </html>
