@@ -2,13 +2,14 @@ from typing import List, Optional, Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import select, text
-from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models import Categoria, Fotografia, Planta, Usuario
 from app.schemas import CatalogoResponse, CategoriaRespuesta, PlantaCreate, PlantaRespuesta, PlantaUpdate
 from app.dependencies import obtener_usuario_actual
+from app.imagenes import preparar_imagen, subir_imagen, eliminar_imagen
+from app.publicacion_entrada import entrada_crear, entrada_editar, documentacion_entrada
 
 router = APIRouter(prefix="/plantas", tags=["Plantas"])
 
@@ -20,7 +21,8 @@ def _planta_a_respuesta(db: Session, planta: Planta, usuario: Usuario | None = N
     puede = planta.estado_planta == "DISPONIBLE" and not planta.eliminada and (usuario is None or planta.id_usuario != usuario.id_usuario)
     datos["fotografia_url"] = url
     datos["puede_solicitar"] = puede
-    datos["categoria"] = None
+    categoria = db.get(Categoria, planta.id_categoria)
+    datos["categoria"] = CategoriaRespuesta.model_validate(categoria) if categoria else None
     return PlantaRespuesta(**datos)
 
 
@@ -93,15 +95,16 @@ def consultar_planta(
     return _planta_a_respuesta(db, planta, usuario_actual)
 
 
-@router.patch("/{id_planta}", response_model=PlantaRespuesta)
+@router.patch("/{id_planta}", response_model=PlantaRespuesta, openapi_extra=documentacion_entrada(PlantaUpdate))
 def modificar_planta(
     id_planta: int,
-    datos: PlantaUpdate,
+    entrada = Depends(entrada_editar),
     usuario_actual: Usuario = Depends(obtener_usuario_actual),
     db: Session = Depends(get_db),
 ):
+    datos, archivo = entrada
     planta = db.execute(
-        select(Planta).where(Planta.id_planta == id_planta)
+        select(Planta).where(Planta.id_planta == id_planta).with_for_update()
     ).scalar_one_or_none()
 
     if planta is None:
@@ -135,15 +138,29 @@ def modificar_planta(
             )
 
     datos_dict = datos.model_dump(exclude_unset=True)
+    if "id_categoria" in datos_dict and datos_dict["id_categoria"] is None:
+        raise HTTPException(422, "La categoría no puede estar vacía")
+    foto = db.scalar(select(Fotografia).where(Fotografia.id_planta == id_planta).order_by(Fotografia.id_fotografia).limit(1))
+    if foto is None and archivo is None:
+        raise HTTPException(422, "La publicación debe conservar al menos una fotografía")
+    asset = None
+    if archivo is not None:
+        contenido = preparar_imagen(archivo)
+        url, asset = subir_imagen(contenido)
+        if foto is None:
+            db.add(Fotografia(id_planta=id_planta, url=url))
+        else:
+            foto.url = url
 
     for campo, valor in datos_dict.items():
         setattr(planta, campo, valor)
 
     try:
         db.commit()
-        db.refresh(planta)
-    except IntegrityError:
+    except Exception:
         db.rollback()
+        if asset:
+            eliminar_imagen(asset)
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Error al actualizar la publicación",
@@ -159,7 +176,7 @@ def retirar_planta(
     db: Session = Depends(get_db),
 ):
     planta = db.execute(
-        select(Planta).where(Planta.id_planta == id_planta)
+        select(Planta).where(Planta.id_planta == id_planta).with_for_update()
     ).scalar_one_or_none()
 
     if planta is None:
@@ -212,12 +229,14 @@ def retirar_planta(
     return _planta_a_respuesta(db, planta, usuario_actual)
 
 
-@router.post("/", response_model=PlantaRespuesta, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=PlantaRespuesta, status_code=status.HTTP_201_CREATED, openapi_extra=documentacion_entrada(PlantaCreate, True))
+@router.post("/", response_model=PlantaRespuesta, status_code=status.HTTP_201_CREATED, include_in_schema=False)
 def crear_planta(
-    datos: PlantaCreate,
+    entrada = Depends(entrada_crear),
     db: Session = Depends(get_db),
     usuario_actual: Usuario = Depends(obtener_usuario_actual),
 ):
+    datos, archivo = entrada
     categoria = db.execute(
         select(Categoria).where(Categoria.id_categoria == datos.id_categoria)
     ).scalar_one_or_none()
@@ -236,8 +255,16 @@ def crear_planta(
         id_usuario=usuario_actual.id_usuario,
     )
 
-    db.add(planta)
-    db.commit()
-    db.refresh(planta)
+    contenido = preparar_imagen(archivo)
+    url, asset = subir_imagen(contenido)
+    try:
+        db.add(planta)
+        db.flush()
+        db.add(Fotografia(id_planta=planta.id_planta, url=url))
+        db.commit()
+    except Exception:
+        db.rollback()
+        eliminar_imagen(asset)
+        raise HTTPException(500, "No se pudo guardar la publicación; no se guardaron datos incompletos") from None
 
     return _planta_a_respuesta(db, planta, usuario_actual)

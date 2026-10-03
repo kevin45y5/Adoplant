@@ -1,5 +1,7 @@
 """SCRUM6_TEST_DB=1: verifica módulos juntos y revierte todos los datos creados."""
 import os
+from io import BytesIO
+from PIL import Image
 
 from fastapi.testclient import TestClient
 import pytest
@@ -45,12 +47,15 @@ def test_modelos_no_requieren_columnas_nuevas():
         assert set(table.columns.keys()) <= existing, table.name
 
 
-def test_flujo_plantas_solicitudes_notificaciones_y_reportes(grupo):
+def test_flujo_plantas_solicitudes_notificaciones_y_reportes(grupo, monkeypatch):
     c, db, datos, admin = grupo
     donante, adoptante, administrador = [headers(datos, r) for r in ("donante", "adoptante", "otro")]
     categoria = db.scalar(text("SELECT id_categoria FROM public.planta WHERE id_planta=:id"), {"id": datos["plantas"]["disponible"]})
     body = dict(nombre="Planta integración", tamano="Pequeña", nivel_cuidado="Bajo", estado_salud="Sana", necesidad_luz="Indirecta", necesidad_agua="Moderada", ubicacion="Prueba", id_categoria=categoria)
-    r = c.post("/api/plantas/", headers=donante, json=body)
+    imagen = BytesIO()
+    Image.new("RGB", (10, 10)).save(imagen, format="PNG")
+    monkeypatch.setattr("app.routes.plantas.subir_imagen", lambda contenido: ("https://example.com/principal.jpg", "prueba"))
+    r = c.post("/api/plantas/", headers=donante, data=body, files={"fotografia": ("planta.png", imagen.getvalue(), "image/png")})
     assert r.status_code == 201, r.text
     planta = r.json()["id_planta"]
     assert r.json()["estado_planta"] == "DISPONIBLE"
