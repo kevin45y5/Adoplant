@@ -278,6 +278,8 @@ class CatalogoResponse(BaseModel):
     pagina: int
     limite: int
     plantas: List[PlantaRespuesta]
+    hay_mas: bool = False
+    filtros: dict[str, list[str]] = Field(default_factory=dict)
 
     model_config = ConfigDict(from_attributes=True)
 

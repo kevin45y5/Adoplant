@@ -1,7 +1,7 @@
 from typing import List, Optional, Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy import select, text
+from sqlalchemy import select, text, func
 from sqlalchemy.orm import Session
 
 from app.database import get_db
@@ -32,24 +32,38 @@ def catalogo(
     db: Session = Depends(get_db),
     busqueda: Optional[str] = Query(None, max_length=100),
     estado: Optional[Literal["DISPONIBLE", "SOLICITADA", "ADOPTADA"]] = Query(None),
+    tamano: Optional[str] = Query(None, min_length=1, max_length=50),
+    nivel_cuidado: Optional[str] = Query(None, min_length=1, max_length=50),
+    categoria: Optional[str] = Query(None, min_length=1, max_length=100),
+    ubicacion: Optional[str] = Query(None, min_length=1, max_length=150),
     pagina: int = Query(1, ge=1),
     limite: int = Query(20, ge=1, le=100),
 ):
-    consulta = select(Planta).where(Planta.eliminada == False, Planta.visible == True)
-
-    if busqueda:
-        consulta = consulta.where(Planta.nombre.ilike(f"%{busqueda}%"))
+    condiciones = (Planta.eliminada == False, Planta.visible == True, Planta.estado_planta == "DISPONIBLE")
+    consulta = select(Planta).where(*condiciones)
+    if busqueda and busqueda.strip():
+        consulta = consulta.where(Planta.nombre.icontains(busqueda.strip(), autoescape=True))
     if estado:
         consulta = consulta.where(Planta.estado_planta == estado)
-
+    for valor, columna in [(tamano, Planta.tamano), (nivel_cuidado, Planta.nivel_cuidado), (ubicacion, Planta.ubicacion)]:
+        if valor is not None:
+            if not valor.strip():
+                raise HTTPException(422, "El filtro no puede estar vacío")
+            consulta = consulta.where(func.lower(func.trim(columna)) == valor.strip().lower())
+    if categoria is not None:
+        if not categoria.strip():
+            raise HTTPException(422, "La categoría no puede estar vacía")
+        consulta = consulta.join(Categoria, Planta.id_categoria == Categoria.id_categoria).where(func.lower(func.trim(Categoria.nombre)) == categoria.strip().lower())
     offset = (pagina - 1) * limite
-    total = len(db.execute(consulta).scalars().unique().all())
-    plantas = db.execute(
-        consulta.offset(offset).limit(limite)
-    ).scalars().unique().all()
-
-    resultado = [_planta_a_respuesta(db, p) for p in plantas]
-    return CatalogoResponse(total=total, pagina=pagina, limite=limite, plantas=resultado)
+    total = db.scalar(select(func.count()).select_from(consulta.subquery()))
+    plantas = db.scalars(consulta.order_by(Planta.fecha_publicacion.desc(), Planta.id_planta.desc()).offset(offset).limit(limite)).all()
+    filtros = {}
+    for nombre, columna in [("tamano", Planta.tamano), ("nivel_cuidado", Planta.nivel_cuidado), ("ubicacion", Planta.ubicacion)]:
+        filtros[nombre] = sorted({v.strip() for v in db.scalars(select(columna).where(*condiciones).distinct()) if v and v.strip()})
+    filtros["categoria"] = sorted(set(db.scalars(select(Categoria.nombre).select_from(Categoria).join(Planta, Planta.id_categoria == Categoria.id_categoria).where(*condiciones).distinct())))
+    return CatalogoResponse(total=total, pagina=pagina, limite=limite,
+        plantas=[_planta_a_respuesta(db, p) for p in plantas],
+        hay_mas=offset + len(plantas) < total, filtros=filtros)
 
 
 @router.get("/mias", response_model=List[PlantaRespuesta])
