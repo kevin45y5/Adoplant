@@ -36,8 +36,17 @@ tamaño excesivo, creación, reemplazo, edición sin cambiar la foto, categoría
 fallo del proveedor y reversión ante fallo de base de datos. Las pruebas
 PostgreSQL utilizan transacciones que se revierten y no llaman a Cloudinary.
 
-Pendiente antes de dar por validada la integración: subir una foto real desde
-la APK contra Render, verla de nuevo después de cerrar la app, editarla y
-comprobar que la misma URL es accesible desde otro dispositivo.
-Este bloque no certifica todavía todos los criterios de SCRUM-5, en especial
-la consulta privada completa y la concurrencia con el futuro módulo de aceptación.
+Krisler confirmó en la APK contra Render: publicación, persistencia de imágenes,
+edición de datos, reemplazo de fotografía, retiro y separación entre cuentas.
+
+La consulta privada usa `GET /api/plantas/mias/{id}`: incluye retiradas y ocultas
+solo para el dueño. El listado conserva su respuesta de lista, acepta búsqueda,
+estado, página, límite y el filtro opcional `retirada=true/false`, con orden por
+ID descendente. Flutter muestra diez registros por página y consulta por ID al
+editar, sin depender de la página visible. Si una página contiene exactamente
+diez registros se permite avanzar; la siguiente puede estar vacía y permite volver.
+
+Pendiente: comprobación manual de estas consultas en la nueva APK y validación
+integrada de concurrencia con el módulo de aceptación (SCRUM-7). Las operaciones
+de editar y retirar bloquean la fila de planta, pero la aceptación debe respetar
+el mismo bloqueo. No marcar la historia completa solo por estas pruebas.

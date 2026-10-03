@@ -59,6 +59,7 @@ def consultar_mias(
     estado: Optional[Literal["DISPONIBLE", "SOLICITADA", "ADOPTADA"]] = Query(None),
     pagina: int = Query(1, ge=1),
     limite: int = Query(20, ge=1, le=100),
+    retirada: Optional[bool] = Query(None),
 ):
     consulta = select(Planta).where(Planta.id_usuario == usuario_actual.id_usuario)
 
@@ -67,13 +68,30 @@ def consultar_mias(
     if estado:
         consulta = consulta.where(Planta.estado_planta == estado)
 
+    if retirada is not None:
+        consulta = consulta.where(Planta.eliminada == retirada)
+
     offset = (pagina - 1) * limite
-    total = len(db.execute(consulta).scalars().unique().all())
     plantas = db.execute(
-        consulta.offset(offset).limit(limite)
+        consulta.order_by(Planta.id_planta.desc()).offset(offset).limit(limite)
     ).scalars().unique().all()
 
     return [_planta_a_respuesta(db, p, usuario_actual) for p in plantas]
+
+
+@router.get("/mias/{id_planta}", response_model=PlantaRespuesta)
+def consultar_publicacion_propia(
+    id_planta: int,
+    usuario_actual: Usuario = Depends(obtener_usuario_actual),
+    db: Session = Depends(get_db),
+):
+    planta = db.scalar(select(Planta).where(
+        Planta.id_planta == id_planta,
+        Planta.id_usuario == usuario_actual.id_usuario,
+    ))
+    if planta is None:
+        raise HTTPException(404, "Publicación propia no encontrada")
+    return _planta_a_respuesta(db, planta, usuario_actual)
 
 
 @router.get("/{id_planta}", response_model=PlantaRespuesta)

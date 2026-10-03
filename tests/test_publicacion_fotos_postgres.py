@@ -70,3 +70,36 @@ def test_fallo_db_limpia_imagen(grupo, monkeypatch):
     assert r.status_code == 500
     limpiar.assert_called_once_with("limpiar")
     assert db.scalar(select(Planta).where(Planta.nombre == body["nombre"])) is None
+
+
+def test_consulta_privada_filtros_y_paginas(grupo):
+    c, db, datos, _ = grupo
+    auth = headers(datos, "donante")
+    retirada = datos["plantas"]["eliminada"]
+    ruta = f"/api/plantas/mias/{retirada}"
+    r = c.get(ruta, headers=auth)
+    assert r.status_code == 200 and r.json()["eliminada"] is True
+    assert c.get(ruta, headers=headers(datos, "otro")).status_code == 404
+    assert c.get(ruta).status_code == 401
+    r = c.get("/api/plantas/mias", headers=auth, params={"retirada": "true"})
+    assert [p["id_planta"] for p in r.json()] == [retirada]
+    r = c.get("/api/plantas/mias", headers=auth, params={"estado": "SOLICITADA"})
+    assert [p["id_planta"] for p in r.json()] == [datos["plantas"]["solicitada"]]
+    nombre = db.get(Planta, retirada).nombre
+    r = c.get("/api/plantas/mias", headers=auth, params={"busqueda": nombre})
+    assert [p["id_planta"] for p in r.json()] == [retirada]
+    ids = []
+    for pagina in range(1, 4):
+        r = c.get("/api/plantas/mias", headers=auth, params={"pagina": pagina, "limite": 2})
+        assert r.status_code == 200
+        ids.extend(p["id_planta"] for p in r.json())
+    assert ids == sorted(datos["plantas"].values(), reverse=True)
+
+
+@pytest.mark.parametrize("caso", ["solicitada", "adoptada", "oculta", "eliminada"])
+def test_estados_impiden_editar_y_retirar(grupo, caso):
+    c, db, datos, _ = grupo
+    ruta = f'/api/plantas/{datos["plantas"][caso]}'
+    auth = headers(datos, "donante")
+    assert c.patch(ruta, headers=auth, json={"nombre": "No cambiar"}).status_code == 403
+    assert c.delete(ruta, headers=auth).status_code == 403
