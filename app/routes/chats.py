@@ -10,6 +10,7 @@ from app.models import (
     ChatParticipante,
     Mensaje,
     Planta,
+    PuntoEncuentro,
     SolicitudAdopcion,
     Usuario,
 )
@@ -23,7 +24,16 @@ from app.schemas import (
     ParticipanteChatRespuesta,
 )
 
+from app.services.puntos_encuentro import adopcion_chat, exigir_en_proceso, respuesta_punto
+
 router = APIRouter(prefix="/chats", tags=["Chat"])
+
+
+def _respuesta_mensaje(mensaje, usuario, en_proceso=False):
+    respuesta = MensajeRespuesta.model_validate(mensaje)
+    if mensaje.punto is not None:
+        respuesta.punto = respuesta_punto(mensaje.punto, usuario.id_usuario, en_proceso)
+    return respuesta
 
 
 def _serializar_chat(chat: Chat) -> ChatRespuesta:
@@ -218,19 +228,24 @@ def enviar_mensaje(
             detail="No tienes permiso para enviar mensajes en este chat",
         )
 
+    if datos.tipo == "UBICACION":
+        exigir_en_proceso(db, chat)
     # Ordena los envíos concurrentes antes de asignar el ID incremental.
     db.execute(select(Chat.id_chat).where(Chat.id_chat == id_chat).with_for_update())
     mensaje = Mensaje(
-        contenido=datos.contenido,
-        tipo="TEXTO",
+        contenido=datos.contenido if datos.tipo == "TEXTO" else "Punto de encuentro",
+        tipo=datos.tipo,
         id_chat=id_chat,
         id_usuario=usuario.id_usuario,
     )
+    if datos.tipo == "UBICACION":
+        mensaje.punto = PuntoEncuentro(latitud=datos.latitud, longitud=datos.longitud,
+                                       descripcion=datos.descripcion.strip() if datos.descripcion else None)
     db.add(mensaje)
     db.commit()
     db.refresh(mensaje)
 
-    return mensaje
+    return _respuesta_mensaje(mensaje, usuario, en_proceso=datos.tipo == "UBICACION")
 
 
 @router.get("/{id_chat}/mensajes", response_model=MensajesPaginados)
@@ -274,15 +289,17 @@ def listar_mensajes(
     )
     mensajes = db.execute(
         select(Mensaje)
+        .options(selectinload(Mensaje.punto))
         .where(*filtros)
         .order_by(*orden)
         .offset(desplazamiento)
         .limit(tamano_pagina)
     ).scalars().all()
 
+    adopcion = adopcion_chat(db, db.get(Chat, id_chat))
     return MensajesPaginados(
         total=total,
         pagina=pagina,
         tamano_pagina=tamano_pagina,
-        mensajes=[MensajeRespuesta.model_validate(m) for m in mensajes],
+        mensajes=[_respuesta_mensaje(m, usuario, adopcion is not None and adopcion.estado == "EN_PROCESO") for m in mensajes],
     )

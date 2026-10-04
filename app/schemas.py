@@ -309,16 +309,53 @@ class ChatResumen(BaseModel):
     nombre_otro_participante: str | None = None
 
 class MensajeCrear(BaseModel):
-    contenido: str = Field(min_length=1, max_length=2000)
+    tipo: Literal["TEXTO", "UBICACION"] = "TEXTO"
+    contenido: str | None = Field(default=None, max_length=2000)
+    latitud: float | None = Field(default=None, ge=-90, le=90, allow_inf_nan=False)
+    longitud: float | None = Field(default=None, ge=-180, le=180, allow_inf_nan=False)
+    descripcion: str | None = Field(default=None, max_length=255)
 
     @field_validator("contenido", mode="before")
     @classmethod
     def contenido_no_vacio(cls, valor):
         if isinstance(valor, str):
             valor = valor.strip()
-        if not valor:
-            raise ValueError("El mensaje no puede estar vacío")
         return valor
+
+    @model_validator(mode="after")
+    def validar_tipo(self):
+        if self.tipo == "TEXTO":
+            if not self.contenido:
+                raise ValueError("El mensaje no puede estar vacío")
+            if self.latitud is not None or self.longitud is not None or self.descripcion is not None:
+                raise ValueError("Las coordenadas solo corresponden a UBICACION")
+        elif self.latitud is None or self.longitud is None:
+            raise ValueError("La ubicación requiere latitud y longitud")
+        return self
+
+class PuntoEditar(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    latitud: float | None = Field(default=None, ge=-90, le=90, allow_inf_nan=False)
+    longitud: float | None = Field(default=None, ge=-180, le=180, allow_inf_nan=False)
+    descripcion: str | None = Field(default=None, max_length=255)
+
+    @model_validator(mode="after")
+    def validar_cambios(self):
+        if not self.model_fields_set:
+            raise ValueError("Indica al menos un cambio")
+        for campo in ("latitud", "longitud"):
+            if campo in self.model_fields_set and getattr(self, campo) is None:
+                raise ValueError("Las coordenadas no pueden ser nulas")
+        return self
+
+class PuntoRespuesta(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id_punto: int
+    id_mensaje: int
+    latitud: float
+    longitud: float
+    descripcion: str | None
+    puede_editar: bool = False
 
 class MensajeRespuesta(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -329,6 +366,7 @@ class MensajeRespuesta(BaseModel):
     tipo: str
     id_chat: int
     id_usuario: int
+    punto: PuntoRespuesta | None = None
 
 class MensajesPaginados(BaseModel):
     total: int
