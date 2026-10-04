@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Mi perfil · PlantHaven</title>
+  <link rel="stylesheet" href="/views/perfil.css?v=1">
+  <script src="/views/config.js" defer></script><script src="/views/perfil.js?v=1" defer></script>
+</head>
+<body>
+  <header><div class="topbar"><a class="back" href="/views/inicio.html" aria-label="Volver al inicio">←</a><h1>Mi Perfil</h1><a class="brand" href="/views/inicio.html">PlantHaven <span aria-hidden="true">🌿</span></a></div></header>
+  <main>
+    <p id="profileStatus" class="status" role="status" aria-live="polite">Cargando tu perfil…</p>
+    <button id="profileRetry" class="primary" hidden>Reintentar</button>
+    <section id="profileContent" hidden aria-label="Datos de mi perfil">
+      <div class="identity"><div class="profile-avatar" aria-hidden="true">🌿</div><h2 id="profileName"></h2><p id="profileEmail"></p><small id="profileSince"></small></div>
+      <form id="profileForm" class="profile-card">
+        <div class="name-fields">
+          <label for="profileFirstName">Nombres<div class="field"><span aria-hidden="true">♙</span><input id="profileFirstName" name="nombre" autocomplete="given-name" maxlength="100" required readonly></div></label>
+          <label for="profileLastName">Apellidos<div class="field"><span aria-hidden="true">♙</span><input id="profileLastName" name="apellido" autocomplete="family-name" maxlength="100" required readonly></div></label>
+        </div>
+        <label for="profileMail">Correo electrónico<div class="field"><span aria-hidden="true">✉</span><input id="profileMail" name="correo" type="email" autocomplete="email" maxlength="150" required readonly></div></label>
+        <label for="profilePhone">Teléfono móvil<div class="field"><span aria-hidden="true">☎</span><input id="profilePhone" name="telefono" type="tel" autocomplete="tel" maxlength="20" required readonly></div></label>
+        <p id="profileMessage" class="status" role="status" aria-live="polite"></p>
+        <button id="profileEdit" class="primary" type="button">Editar perfil <span aria-hidden="true">→</span></button>
+        <div id="profileEditActions" class="edit-actions" hidden><button id="profileCancel" class="secondary" type="button">Cancelar</button><button id="profileSave" class="primary" type="submit">Guardar cambios <span aria-hidden="true">✓</span></button></div>
+      </form>
+      <button id="profileLogout" class="logout" type="button"><span aria-hidden="true">⇥</span> Cerrar sesión</button>
+    </section>
+  </main>
+</body>
+</html>

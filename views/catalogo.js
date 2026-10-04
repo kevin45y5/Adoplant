@@ -69,6 +69,6 @@ catalogEl('search').addEventListener('input',()=>{visibleCount=9;renderCatalog()
 catalogEl('clear').addEventListener('click',()=>{Object.keys(filterFields).forEach(id=>catalogEl(id).value='');catalogEl('search').value='';visibleCount=9;renderCatalog();});
 catalogEl('loadMore').addEventListener('click',()=>{visibleCount+=9;renderCatalog();});
 catalogEl('retryCatalog').addEventListener('click',()=>window.loadPlantCatalog());
-catalogEl('accountButton').addEventListener('click',()=>catalogEl('account').showModal());
+catalogEl('accountButton').addEventListener('click',()=>{window.location.href='/views/perfil.html';});
 catalogEl('guideButton').addEventListener('click',()=>catalogEl('guide').showModal());
 document.querySelectorAll('[data-close]').forEach(button=>button.addEventListener('click',()=>catalogEl(button.dataset.close).close()));
