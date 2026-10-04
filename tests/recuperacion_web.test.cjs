@@ -7,16 +7,16 @@ const path = require('node:path');
 function setup() {
   const elements = {};
   function el(id) {
-    return elements[id] ??= {value:'', hidden: true, handlers: {},
+    return elements[id] ??= {value:'', hidden: true, handlers: {}, style: {}, dataset: {},
       addEventListener(name, handler) { this.handlers[name] = handler; },
       focus() {}, reportValidity() {return true;}, reset() {}, querySelector() {return {focus(){}};},
     };
   }
   const calls = [];
   let response = {ok: true, status:202, json: async()=>({mensaje:'Solicitud recibida'})};
-  const context = {window: {}, document: {getElementById: el, querySelectorAll:()=>[]},
+  const context = {window: {}, document: {body: {dataset:{}}, getElementById: el, querySelectorAll:()=>[]},
     fetch: async(url, options)=> {calls.push({url, body:JSON.parse(options.body)}); return response;},
-    AbortController, setTimeout, clearTimeout, Date, TypeError,
+    AbortController, setTimeout, clearTimeout, setInterval() {}, Date, TypeError,
   };
   vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../views/config.js'), 'utf8'), context);
   vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../views/recuperar.js'), 'utf8'), context);
@@ -25,18 +25,23 @@ function setup() {
   };
 }
 
-test('envía código y valida junto a contraseña; no usa una ruta de verificación', async()=> {
+test('verifica el código antes de continuar y lo vuelve a validar al guardar', async()=> {
   const s=setup();
   s.el('email').value='prueba@example.com';
   await s.submit('requestForm');
   assert.equal(s.calls[0].url, 'https://adopplant-api.onrender.com/api/auth/recuperacion');
-  assert.equal(s.el('resetForm').hidden, false);
+  assert.equal(s.el('codeForm').hidden, false);
+  assert.equal(s.el('resetForm').hidden, true);
   s.el('code').value='00123456';
+  s.reply({ok:true, status:200, json:async()=>({mensaje:'Código verificado'})});
+  await s.submit('codeForm');
+  assert.equal(s.calls[1].url, 'https://adopplant-api.onrender.com/api/auth/verificar-codigo');
+  assert.equal(s.el('resetForm').hidden, false);
   s.el('password').value=s.el('confirmation').value='NuevaPrueba123';
   s.reply({ok:false, status:400, json:async()=>({detail:'Código inválido o vencido'})});
   await s.submit('resetForm');
-  assert.equal(s.calls[1].url, 'https://adopplant-api.onrender.com/api/auth/restablecer-contrasena');
-  assert.equal(s.calls[1].body.codigo,'00123456');
+  assert.equal(s.calls[2].url, 'https://adopplant-api.onrender.com/api/auth/restablecer-contrasena');
+  assert.equal(s.calls[2].body.codigo,'00123456');
   assert.equal(s.el('success').hidden,true);
   assert.equal(s.el('resetForm').hidden,false);
   s.reply({ok:true, status:200, json:async()=>({})});

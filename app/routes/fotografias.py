@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.orm import Session
 
 from app.database import get_db
@@ -52,6 +52,8 @@ def subir_fotografia(
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="No tienes permiso")
 
     _validar_edicion(planta, usuario_actual)
+    if db.scalar(select(func.count()).select_from(Fotografia).where(Fotografia.id_planta == planta.id_planta)) >= 5:
+        raise HTTPException(422, "La publicación permite hasta cinco fotografías")
     foto = Fotografia(**datos.model_dump())
     db.add(foto)
     db.commit()

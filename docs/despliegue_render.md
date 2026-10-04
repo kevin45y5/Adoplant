@@ -66,3 +66,21 @@ Después de subir y verificar Main, usar Manual Deploy > Deploy latest commit en
 No reimportar el esquema inicial: la base ya tiene las 14 tablas de negocio y se ejecutó
 la revisión Alembic 0001_base_existente. Utilizar Alembic para futuras migraciones.
 Los secretos se configuran exclusivamente en Render; no se incluyen en este documento.
+
+## Verificación del código antes de cambiar la contraseña
+
+La web de recuperación requiere `POST /api/auth/verificar-codigo`, con `correo`
+y `codigo` (ocho dígitos). Solo una respuesta exitosa permite mostrar el formulario
+de nueva contraseña. El backend comprueba el correo, el código más reciente,
+su vencimiento, su uso y el límite compartido de cinco intentos. Al guardar la
+contraseña, `/api/auth/restablecer-contrasena` vuelve a comprobar el código.
+
+Después de actualizar Main, desplegar el último commit en Render y comprobar que
+`/docs` incluye `/api/auth/verificar-codigo`. No se necesita una migración de base
+de datos ni cambiar variables de entorno. Recargar la web local después del
+despliegue: ya utiliza la API de Render. Hasta desplegar el backend nuevo, la
+verificación queda bloqueada; no existe una alternativa que acepte cualquier código.
+
+Validación local: `node --test tests/*.cjs` y las pruebas pytest. Para incluir las
+pruebas PostgreSQL, establecer `SCRUM2_TEST_DB=1` y `SCRUM6_TEST_DB=1`; los datos de
+prueba se revierten y el envío de correo de recuperación se simula.

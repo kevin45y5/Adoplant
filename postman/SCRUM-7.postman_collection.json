@@ -1,0 +1,123 @@
+{
+  "info": {
+    "name": "AdopPlant SCRUM-7",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Solicitudes recibidas. Aceptar cambia estados y crea adopción real: usar datos de prueba. Consultar docs/gestion_solicitudes.md."
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://adopplant-api.onrender.com"
+    },
+    {
+      "key": "token_donante",
+      "value": ""
+    },
+    {
+      "key": "solicitud_id",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Listar recibidas",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/solicitudes?tipo=recibidas",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token_donante}}",
+              "type": "string"
+            }
+          ]
+        },
+        "header": []
+      }
+    },
+    {
+      "name": "Consultar detalle",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/solicitudes/{{solicitud_id}}",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token_donante}}",
+              "type": "string"
+            }
+          ]
+        },
+        "header": []
+      }
+    },
+    {
+      "name": "Aceptar solicitud",
+      "request": {
+        "method": "PATCH",
+        "url": "{{baseUrl}}/api/solicitudes/{{solicitud_id}}",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token_donante}}",
+              "type": "string"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"estado\": \"ACEPTADA\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Rechazar solicitud",
+      "request": {
+        "method": "PATCH",
+        "url": "{{baseUrl}}/api/solicitudes/{{solicitud_id}}",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token_donante}}",
+              "type": "string"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"estado\": \"RECHAZADA\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

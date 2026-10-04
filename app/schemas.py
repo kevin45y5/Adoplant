@@ -71,10 +71,8 @@ class SolicitudRecuperacion(BaseModel):
         return valor.strip() if isinstance(valor, str) else valor
 
 
-class RestablecimientoContrasena(SolicitudRecuperacion):
+class VerificacionRecuperacion(SolicitudRecuperacion):
     codigo: str = Field(min_length=8, max_length=8)
-    nueva_contrasena: str = Field(min_length=8, max_length=128, repr=False, exclude=True)
-    confirmar_contrasena: str = Field(min_length=8, max_length=128, repr=False, exclude=True)
 
     @field_validator("codigo")
     @classmethod
@@ -82,6 +80,10 @@ class RestablecimientoContrasena(SolicitudRecuperacion):
         if not valor.isascii() or not valor.isdecimal():
             raise ValueError("El código debe contener ocho números")
         return valor
+
+class RestablecimientoContrasena(VerificacionRecuperacion):
+    nueva_contrasena: str = Field(min_length=8, max_length=128, repr=False, exclude=True)
+    confirmar_contrasena: str = Field(min_length=8, max_length=128, repr=False, exclude=True)
 
     @field_validator("nueva_contrasena")
     @classmethod
@@ -132,6 +134,11 @@ class SolicitudCrear(SolicitudMensaje):
     id_planta: int = Field(strict=True, gt=0, le=2_147_483_647)
 
 
+class SolicitudDecision(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    estado: Literal["ACEPTADA", "RECHAZADA"]
+
+
 class SolicitudRespuesta(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
@@ -141,6 +148,8 @@ class SolicitudRespuesta(BaseModel):
     mensaje: str
     estado: str
     fecha_solicitud: datetime
+    nombre_planta: str | None = None
+    nombre_adoptante: str | None = None
 
 
 class UsuarioActualizacion(BaseModel):
@@ -210,6 +219,13 @@ class PlantaRespuesta(BaseModel):
     id_usuario: int
     id_categoria: int
     fotografia_url: Optional[str] = None
+    fotografias: list[str] = Field(default_factory=list)
+
+    @field_validator("fotografias", mode="before")
+    @classmethod
+    def urls_fotografias(cls, value):
+        return [foto if isinstance(foto, str) else foto.url for foto in value]
+
     puede_solicitar: bool = True
     categoria: Optional[CategoriaRespuesta] = None
 
@@ -262,6 +278,8 @@ class CatalogoResponse(BaseModel):
     pagina: int
     limite: int
     plantas: List[PlantaRespuesta]
+    hay_mas: bool = False
+    filtros: dict[str, list[str]] = Field(default_factory=dict)
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -287,18 +305,57 @@ class ChatResumen(BaseModel):
     id_planta: int
     fecha_creacion: datetime
     id_otro_participante: int
+    nombre_planta: str | None = None
+    nombre_otro_participante: str | None = None
 
 class MensajeCrear(BaseModel):
-    contenido: str = Field(min_length=1)
+    tipo: Literal["TEXTO", "UBICACION"] = "TEXTO"
+    contenido: str | None = Field(default=None, max_length=2000)
+    latitud: float | None = Field(default=None, ge=-90, le=90, allow_inf_nan=False)
+    longitud: float | None = Field(default=None, ge=-180, le=180, allow_inf_nan=False)
+    descripcion: str | None = Field(default=None, max_length=255)
 
     @field_validator("contenido", mode="before")
     @classmethod
     def contenido_no_vacio(cls, valor):
         if isinstance(valor, str):
             valor = valor.strip()
-        if not valor:
-            raise ValueError("El mensaje no puede estar vacío")
         return valor
+
+    @model_validator(mode="after")
+    def validar_tipo(self):
+        if self.tipo == "TEXTO":
+            if not self.contenido:
+                raise ValueError("El mensaje no puede estar vacío")
+            if self.latitud is not None or self.longitud is not None or self.descripcion is not None:
+                raise ValueError("Las coordenadas solo corresponden a UBICACION")
+        elif self.latitud is None or self.longitud is None:
+            raise ValueError("La ubicación requiere latitud y longitud")
+        return self
+
+class PuntoEditar(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    latitud: float | None = Field(default=None, ge=-90, le=90, allow_inf_nan=False)
+    longitud: float | None = Field(default=None, ge=-180, le=180, allow_inf_nan=False)
+    descripcion: str | None = Field(default=None, max_length=255)
+
+    @model_validator(mode="after")
+    def validar_cambios(self):
+        if not self.model_fields_set:
+            raise ValueError("Indica al menos un cambio")
+        for campo in ("latitud", "longitud"):
+            if campo in self.model_fields_set and getattr(self, campo) is None:
+                raise ValueError("Las coordenadas no pueden ser nulas")
+        return self
+
+class PuntoRespuesta(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id_punto: int
+    id_mensaje: int
+    latitud: float
+    longitud: float
+    descripcion: str | None
+    puede_editar: bool = False
 
 class MensajeRespuesta(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -309,6 +366,7 @@ class MensajeRespuesta(BaseModel):
     tipo: str
     id_chat: int
     id_usuario: int
+    punto: PuntoRespuesta | None = None
 
 class MensajesPaginados(BaseModel):
     total: int

@@ -1,7 +1,7 @@
 from typing import List, Optional, Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy import select, text
+from sqlalchemy import select, text, func
 from sqlalchemy.orm import Session
 
 from app.database import get_db
@@ -9,15 +9,16 @@ from app.models import Categoria, Fotografia, Planta, Usuario
 from app.schemas import CatalogoResponse, CategoriaRespuesta, PlantaCreate, PlantaRespuesta, PlantaUpdate
 from app.dependencies import obtener_usuario_actual
 from app.imagenes import preparar_imagen, subir_imagen, eliminar_imagen
-from app.publicacion_entrada import entrada_crear, entrada_editar, documentacion_entrada
+from app.publicacion_entrada import entrada_crear, entrada_editar, documentacion_entrada, SeleccionFotos, MAX_FOTOS
 
 router = APIRouter(prefix="/plantas", tags=["Plantas"])
 
 
 def _planta_a_respuesta(db: Session, planta: Planta, usuario: Usuario | None = None) -> PlantaRespuesta:
     datos = PlantaRespuesta.model_validate(planta).model_dump()
-    fot = db.execute(select(Fotografia).where(Fotografia.id_planta == planta.id_planta).order_by(Fotografia.id_fotografia).limit(1)).scalar_one_or_none()
-    url = fot.url if fot else None
+    fotos = db.scalars(select(Fotografia).where(Fotografia.id_planta == planta.id_planta).order_by(Fotografia.id_fotografia)).all()
+    url = fotos[0].url if fotos else None
+    datos["fotografias"] = [foto.url for foto in fotos]
     puede = planta.estado_planta == "DISPONIBLE" and not planta.eliminada and (usuario is None or planta.id_usuario != usuario.id_usuario)
     datos["fotografia_url"] = url
     datos["puede_solicitar"] = puede
@@ -31,24 +32,38 @@ def catalogo(
     db: Session = Depends(get_db),
     busqueda: Optional[str] = Query(None, max_length=100),
     estado: Optional[Literal["DISPONIBLE", "SOLICITADA", "ADOPTADA"]] = Query(None),
+    tamano: Optional[str] = Query(None, min_length=1, max_length=50),
+    nivel_cuidado: Optional[str] = Query(None, min_length=1, max_length=50),
+    categoria: Optional[str] = Query(None, min_length=1, max_length=100),
+    ubicacion: Optional[str] = Query(None, min_length=1, max_length=150),
     pagina: int = Query(1, ge=1),
     limite: int = Query(20, ge=1, le=100),
 ):
-    consulta = select(Planta).where(Planta.eliminada == False, Planta.visible == True)
-
-    if busqueda:
-        consulta = consulta.where(Planta.nombre.ilike(f"%{busqueda}%"))
+    condiciones = (Planta.eliminada == False, Planta.visible == True, Planta.estado_planta == "DISPONIBLE")
+    consulta = select(Planta).where(*condiciones)
+    if busqueda and busqueda.strip():
+        consulta = consulta.where(Planta.nombre.icontains(busqueda.strip(), autoescape=True))
     if estado:
         consulta = consulta.where(Planta.estado_planta == estado)
-
+    for valor, columna in [(tamano, Planta.tamano), (nivel_cuidado, Planta.nivel_cuidado), (ubicacion, Planta.ubicacion)]:
+        if valor is not None:
+            if not valor.strip():
+                raise HTTPException(422, "El filtro no puede estar vacío")
+            consulta = consulta.where(func.lower(func.trim(columna)) == valor.strip().lower())
+    if categoria is not None:
+        if not categoria.strip():
+            raise HTTPException(422, "La categoría no puede estar vacía")
+        consulta = consulta.join(Categoria, Planta.id_categoria == Categoria.id_categoria).where(func.lower(func.trim(Categoria.nombre)) == categoria.strip().lower())
     offset = (pagina - 1) * limite
-    total = len(db.execute(consulta).scalars().unique().all())
-    plantas = db.execute(
-        consulta.offset(offset).limit(limite)
-    ).scalars().unique().all()
-
-    resultado = [_planta_a_respuesta(db, p) for p in plantas]
-    return CatalogoResponse(total=total, pagina=pagina, limite=limite, plantas=resultado)
+    total = db.scalar(select(func.count()).select_from(consulta.subquery()))
+    plantas = db.scalars(consulta.order_by(Planta.fecha_publicacion.desc(), Planta.id_planta.desc()).offset(offset).limit(limite)).all()
+    filtros = {}
+    for nombre, columna in [("tamano", Planta.tamano), ("nivel_cuidado", Planta.nivel_cuidado), ("ubicacion", Planta.ubicacion)]:
+        filtros[nombre] = sorted({v.strip() for v in db.scalars(select(columna).where(*condiciones).distinct()) if v and v.strip()})
+    filtros["categoria"] = sorted(set(db.scalars(select(Categoria.nombre).select_from(Categoria).join(Planta, Planta.id_categoria == Categoria.id_categoria).where(*condiciones).distinct())))
+    return CatalogoResponse(total=total, pagina=pagina, limite=limite,
+        plantas=[_planta_a_respuesta(db, p) for p in plantas],
+        hay_mas=offset + len(plantas) < total, filtros=filtros)
 
 
 @router.get("/mias", response_model=List[PlantaRespuesta])
@@ -158,31 +173,41 @@ def modificar_planta(
     datos_dict = datos.model_dump(exclude_unset=True)
     if "id_categoria" in datos_dict and datos_dict["id_categoria"] is None:
         raise HTTPException(422, "La categoría no puede estar vacía")
-    foto = db.scalar(select(Fotografia).where(Fotografia.id_planta == id_planta).order_by(Fotografia.id_fotografia).limit(1))
-    if foto is None and archivo is None:
-        raise HTTPException(422, "La publicación debe conservar al menos una fotografía")
-    asset = None
-    if archivo is not None:
-        contenido = preparar_imagen(archivo)
-        url, asset = subir_imagen(contenido)
-        if foto is None:
-            db.add(Fotografia(id_planta=id_planta, url=url))
-        else:
-            foto.url = url
-
-    for campo, valor in datos_dict.items():
-        setattr(planta, campo, valor)
-
+    fotos = list(db.scalars(select(Fotografia).where(Fotografia.id_planta == id_planta).order_by(Fotografia.id_fotografia)))
+    archivos = archivo.archivos if isinstance(archivo, SeleccionFotos) else ([archivo] if archivo else [])
+    conservar = archivo.conservar if isinstance(archivo, SeleccionFotos) else None
+    if conservar is not None and not set(conservar) <= {f.url for f in fotos}:
+        raise HTTPException(422, "Solo puedes conservar fotografías actuales de esta publicación")
+    quitar = [f for f in fotos if conservar is not None and f.url not in conservar]
+    # La carga singular antigua sigue reemplazando únicamente la primera foto.
+    if archivo is not None and not isinstance(archivo, SeleccionFotos) and fotos:
+        quitar = [fotos[0]]
+    total = len(fotos) - len(quitar) + len(archivos)
+    if not 1 <= total <= MAX_FOTOS:
+        raise HTTPException(422, "La publicación debe conservar entre una y cinco fotografías")
+    contenidos = [preparar_imagen(f) for f in archivos]
+    assets = []
     try:
+        for contenido in contenidos:
+            url, asset = subir_imagen(contenido)
+            assets.append(asset)
+            if archivo is not None and not isinstance(archivo, SeleccionFotos) and fotos:
+                fotos[0].url = url
+                quitar = []
+            else:
+                db.add(Fotografia(id_planta=id_planta, url=url))
+        for foto in quitar:
+            db.delete(foto)
+        for campo, valor in datos_dict.items():
+            setattr(planta, campo, valor)
         db.commit()
-    except Exception:
+    except Exception as error:
         db.rollback()
-        if asset:
+        for asset in assets:
             eliminar_imagen(asset)
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Error al actualizar la publicación",
-        )
+        if isinstance(error, HTTPException):
+            raise
+        raise HTTPException(400, "Error al actualizar la publicación; no se guardaron cambios parciales") from None
 
     return _planta_a_respuesta(db, planta, usuario_actual)
 
@@ -273,16 +298,28 @@ def crear_planta(
         id_usuario=usuario_actual.id_usuario,
     )
 
-    contenido = preparar_imagen(archivo)
-    url, asset = subir_imagen(contenido)
+    archivos = archivo.archivos if isinstance(archivo, SeleccionFotos) else [archivo]
+    if not 1 <= len(archivos) <= MAX_FOTOS:
+        raise HTTPException(422, "Adjunta entre una y cinco fotografías")
+    contenidos = [preparar_imagen(f) for f in archivos]
+    assets = []
     try:
+        urls = []
+        for contenido in contenidos:
+            url, asset = subir_imagen(contenido)
+            assets.append(asset)
+            urls.append(url)
         db.add(planta)
         db.flush()
-        db.add(Fotografia(id_planta=planta.id_planta, url=url))
+        for url in urls:
+            db.add(Fotografia(id_planta=planta.id_planta, url=url))
         db.commit()
-    except Exception:
+    except Exception as error:
         db.rollback()
-        eliminar_imagen(asset)
+        for asset in assets:
+            eliminar_imagen(asset)
+        if isinstance(error, HTTPException):
+            raise
         raise HTTPException(500, "No se pudo guardar la publicación; no se guardaron datos incompletos") from None
 
     return _planta_a_respuesta(db, planta, usuario_actual)

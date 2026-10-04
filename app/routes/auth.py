@@ -15,6 +15,7 @@ from app.correo import correo_configurado, enviar_codigo_recuperacion
 from app.models import RecuperacionContrasena, Usuario
 from app.schemas import (
     RestablecimientoContrasena,
+    VerificacionRecuperacion,
     SolicitudRecuperacion,
     UsuarioRegistro,
     UsuarioRespuesta,
@@ -184,8 +185,7 @@ def solicitar_recuperacion(datos: SolicitudRecuperacion, db: Session = Depends(g
     return {"mensaje": MENSAJE_RECUPERACION}
 
 
-@router.post("/restablecer-contrasena")
-def restablecer_contrasena(datos: RestablecimientoContrasena, db: Session = Depends(get_db)):
+def _validar_recuperacion(datos: VerificacionRecuperacion, db: Session):
     correo = str(datos.correo).lower()
     usuario = db.execute(
         select(Usuario).where(func.lower(func.btrim(Usuario.correo)) == correo)
@@ -216,6 +216,20 @@ def restablecer_contrasena(datos: RestablecimientoContrasena, db: Session = Depe
         db.commit()
         raise HTTPException(status_code=400, detail=ERROR_CODIGO)
 
+    return usuario, recuperacion
+
+
+@router.post("/verificar-codigo")
+def verificar_codigo(datos: VerificacionRecuperacion, db: Session = Depends(get_db)):
+    _validar_recuperacion(datos, db)
+    db.commit()
+    return {"mensaje": "Código verificado"}
+
+
+@router.post("/restablecer-contrasena")
+def restablecer_contrasena(datos: RestablecimientoContrasena, db: Session = Depends(get_db)):
+    # Se valida nuevamente para impedir usar códigos vencidos, sustituidos o usados.
+    usuario, recuperacion = _validar_recuperacion(datos, db)
     usuario.contrasena = crear_hash(datos.nueva_contrasena)
     recuperacion.utilizado = True
     db.execute(

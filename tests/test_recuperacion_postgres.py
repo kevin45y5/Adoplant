@@ -126,3 +126,71 @@ def test_fallo_de_correo_no_deja_codigo_utilizable(recuperacion, monkeypatch):
     monkeypatch.setattr(auth, "enviar_codigo_recuperacion", fallar)
     assert solicitar(client).status_code == 202
     assert db.scalar(select(RecuperacionContrasena).where(RecuperacionContrasena.id_usuario == usuario.id_usuario)) is None
+
+
+def verificar(client, codigo):
+    return client.post('/api/auth/verificar-codigo', json={'correo': CORREO, 'codigo': codigo})
+
+
+def test_verificacion_rechaza_incorrecto_y_permite_el_del_correo(recuperacion):
+    client, db, usuario, correos = recuperacion
+    solicitar(client)
+    codigo = correos[-1][1]
+    incorrecto = '00000000' if codigo != '00000000' else '99999999'
+    assert verificar(client, incorrecto).status_code == 400
+    assert verificar(client, codigo).status_code == 200
+    assert login(client, ANTERIOR).status_code == 200
+    assert restablecer(client, codigo).status_code == 200
+    assert verificar(client, codigo).status_code == 400
+
+
+def test_verificacion_comparte_limite_con_restablecimiento(recuperacion):
+    client, db, usuario, correos = recuperacion
+    solicitar(client)
+    codigo = correos[-1][1]
+    incorrecto = '00000000' if codigo != '00000000' else '99999999'
+    for _ in range(4):
+        assert verificar(client, incorrecto).status_code == 400
+    assert restablecer(client, incorrecto).status_code == 400
+    assert verificar(client, codigo).status_code == 400
+
+
+def test_verificacion_codigo_vencido(recuperacion, monkeypatch):
+    client, db, usuario, correos = recuperacion
+    solicitar(client)
+    class RelojAdelantado:
+        @staticmethod
+        def now(tz):
+            return datetime.now(tz) + timedelta(minutes=16)
+    monkeypatch.setattr(auth, 'datetime', RelojAdelantado)
+    assert verificar(client, correos[-1][1]).status_code == 400
+
+
+def test_reenvio_invalida_codigo_anterior_y_acepta_solo_ultimo(recuperacion, monkeypatch):
+    client, db, usuario, correos = recuperacion
+    valores = iter([12345678, 87654321])
+    monkeypatch.setattr(auth.secrets, 'randbelow', lambda _: next(valores))
+    solicitar(client)
+    primero = correos[-1][1]
+    class RelojReenvio:
+        @staticmethod
+        def now(tz):
+            return datetime.now(tz) + timedelta(minutes=2)
+    monkeypatch.setattr(auth, 'datetime', RelojReenvio)
+    solicitar(client)
+    ultimo = correos[-1][1]
+    assert primero != ultimo
+    assert verificar(client, primero).status_code == 400
+    assert verificar(client, ultimo).status_code == 200
+    assert restablecer(client, primero).status_code == 400
+    assert restablecer(client, ultimo).status_code == 200
+
+
+def test_codigo_solo_corresponde_a_su_correo(recuperacion):
+    client, db, usuario, correos = recuperacion
+    solicitar(client)
+    response = client.post('/api/auth/verificar-codigo', json={
+        'correo': 'otra-cuenta@example.com', 'codigo': correos[-1][1],
+    })
+    assert response.status_code == 400
+    assert verificar(client, correos[-1][1]).status_code == 200

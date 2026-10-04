@@ -46,7 +46,36 @@ ID descendente. Flutter muestra diez registros por página y consulta por ID al
 editar, sin depender de la página visible. Si una página contiene exactamente
 diez registros se permite avanzar; la siguiente puede estar vacía y permite volver.
 
-Pendiente: comprobación manual de estas consultas en la nueva APK y validación
-integrada de concurrencia con el módulo de aceptación (SCRUM-7). Las operaciones
-de editar y retirar bloquean la fila de planta, pero la aceptación debe respetar
-el mismo bloqueo. No marcar la historia completa solo por estas pruebas.
+Comprobación manual de consultas y aceptación SCRUM-7 confirmada por Krisler.
+Editar, retirar y aceptar respetan el bloqueo de la fila de planta. La ampliación
+múltiple descrita a continuación requiere su propia comprobación en teléfono.
+
+
+## Carga múltiple desde móvil (3 de octubre)
+
+Se admiten de una a cinco fotos por publicación, hasta 8 MB por archivo, en
+JPG, PNG o WebP. Se mantiene el esquema existente de planta y fotografia.
+
+- POST `/api/plantas`: formulario multipart con los datos habituales y una o
+  varias entradas `fotografias` de tipo File. La API valida todas antes de subirlas.
+- PATCH `/api/plantas/{id}`: los archivos `fotografias` se agregan. Para elegir
+  cuáles conservar, enviar `conservar_fotografias` como texto JSON con las URLs
+  actuales, por ejemplo `["https://.../actual.jpg"]`. Las omitidas se retiran de
+  la publicación. `[]` permite reemplazarlas todas si se adjuntan fotos nuevas.
+  Omitir este campo conserva las actuales. Es posible quitar fotos sin adjuntar
+  otras, enviando multipart con el campo de conservación y al menos una URL.
+- El campo singular anterior `fotografia` sigue funcionando: crea una foto o
+  reemplaza la primera al editar. No mezclar ambos campos de archivos.
+- Solo puede editar el dueño si está DISPONIBLE, visible y no eliminada.
+- El guardado de datos y registros de fotos es una transacción. Si falla una
+  carga o la base, se revierten los cambios y se intenta limpiar cada archivo
+  nuevo ya subido. No se borran archivos antiguos de Cloudinary en este flujo.
+- La primera foto conservada es la principal; las nuevas se agregan al final.
+
+En Postman usar Body → form-data: repetir la clave `fotografias` con tipo File
+para cada imagen, y añadir los datos descriptivos como Text. La autorización
+sigue siendo Bearer del dueño. Swagger documenta las dos alternativas de carga.
+
+Pruebas manuales: publicar con tres fotos, comprobar la galería, editar conservando
+una y agregando otra, quitar sin agregar, impedir guardar sin fotos e impedir una
+sexta. Estas pruebas corresponden a la carga SCRUM-5/15 y su visualización SCRUM-11.

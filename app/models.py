@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, SmallInteger, String, Text, text
+from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, Integer, SmallInteger, String, Text, text
 from sqlalchemy.dialects.postgresql import ENUM
 from sqlalchemy.orm import declarative_base, relationship, synonym
 
@@ -232,6 +232,19 @@ class Mensaje(Base):
 
     chat = relationship("Chat", back_populates="mensajes")
     usuario = relationship("Usuario")
+    punto = relationship("PuntoEncuentro", uselist=False, back_populates="mensaje", cascade="all, delete-orphan")
+
+
+class PuntoEncuentro(Base):
+    __tablename__ = "punto_encuentro"
+    __table_args__ = {"schema": "public"}
+
+    id_punto = Column(Integer, primary_key=True, autoincrement=True)
+    latitud = Column(Float, nullable=False)
+    longitud = Column(Float, nullable=False)
+    descripcion = Column(String(255))
+    id_mensaje = Column(Integer, ForeignKey("public.mensaje.id_mensaje", ondelete="CASCADE"), nullable=False)
+    mensaje = relationship("Mensaje", back_populates="punto")
 
 class Adopcion(Base):
     __tablename__ = "adopcion"
