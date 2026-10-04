@@ -305,9 +305,11 @@ class ChatResumen(BaseModel):
     id_planta: int
     fecha_creacion: datetime
     id_otro_participante: int
+    nombre_planta: str | None = None
+    nombre_otro_participante: str | None = None
 
 class MensajeCrear(BaseModel):
-    contenido: str = Field(min_length=1)
+    contenido: str = Field(min_length=1, max_length=2000)
 
     @field_validator("contenido", mode="before")
     @classmethod

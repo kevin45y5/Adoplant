@@ -9,6 +9,7 @@ from app.models import (
     Chat,
     ChatParticipante,
     Mensaje,
+    Planta,
     SolicitudAdopcion,
     Usuario,
 )
@@ -91,6 +92,10 @@ def crear_u_obtener_chat(
     db: Session = Depends(get_db),
     usuario: Usuario = Depends(obtener_usuario_actual),
 ):
+    # Serializa la apertura simultánea por ambos participantes sin crear tablas.
+    db.execute(select(Planta.id_planta).where(
+        Planta.id_planta == datos.id_planta
+    ).with_for_update()).scalar_one_or_none()
     adopcion = _obtener_adopcion_autorizada(db, datos.id_planta)
 
     if adopcion is None:
@@ -132,36 +137,16 @@ def crear_u_obtener_chat(
 
     chat = Chat(id_planta=datos.id_planta)
     db.add(chat)
-    db.flush()
-
-    db.add_all(
-        [
-            ChatParticipante(
-                id_chat=chat.id_chat,
-                id_usuario=adopcion.id_donante,
-                posicion=1,
-            ),
-            ChatParticipante(
-                id_chat=chat.id_chat,
-                id_usuario=adopcion.id_adoptante,
-                posicion=2,
-            ),
-        ]
-    )
-
     try:
+        db.flush()
+        db.add_all([
+            ChatParticipante(id_chat=chat.id_chat, id_usuario=adopcion.id_donante, posicion=1),
+            ChatParticipante(id_chat=chat.id_chat, id_usuario=adopcion.id_adoptante, posicion=2),
+        ])
         db.commit()
     except Exception:
         db.rollback()
-        chat_recuperado = db.execute(
-            select(Chat)
-            .options(selectinload(Chat.participantes))
-            .where(Chat.id_planta == datos.id_planta)
-        ).scalar_one_or_none()
-        if chat_recuperado is None:
-            raise
-        respuesta.status_code = status.HTTP_200_OK
-        return _serializar_chat(chat_recuperado)
+        raise
 
     db.refresh(chat)
     chat = _obtener_chat_con_participantes(db, chat.id_chat)
@@ -200,6 +185,8 @@ def listar_chats_propios(
                 id_planta=chat.id_planta,
                 fecha_creacion=chat.fecha_creacion,
                 id_otro_participante=otro_participante,
+                nombre_planta=db.scalar(select(Planta.nombre).where(Planta.id_planta == chat.id_planta)),
+                nombre_otro_participante=db.scalar(select(Usuario.nombre).where(Usuario.id_usuario == otro_participante)),
             )
         )
 
@@ -231,6 +218,8 @@ def enviar_mensaje(
             detail="No tienes permiso para enviar mensajes en este chat",
         )
 
+    # Ordena los envíos concurrentes antes de asignar el ID incremental.
+    db.execute(select(Chat.id_chat).where(Chat.id_chat == id_chat).with_for_update())
     mensaje = Mensaje(
         contenido=datos.contenido,
         tipo="TEXTO",
@@ -249,6 +238,7 @@ def listar_mensajes(
     id_chat: int,
     pagina: int = Query(1, ge=1),
     tamano_pagina: int = Query(20, ge=1, le=100),
+    despues_de: int | None = Query(None, ge=0, description="ID del último mensaje recibido; para actualización incremental"),
     db: Session = Depends(get_db),
     usuario: Usuario = Depends(obtener_usuario_actual),
 ):
@@ -268,17 +258,24 @@ def listar_mensajes(
             detail="No tienes permiso para consultar este chat",
         )
 
+    filtros = [Mensaje.id_chat == id_chat]
+    if despues_de is not None:
+        filtros.append(Mensaje.id_mensaje > despues_de)
     total = db.execute(
         select(func.count())
         .select_from(Mensaje)
-        .where(Mensaje.id_chat == id_chat)
+        .where(*filtros)
     ).scalar_one()
 
     desplazamiento = (pagina - 1) * tamano_pagina
+    orden = (
+        [Mensaje.id_mensaje.asc()] if despues_de is not None
+        else [Mensaje.fecha_hora.asc(), Mensaje.id_mensaje.asc()]
+    )
     mensajes = db.execute(
         select(Mensaje)
-        .where(Mensaje.id_chat == id_chat)
-        .order_by(Mensaje.fecha_hora.asc(), Mensaje.id_mensaje.asc())
+        .where(*filtros)
+        .order_by(*orden)
         .offset(desplazamiento)
         .limit(tamano_pagina)
     ).scalars().all()
