@@ -10,7 +10,7 @@ function showStep(step) {
   ['requestForm', 'codeForm', 'resetForm', 'success'].forEach((id, index) => {
     el(id).hidden = index !== step - 1;
   });
-  el('stepLabel').textContent = ['PASO 1 DE 3 Â· RECUPERACIÓN SEGURA', 'PASO 2 DE 3 Â· CÓDIGO DE RECUPERACIÓN', 'PASO 3 DE 3 Â· NUEVA CONTRASEÑA', 'ACCESO RECUPERADO'][step - 1];
+  el('stepLabel').textContent = ['PASO 1 DE 3 · RECUPERACIÓN SEGURA', 'PASO 2 DE 3 · CÓDIGO DE RECUPERACIÓN', 'PASO 3 DE 3 · NUEVA CONTRASEÑA', 'ACCESO RECUPERADO'][step - 1];
   el('message').hidden = true;
 }
 setInterval(() => {

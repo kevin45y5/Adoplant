@@ -357,6 +357,22 @@ class PuntoRespuesta(BaseModel):
     descripcion: str | None
     puede_editar: bool = False
 
+class UbicacionChat(BaseModel):
+    kind: Literal["point", "live", "stop"]
+    session: str = Field(min_length=1, max_length=100)
+    lat: float | None = Field(default=None, ge=-90, le=90, allow_inf_nan=False)
+    lng: float | None = Field(default=None, ge=-180, le=180, allow_inf_nan=False)
+    at: float | None = Field(default=None, ge=0, allow_inf_nan=False)
+    until: float | None = Field(default=None, ge=0, allow_inf_nan=False)
+    label: str = Field(default="", max_length=255)
+
+    @model_validator(mode="after")
+    def validar_posicion(self):
+        if self.kind != "stop" and any(v is None for v in (self.lat, self.lng, self.at, self.until)):
+            raise ValueError("La ubicación requiere coordenadas y fecha")
+        return self
+
+
 class MensajeRespuesta(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
@@ -367,6 +383,7 @@ class MensajeRespuesta(BaseModel):
     id_chat: int
     id_usuario: int
     punto: PuntoRespuesta | None = None
+    ubicacion: UbicacionChat | None = None
 
 class MensajesPaginados(BaseModel):
     total: int

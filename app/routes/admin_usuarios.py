@@ -61,7 +61,10 @@ def cambiar_estado_usuario(
     datos: UsuarioEstadoActualizacion,
     id_usuario: int = Path(ge=1, le=2_147_483_647),
     db: Session = Depends(get_db),
+    administrador: Usuario = Depends(obtener_administrador_actual),
 ):
+    if id_usuario == administrador.id_usuario and datos.estado == "BLOQUEADO":
+        raise HTTPException(409, "No puedes bloquear tu propia cuenta de administrador")
     usuario = consultar_usuario(id_usuario, db)
     usuario.estado = datos.estado
     db.commit()

@@ -25,7 +25,7 @@ def listar_plantas_admin(
 ):
     """Listar todas las publicaciones, incluidas ocultas o eliminadas lógicamente.
     Requiere rol de administrador. No expone chats ni puntos de encuentro."""
-    consulta = select(Planta).offset(skip).limit(limit)
+    consulta = select(Planta).order_by(Planta.id_planta.desc()).offset(skip).limit(limit)
 
     if q:
         consulta = consulta.where(Planta.nombre.ilike(f"%{q}%"))

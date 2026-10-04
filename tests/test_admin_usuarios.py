@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+from contextlib import contextmanager
 
 import pytest
 from fastapi.testclient import TestClient
@@ -97,5 +98,8 @@ def test_permisos_y_validaciones_admin(admin_api):
     assert cliente.get("/api/admin/usuarios/999", headers=admin).status_code == 404
     assert cliente.patch("/api/admin/usuarios/999/estado", json={"estado": "ACTIVO"}, headers=admin).status_code == 404
     # También se impide el uso de un token anterior de un administrador bloqueado.
-    assert cliente.patch("/api/admin/usuarios/1/estado", json={"estado": "BLOQUEADO"}, headers=admin).status_code == 200
+    assert cliente.patch("/api/admin/usuarios/1/estado", json={"estado": "BLOQUEADO"}, headers=admin).status_code == 409
+    with contextmanager(app.dependency_overrides[get_db])() as db:
+        db.get(Usuario, 1).estado = "BLOQUEADO"
+        db.commit()
     assert cliente.get("/api/admin/usuarios", headers=admin).status_code == 403

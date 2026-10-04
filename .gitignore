@@ -7,5 +7,6 @@ __pycache__/
 pytest-cache-files-*/
 .coverage
 htmlcov/
+uploads/
 .idea/
 .vscode/

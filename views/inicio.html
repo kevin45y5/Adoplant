@@ -1,28 +1,26 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Inicio · PlantHaven</title>
-  <link rel="stylesheet" href="/views/recuperar.css">
-  <script src="/views/config.js" defer></script>
-  <script src="/views/inicio.js" defer></script>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Explorar plantas · PlantHaven</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/views/catalogo.css?v=3"><link rel="stylesheet" href="/views/inicio.css?v=2">
+<script src="/views/config.js" defer></script><script src="/views/catalogo.js?v=4" defer></script><script src="/views/inicio.js?v=6" defer></script>
 </head>
 <body>
-  <header><a href="/views/inicio.html">🌿 PlantHaven</a></header>
-  <main>
-    <p id="status" role="status">Comprobando tu sesión…</p>
-    <section id="welcome" hidden>
-      <p class="eyebrow">TU COMUNIDAD VERDE</p>
-      <h1 id="greeting"></h1>
-      <p>Un nuevo hogar para cada planta.</p>
-      <p>Tu cuenta está lista. Desde aquí podrás acceder a las funciones de PlantHaven a medida que estén disponibles.</p>
-      <h2>Mi cuenta</h2>
-      <p id="email"></p>
-      <p id="phone"></p>
-    </section>
-    <button id="retry" type="button" hidden>Reintentar conexión</button>
-    <button id="logout" type="button" class="secondary">Cerrar sesión</button>
-  </main>
-</body>
-</html>
+<header><a class="brand" href="/views/inicio.html"><img src="/views/icon.jpeg" alt="">PlantHaven</a><nav><a class="active" href="/views/inicio.html" id="homeNav">Inicio</a><a href="#catalogue" id="exploreNav">Explorar</a><a href="#notifications" id="notificationsNav">Notificaciones<span id="notificationDot" class="notification-dot" hidden aria-label="Tienes notificaciones nuevas"></span></a><a href="/views/solicitudes.html?tipo=recibidas">Solicitudes recibidas</a><button id="guideButton" class="nav-button">Guías de cuidado</button><a href="/views/mensajes.html">Mensajes</a><a href="/views/adopciones.html">Mis adopciones</a><a id="adminNav" href="/views/admin.html" hidden>Administración</a></nav><div class="header-actions"><a class="publish-link" href="/views/publicar.html">+ Publicar planta</a><span id="greeting"></span><button id="accountButton" class="avatar" aria-label="Mi cuenta">♧</button></div></header>
+<main>
+<div id="sessionStatus"><p id="status" role="status">Comprobando tu sesión…</p><button id="retry" hidden>Reintentar conexión</button></div>
+<section id="welcome" hidden>
+<section id="notifications" class="notifications-section" hidden aria-labelledby="notificationsTitle"><div class="notifications-heading"><div><span class="eyebrow">♧ ACTUALIZACIONES DE ADOPCIÓN</span><h2 id="notificationsTitle">Notificaciones</h2><p>Revisa el estado de tus solicitudes y las novedades de tus adopciones.</p></div><a class="notifications-link" href="/views/solicitudes.html?tipo=enviadas">Ver mis solicitudes →</a></div><p id="notificationStatus" class="notification-status" role="status" aria-live="polite"></p><div id="notificationFeed" class="notification-feed"></div><div id="deliveryNotifications" class="notification-feed"></div></section>
+<div class="requests-shortcuts" id="exploreShortcuts"><a href="/views/solicitudes.html?tipo=recibidas">▤ Solicitudes recibidas en mis plantas →</a><a href="/views/solicitudes.html?tipo=enviadas">Mis solicitudes enviadas →</a></div>
+<section class="hero" id="exploreHero"><span class="eyebrow">♧ TU COMUNIDAD DE ADOPCIÓN</span><h1>Encuentra tu próxima compañera verde</h1><p>Adopta con responsabilidad y conecta con quienes entregan un hogar para sus plantas.</p><span class="live">● Actualizado desde nuestra comunidad</span></section>
+<section class="search-panel" id="exploreSearch" aria-label="Buscar y filtrar plantas"><form id="searchForm"><span aria-hidden="true">⌕</span><input id="search" type="search" maxlength="100" placeholder="Buscar plantas por nombre, especie o cuidado…" aria-label="Buscar plantas"><button type="submit">Buscar</button></form><div class="filters"><label>♧ Tipo <select id="category"><option value="">Todas</option></select></label><label>↕ Tamaño <select id="size"><option value="">Todos los tamaños</option></select></label><label>☀ Luz <select id="light"><option value="">Cualquiera</option></select></label><label>♧ Cuidados <select id="care"><option value="">Cualquiera</option></select></label><label>⌖ Zona <select id="zone"><option value="">Todas</option></select></label><button id="clear" class="clear">Limpiar filtros</button></div><div class="search-note"><span>♡ Una nueva oportunidad empieza con una planta.</span><span id="filterCount"></span></div></section>
+<section id="catalogue"><div class="section-heading"><h2>Plantas disponibles <span id="total"></span></h2><span class="ethical">♧ Un hogar para cada planta</span></div><p id="catalogStatus" role="status" aria-live="polite"></p><button id="retryCatalog" hidden>Reintentar catálogo</button><div id="plantGrid" class="plant-grid"></div><div class="pagination"><button id="loadMore" hidden>⌄ Cargar más plantas</button><small id="shown"></small></div></section>
+</section>
+</main>
+<footer><span class="brand">PlantHaven</span><span>Adopción responsable. Una comunidad que crece contigo.</span></footer>
+<dialog id="detail"><button class="close" data-close="detail" aria-label="Cerrar detalle">×</button><div id="detailContent"></div></dialog>
+<dialog id="account"><button class="close" data-close="account" aria-label="Cerrar cuenta">×</button><span class="eyebrow">MI CUENTA</span><h2>Tu rincón verde</h2><p id="email"></p><p id="phone"></p><button id="logout">Cerrar sesión</button></dialog>
+<dialog id="guide"><button class="close" data-close="guide" aria-label="Cerrar guía">×</button><span class="eyebrow">CUIDA TU NUEVA COMPAÑERA</span><h2>Un buen comienzo</h2><p>Consulta la luz y el riego indicados en cada publicación. Pregunta al donante por los cuidados que ha recibido la planta.</p><p>Busca un lugar adecuado antes de adoptarla y observa cómo se adapta durante los primeros días.</p></dialog>
+</body></html>

@@ -1,5 +1,6 @@
 """CRUD privado de puntos sobre PostgreSQL local; datos revertidos al terminar."""
 import os
+import json
 import pytest
 from sqlalchemy import text
 from tests.test_integracion_grupal_postgres import grupo, headers  # noqa: F401
@@ -7,7 +8,8 @@ from tests.test_integracion_grupal_postgres import grupo, headers  # noqa: F401
 pytestmark = pytest.mark.skipif(os.getenv('SCRUM6_TEST_DB') != '1', reason='Requiere PostgreSQL local')
 
 
-def test_puntos_privados_corregir_retirar_y_conservar_al_completar(grupo):
+@pytest.mark.parametrize("origen_web", [False, True])
+def test_puntos_privados_corregir_retirar_y_conservar_al_completar(grupo, origen_web):
     c, db, datos, _ = grupo
     datos.pop('clave', None)
     donor, adopter, outsider = [headers(datos, role) for role in ('donante', 'adoptante', 'otro')]
@@ -17,6 +19,11 @@ def test_puntos_privados_corregir_retirar_y_conservar_al_completar(grupo):
     chat = c.post('/api/chats', headers=donor, json={'id_planta': plant}).json()['id_chat']
     path = f'/api/chats/{chat}/mensajes'
     payload = {'tipo': 'UBICACION', 'latitud': 13.7, 'longitud': -89.7, 'descripcion': 'Parque central'}
+    if origen_web:
+        payload['contenido'] = '[PlantHaven:ubicacion:1]' + json.dumps({
+            'kind': 'live', 'session': 'web-movil', 'lat': 13.7, 'lng': -89.7,
+            'label': 'Parque central', 'at': 1700000000000, 'until': 1700000900000,
+        })
     assert c.post(path, headers=outsider, json=payload).status_code == 403
     for bad in [{'latitud': 91}, {'longitud': -181}, {'latitud': None}, {'descripcion': 'x' * 256}]:
         assert c.post(path, headers=donor, json={**payload, **bad}).status_code == 422
@@ -38,6 +45,10 @@ def test_puntos_privados_corregir_retirar_y_conservar_al_completar(grupo):
     assert changed.status_code == 200, changed.text
     current = c.get(path, headers=adopter).json()['mensajes'][0]
     assert current['punto']['latitud'] == 14 and current['punto']['descripcion'] == 'Entrada norte'
+    if origen_web:
+        assert current['ubicacion']['lat'] == 14
+        assert current['ubicacion']['label'] == 'Entrada norte'
+        assert '[PlantHaven:ubicacion:1]' not in current['contenido']
     assert (current['id_mensaje'], current['fecha_hora'], current['id_usuario']) == (message['id_mensaje'], message['fecha_hora'], message['id_usuario'])
     assert c.delete(url, headers=donor).status_code == 204
     assert c.get(url, headers=donor).status_code == 404

@@ -10,7 +10,7 @@ from app.database import get_db
 from app.dependencies import obtener_usuario_actual
 from app.models import Adopcion, Notificacion, Planta, SolicitudAdopcion, Usuario
 from app.schemas import SolicitudCrear, SolicitudDecision, SolicitudMensaje, SolicitudRespuesta
-from app.services.notificaciones import notificar_solicitud
+from app.services.notificaciones import notificar_decision, notificar_solicitud
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/solicitudes", tags=["Solicitudes"])
@@ -57,6 +57,18 @@ def consultar_solicitud(id_solicitud: IdSolicitud,
     if fila is None or usuario.id_usuario not in (fila[0].id_adoptante, fila[1]):
         raise HTTPException(404, "Solicitud no encontrada")
     return fila[0]
+
+
+@router.patch("/{id_solicitud}/decision", response_model=SolicitudRespuesta,
+              responses={403: {"description": "Solo el donante puede decidir"},
+                         404: {"description": "Solicitud inexistente o ajena"},
+                         409: {"description": "La solicitud ya fue decidida"},
+                         503: {"description": "No se pudo guardar la decisión"}})
+def decidir_solicitud_ruta(id_solicitud: IdSolicitud, datos: SolicitudDecision,
+                      usuario: Usuario = Depends(obtener_usuario_actual),
+                      db: Session = Depends(get_db)):
+    """Acepta o rechaza una solicitud y avisa al adoptante."""
+    return decidir_solicitud(db, id_solicitud, usuario.id_usuario, datos.estado)
 
 
 def bloquear_solicitud_propia(db: Session, id_solicitud: int, id_usuario: int):
@@ -133,18 +145,25 @@ def decidir_solicitud(db: Session, id_solicitud: int, id_donante: int, estado: s
         if db.scalar(select(Adopcion.id_adopcion).where(Adopcion.id_planta == id_planta)) is not None:
             raise HTTPException(409, "La planta ya tiene una adopción")
         if estado == "ACEPTADA":
-            db.execute(update(SolicitudAdopcion).where(
+            pendientes = db.scalars(select(SolicitudAdopcion).where(
                 SolicitudAdopcion.id_planta == id_planta,
                 SolicitudAdopcion.id_solicitud != id_solicitud,
-                SolicitudAdopcion.estado == "PENDIENTE").values(estado="RECHAZADA"))
+                SolicitudAdopcion.estado == "PENDIENTE").with_for_update()).all()
+            for pendiente in pendientes:
+                pendiente.estado = "RECHAZADA"
+                notificar_decision(db, solicitud=pendiente, planta=planta, estado="RECHAZADA")
             planta.estado = "SOLICITADA"
             db.add(Adopcion(id_solicitud=id_solicitud, id_planta=id_planta,
                            id_donante=id_donante, id_adoptante=solicitud.id_adoptante,
                            estado="EN_PROCESO"))
-            db.add(Notificacion(tipo="SOLICITUD_ACEPTADA",
-                mensaje=f"Tu solicitud para {planta.nombre} fue aceptada.",
-                id_usuario=solicitud.id_adoptante, id_planta=id_planta,
-                id_solicitud=id_solicitud))
+            for destinatario, accion in ((planta.id_usuario, "entrega"), (solicitud.id_adoptante, "recepción")):
+                db.add(Notificacion(
+                    tipo="ENTREGA_PENDIENTE",
+                    mensaje=f"Coordina el intercambio de {planta.nombre}. Después confirma la {accion} en Mis adopciones.",
+                    id_usuario=destinatario, id_planta=id_planta,
+                    id_solicitud=id_solicitud,
+                ))
+        notificar_decision(db, solicitud=solicitud, planta=planta, estado=estado)
         solicitud.estado = estado
         respuesta = SolicitudRespuesta.model_validate(solicitud)
         db.commit()

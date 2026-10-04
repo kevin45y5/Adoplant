@@ -22,15 +22,34 @@ from app.schemas import (
     MensajeRespuesta,
     MensajesPaginados,
     ParticipanteChatRespuesta,
+    PuntoRespuesta,
 )
 
 from app.services.puntos_encuentro import adopcion_chat, exigir_en_proceso, respuesta_punto
+from app.services.chat_ubicacion import leer_ubicacion, texto_ubicacion
 
 router = APIRouter(prefix="/chats", tags=["Chat"])
 
 
 def _respuesta_mensaje(mensaje, usuario, en_proceso=False):
     respuesta = MensajeRespuesta.model_validate(mensaje)
+    respuesta.ubicacion = leer_ubicacion(mensaje.contenido)
+    if respuesta.ubicacion is not None and mensaje.punto is not None:
+        # El punto puede haberse corregido desde la app móvil tras el envío.
+        respuesta.ubicacion = respuesta.ubicacion.model_copy(update={
+            "lat": mensaje.punto.latitud, "lng": mensaje.punto.longitud,
+            "label": mensaje.punto.descripcion or "",
+        })
+    if respuesta.ubicacion is not None:
+        respuesta.contenido = texto_ubicacion(respuesta.ubicacion)
+        if respuesta.ubicacion.kind != "stop" and mensaje.punto is None:
+            # Mensajes antiguos: tarjeta de solo lectura, sin inventar un punto editable.
+            respuesta.tipo = "UBICACION"
+            respuesta.punto = PuntoRespuesta(
+                id_punto=0, id_mensaje=mensaje.id_mensaje,
+                latitud=respuesta.ubicacion.lat, longitud=respuesta.ubicacion.lng,
+                descripcion=respuesta.ubicacion.label, puede_editar=False,
+            )
     if mensaje.punto is not None:
         respuesta.punto = respuesta_punto(mensaje.punto, usuario.id_usuario, en_proceso)
     return respuesta
@@ -230,10 +249,14 @@ def enviar_mensaje(
 
     if datos.tipo == "UBICACION":
         exigir_en_proceso(db, chat)
+    ubicacion = leer_ubicacion(datos.contenido)
+    if datos.tipo == "UBICACION" and ubicacion is not None:
+        if ubicacion.kind == "stop" or ubicacion.lat != datos.latitud or ubicacion.lng != datos.longitud:
+            raise HTTPException(422, "Las coordenadas de la ubicación no coinciden")
     # Ordena los envíos concurrentes antes de asignar el ID incremental.
     db.execute(select(Chat.id_chat).where(Chat.id_chat == id_chat).with_for_update())
     mensaje = Mensaje(
-        contenido=datos.contenido if datos.tipo == "TEXTO" else "Punto de encuentro",
+        contenido=datos.contenido if datos.tipo == "TEXTO" or ubicacion is not None else "Punto de encuentro",
         tipo=datos.tipo,
         id_chat=id_chat,
         id_usuario=usuario.id_usuario,
