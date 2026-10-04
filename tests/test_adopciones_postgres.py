@@ -23,6 +23,9 @@ def test_confirmaciones_privadas_guardadas_y_notificadas(entorno, orden):
     assert client.get(ruta, headers=headers('otro')).status_code == 404
     assert client.post(ruta+'/confirmar', headers=headers('otro')).status_code == 404
     assert client.post(ruta+'/confirmar').status_code == 401
+    assert client.post(ruta+'/entrega', headers=headers('adoptante')).status_code == 403
+    assert client.post(ruta+'/recepcion', headers=headers('donante')).status_code == 403
+    assert client.post(ruta+'/entrega', headers=headers('otro')).status_code == 404
     first = client.post(ruta+'/confirmar', headers=headers(orden[0]))
     assert first.status_code == 200, first.text
     assert first.json()['estado'] == 'EN_PROCESO'
@@ -36,5 +39,10 @@ def test_confirmaciones_privadas_guardadas_y_notificadas(entorno, orden):
     assert second.json()['fecha_entrega'] and second.json()['fecha_recepcion']
     assert db.get(Planta, solicitud['id_planta']).estado == 'ADOPTADA'
     for rol in ('donante','adoptante'):
+        endpoint = 'entrega' if rol == 'donante' else 'recepcion'
+        repeated = client.post(ruta+'/'+endpoint, headers=headers(rol))
+        assert repeated.status_code == 200
+        assert repeated.json()['fecha_entrega'] == second.json()['fecha_entrega']
+        assert repeated.json()['fecha_recepcion'] == second.json()['fecha_recepcion']
         notices=client.get('/api/notificaciones', headers=headers(rol)).json()
         assert any(n['tipo']=='ADOPCION_COMPLETADA' for n in notices)

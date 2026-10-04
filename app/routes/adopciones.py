@@ -76,6 +76,22 @@ def aplicar_confirmacion(adopcion, planta, usuario_id, ahora):
 @router.post("/{id_adopcion}/confirmar")
 def confirmar(id_adopcion: int, db: Session = Depends(get_db),
               usuario: Usuario = Depends(obtener_usuario_actual)):
+    return _confirmar(id_adopcion, db, usuario)
+
+
+@router.post("/{id_adopcion}/entrega")
+def confirmar_entrega(id_adopcion: int, db: Session = Depends(get_db),
+                     usuario: Usuario = Depends(obtener_usuario_actual)):
+    return _confirmar(id_adopcion, db, usuario, "donante")
+
+
+@router.post("/{id_adopcion}/recepcion")
+def confirmar_recepcion(id_adopcion: int, db: Session = Depends(get_db),
+                       usuario: Usuario = Depends(obtener_usuario_actual)):
+    return _confirmar(id_adopcion, db, usuario, "adoptante")
+
+
+def _confirmar(id_adopcion, db, usuario, rol_requerido=None):
     try:
         planta_id = db.scalar(select(Adopcion.id_planta).where(
             Adopcion.id_adopcion == id_adopcion, participantes(usuario)))
@@ -88,6 +104,9 @@ def confirmar(id_adopcion: int, db: Session = Depends(get_db),
                         .with_for_update().execution_options(populate_existing=True))
         if row is None or planta is None:
             raise HTTPException(404, "Adopción no encontrada")
+        rol = "donante" if usuario.id_usuario == row.id_donante else "adoptante"
+        if rol_requerido is not None and rol != rol_requerido:
+            raise HTTPException(403, "Esta confirmación corresponde al otro participante")
         if aplicar_confirmacion(row, planta, usuario.id_usuario, datetime.now(timezone.utc)):
             entregada = usuario.id_usuario == row.id_donante
             destinatarios = [row.id_donante, row.id_adoptante] if row.estado == "COMPLETADA" else [row.id_adoptante if entregada else row.id_donante]
