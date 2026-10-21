@@ -112,3 +112,30 @@ Se integran plantas, fotografías por URL, notificaciones, chat, moderación y r
 además de usuarios y solicitudes. OpenAPI reúne 35 operaciones de negocio.
 Importar `postman/AdopPlant_API_grupal_integrada.postman_collection.json` como colección nueva.
 Categorías y aceptación de solicitudes aún no tienen endpoints recibidos.
+
+## Contenedores y devcontainer
+
+La API se puede ejecutar en Docker sin cambiar el flujo de trabajo en Windows:
+
+```powershell
+# Pila completa del proyecto (base + API Python + API .NET de Analytics)
+cd "C:\Users\sault\Documents\para mientras"
+docker compose up -d --build
+
+# Solo esta API
+docker build -t adopplant-api:local .
+docker run --rm -p 8000:8000 --env-file .env adopplant-api
+```
+
+- `Dockerfile`: imagen de ejecución sobre la oficial `python:3.14-slim-bookworm`.
+  No hace falta imagen base propia ni compilador: todas las dependencias de
+  `requirements.txt` traen ruedas `cp314` para Linux.
+- `docker/entrypoint.sh`: aplica `alembic upgrade head` solo si se pide con
+  `APLICAR_MIGRACIONES=1` (en staging y producción se ejecuta a mano).
+- `compose.yaml`: atajo que **incluye** el compose de la raíz del workspace, de
+  modo que esta API y la de Analytics nunca se desincronicen.
+- `.devcontainer/`: entorno de desarrollo en VS Code con Python 3.14, Node 22,
+  cliente `psql` 18 y su propia PostgreSQL 18. Opcional: el flujo habitual
+  (Windows + `.venv`) sigue igual.
+
+Detalle completo en `../CONTENEDORES.md`.

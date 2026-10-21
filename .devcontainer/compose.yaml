@@ -1,0 +1,58 @@
+# Entorno de desarrollo de AdopPlant (API FastAPI).
+#
+# El devcontainer es autocontenido: levanta su propia PostgreSQL 18, de modo
+# que no hace falta instalar PostgreSQL en Windows ni modificar pg_hba.conf.
+# La base se crea sola con sql/base_inicial.sql la primera vez.
+#
+#   base de este devcontainer : PostgreSQL 18 del servicio "db"  (DB_HOST=db)
+#   base del equipo en Windows : PostgreSQL 18 local            (DB_HOST=localhost)
+#
+# Para trabajar contra la base local de Windows, cambiar DB_HOST por
+# host.docker.internal y agregar la regla correspondiente en pg_hba.conf.
+#
+# "name" fija el nombre del proyecto de Docker Compose. Sin esto, Compose
+# usaria el nombre de la carpeta (.devcontainer) y los dos devcontainers del
+# workspace (este y el de AdopPlant.Analytics) chocarian con el mismo id.
+name: adopplant-dev
+
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      - ..:/workspaces/adopplant:cached
+    working_dir: /workspaces/adopplant
+    command: sleep infinity
+    environment:
+      DB_HOST: db
+      DB_PORT: "5432"
+      DB_NAME: plant
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      # El resto de variables (JWT y correo) se leen del .env del repositorio.
+      PYTHONUNBUFFERED: "1"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_DB: plant
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      # PostgreSQL 18 usa un subdirectorio por version mayor: el volumen se
+      # monta en /var/lib/postgresql y no en /var/lib/postgresql/data.
+      - datos_postgres:/var/lib/postgresql
+      - ../sql/base_inicial.sql:/docker-entrypoint-initdb.d/10-base_inicial.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d plant"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+
+volumes:
+  datos_postgres:
