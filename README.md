@@ -1,10 +1,10 @@
 # AdopPlant API
 
-Proyecto académico: API REST monolítica compartida por la futura web y aplicación Flutter.
+API REST monolítica compartida por la web y la aplicación Flutter.
 
 Documentación vigente:
 
-- `docs/entrega_classroom.md`: requisitos de entrega grupal e individual y guía de Postman.
+- `docs/entrega_classroom.md`: checklist técnico y guía de Postman.
 - `docs/despliegue_render.md`: configuración y actualización del servicio público.
 - `docs/historias_de_usuario_revisadas.md`: las 17 historias y criterios actuales.
 - `docs/subtareas_backend_jira.md`: desglose del trabajo entre los cinco integrantes.
@@ -103,7 +103,7 @@ pendientes se encuentran en las historias y subtareas vigentes.
 - Swagger: https://adopplant-api.onrender.com/docs
 - Postman (SCRUM-1 y SCRUM-18): https://documenter.getpostman.com/view/58260475/2sBYB4LSGg
 
-El enlace de Postman indicado no cubre todavía todos los módulos del equipo.
+El enlace de Postman indicado no cubre todos los módulos.
 
 ## Integración del equipo (28-09-2026)
 

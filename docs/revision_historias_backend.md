@@ -6,7 +6,7 @@ Fecha: 18 de septiembre de 2026. Responsable de la revisión: asistencia a Krisl
 
 Las 17 historias originales describen correctamente el negocio, pero no hacían
 explícitas todas las consultas por ID, modificaciones y retiros que se necesitan
-para demostrar la gestión de recursos solicitada por el profesor.
+para demostrar la gestión de recursos solicitada.
 Se conservan las 17 historias, códigos Jira y responsables. Se amplían 11 y se
 mantienen 6 sin cambios funcionales. El texto completo para Jira está en
 historias_de_usuario_revisadas.md. Las versiones anteriores se retiraron del proyecto
