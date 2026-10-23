@@ -1,0 +1,481 @@
+{
+  "info": {
+    "name": "AdopPlant API - Pruebas de contrato y seguridad",
+    "description": "Coleccion Newman para la API Python (FastAPI) de AdopPlant.\n\nCubre el smoke de contrato (salud, login, perfil, catalogo, detalle, categorias y administracion) y los casos de seguridad C-SEC-01..C-SEC-07 del ticket SCRUM-120.\n\nRequiere los datos creados por Adoplant/scripts/seed_pruebas.py.\n\nEjecucion local:\n  newman run postman/AdopPlant_API_pruebas.postman_collection.json \\\n    --env-var baseUrl=http://127.0.0.1:8000 \\\n    --env-var adminUser=admin.panel@adopplant.com \\\n    --env-var adminPassword=Admin2026panel \\\n    --env-var donorUser=donante.pruebas@adopplant.com \\\n    --env-var donorPassword=Donante2026!\n\nEjecucion con Docker (desde la raiz del workspace):\n  docker compose -f docker-compose.yml -f compose.newman.yaml run --rm newman",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://api:8000" },
+    { "key": "adminUser", "value": "admin.panel@adopplant.com" },
+    { "key": "adminPassword", "value": "Admin2026panel" },
+    { "key": "donorUser", "value": "donante.pruebas@adopplant.com" },
+    { "key": "donorPassword", "value": "Donante2026!" },
+    { "key": "token", "value": "" },
+    { "key": "tokenNoAdmin", "value": "" },
+    { "key": "plantaId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "01 - Salud y contrato",
+      "item": [
+        {
+          "name": "01.01 - GET / (bienvenida)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('responde 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('devuelve el mensaje de bienvenida', function () {",
+                  "  pm.expect(pm.response.json()).to.have.property('mensaje');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/"
+          }
+        },
+        {
+          "name": "01.02 - GET /openapi.json (contrato)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('responde 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('el contrato incluye los endpoints criticos', function () {",
+                  "  const paths = pm.response.json().paths || {};",
+                  "  pm.expect(paths).to.have.property('/api/auth/login');",
+                  "  pm.expect(paths).to.have.property('/api/plantas');",
+                  "  pm.expect(paths).to.have.property('/api/usuarios/me');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/openapi.json"
+          }
+        },
+        {
+          "name": "01.03 - POST /api/auth/login (administrador)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('responde 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('entrega un JWT', function () {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.access_token).to.be.a('string');",
+                  "  pm.expect(body.access_token.split('.')).to.have.lengthOf(3);",
+                  "  pm.collectionVariables.set('token', body.access_token);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificador\": \"{{adminUser}}\",\n  \"contrasena\": \"{{adminPassword}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/api/auth/login"
+          }
+        },
+        {
+          "name": "01.04 - GET /api/usuarios/me (administrador)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('responde 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('devuelve la cuenta autenticada', function () {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.correo).to.eql(pm.collectionVariables.get('adminUser'));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/usuarios/me"
+          }
+        },
+        {
+          "name": "01.05 - GET /api/admin/usuarios (administrador)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('responde 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('devuelve la pagina de usuarios', function () {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body).to.have.property('usuarios');",
+                  "  pm.expect(body.usuarios).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/admin/usuarios?limite=5"
+          }
+        },
+        {
+          "name": "01.06 - POST /api/auth/login (donante)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('responde 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('guarda el token sin permisos de administrador', function () {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.access_token).to.be.a('string');",
+                  "  pm.collectionVariables.set('tokenNoAdmin', body.access_token);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificador\": \"{{donorUser}}\",\n  \"contrasena\": \"{{donorPassword}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/api/auth/login"
+          }
+        },
+        {
+          "name": "01.07 - GET /api/plantas (catalogo publico)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('responde 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('devuelve plantas y guarda la primera', function () {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body).to.have.property('plantas');",
+                  "  pm.expect(body.plantas).to.be.an('array');",
+                  "  if (body.plantas.length > 0) {",
+                  "    pm.collectionVariables.set('plantaId', body.plantas[0].id_planta);",
+                  "  }",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/plantas?limite=10"
+          }
+        },
+        {
+          "name": "01.08 - GET /api/plantas/{id} (detalle autenticado)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('responde 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('el detalle coincide con la planta del catalogo', function () {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(String(body.id_planta)).to.eql(String(pm.collectionVariables.get('plantaId')));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{tokenNoAdmin}}" }],
+            "url": "{{baseUrl}}/api/plantas/{{plantaId}}"
+          }
+        },
+        {
+          "name": "01.09 - GET /api/categorias",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('responde 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('devuelve un arreglo de categorias', function () {",
+                  "  pm.expect(pm.response.json()).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/categorias"
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 - Seguridad (SCRUM-120)",
+      "item": [
+        {
+          "name": "C-SEC-01 - Endpoint protegido sin token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('rechaza con 401', function () {",
+                  "  pm.response.to.have.status(401);",
+                  "});",
+                  "pm.test('incluye WWW-Authenticate: Bearer', function () {",
+                  "  pm.expect(pm.response.headers.get('WWW-Authenticate')).to.contain('Bearer');",
+                  "});",
+                  "pm.test('no filtra detalles internos', function () {",
+                  "  pm.expect(pm.response.text()).to.not.match(/Traceback|psycopg|sqlalchemy/i);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/usuarios/me"
+          }
+        },
+        {
+          "name": "C-SEC-02 - Token con firma invalida",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('rechaza con 401', function () {",
+                  "  pm.response.to.have.status(401);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiaWF0IjoxLCJleHAiOjJ9.firma-invalida"
+              }
+            ],
+            "url": "{{baseUrl}}/api/usuarios/me"
+          }
+        },
+        {
+          "name": "C-SEC-03 - Token vencido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('rechaza con 401', function () {",
+                  "  pm.response.to.have.status(401);",
+                  "});",
+                  "pm.test('no revela si el token existio', function () {",
+                  "  pm.expect(pm.response.text().toLowerCase()).to.contain('token');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiaWF0IjoxLCJleHAiOjJ9.VG9rZW5WZW5jaWRv"
+              }
+            ],
+            "url": "{{baseUrl}}/api/usuarios/me"
+          }
+        },
+        {
+          "name": "C-SEC-04 - Usuario no administrador en /api/admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('rechaza con 403', function () {",
+                  "  pm.response.to.have.status(403);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{tokenNoAdmin}}" }],
+            "url": "{{baseUrl}}/api/admin/usuarios"
+          }
+        },
+        {
+          "name": "C-SEC-05 - Fuerza bruta: contrasena incorrecta (1)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('responde 401', function () {",
+                  "  pm.response.to.have.status(401);",
+                  "});",
+                  "pm.test('mensaje generico, sin enumerar usuarios', function () {",
+                  "  pm.expect(pm.response.json().detail).to.eql('Credenciales inv\u00e1lidas');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificador\": \"{{adminUser}}\",\n  \"contrasena\": \"ClaveIncorrecta1!\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/api/auth/login"
+          }
+        },
+        {
+          "name": "C-SEC-05 - Fuerza bruta: contrasena incorrecta (2)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('responde 401', function () {",
+                  "  pm.response.to.have.status(401);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificador\": \"{{adminUser}}\",\n  \"contrasena\": \"OtraClaveIncorrecta2!\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/api/auth/login"
+          }
+        },
+        {
+          "name": "C-SEC-06 - Inyeccion SQL en filtro de busqueda",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('la API no falla con 500', function () {",
+                  "  pm.expect(pm.response.code).to.be.below(500);",
+                  "});",
+                  "pm.test('no expone errores SQL', function () {",
+                  "  pm.expect(pm.response.text()).to.not.match(/psycopg|syntax error|sqlalchemy|Traceback/i);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/plantas?busqueda=%27%20OR%201%3D1--"
+          }
+        },
+        {
+          "name": "C-SEC-07 - Enumeracion: usuario inexistente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('responde 401 igual que una clave incorrecta', function () {",
+                  "  pm.response.to.have.status(401);",
+                  "  pm.expect(pm.response.json().detail).to.eql('Credenciales inv\u00e1lidas');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificador\": \"usuario.inexistente@adopplant.com\",\n  \"contrasena\": \"Cualquiera2026!\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/api/auth/login"
+          }
+        }
+      ]
+    }
+  ]
+}
