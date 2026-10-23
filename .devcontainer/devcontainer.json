@@ -1,48 +1,22 @@
 {
-  "name": "AdopPlant API (Python 3.14 + PostgreSQL 18)",
-  "dockerComposeFile": "compose.yaml",
-  "service": "app",
-  "workspaceFolder": "/workspaces/adopplant",
-  "shutdownAction": "stopCompose",
-  "remoteUser": "vscode",
-  "postCreateCommand": "python3 -m venv /home/vscode/venv && /home/vscode/venv/bin/python -m pip install --no-cache-dir -r requirements.txt && /home/vscode/venv/bin/python -m alembic upgrade head || echo 'No se pudo aplicar Alembic: revisa la base del devcontainer (psql -h db -U postgres -d plant)'",
-  "updateContentCommand": "/home/vscode/venv/bin/python -m pip install --no-cache-dir -r requirements.txt",
-  "remoteEnv": {
-    "VIRTUAL_ENV": "/home/vscode/venv",
-    "PATH": "/home/vscode/venv/bin:${containerEnv:PATH}",
-    "DB_HOST": "db",
-    "DB_PORT": "5432",
-    "DB_NAME": "plant",
-    "DB_USER": "postgres",
-    "DB_PASSWORD": "postgres",
-    "PYTHONUNBUFFERED": "1"
-  },
-  "forwardPorts": [8000],
-  "portsAttributes": {
-    "8000": {
-      "label": "API AdopPlant (uvicorn)",
-      "onAutoForward": "notify"
+  "name": "Adoplant (FastAPI)",
+  "image": "mcr.microsoft.com/devcontainers/python:3.14-bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "version": "latest",
+      "moby": true,
+      "enableNonRootDocker": true
     }
   },
+  "workspaceFolder": "/workspaces/Adoplant",
+  "postCreateCommand": "if [ -f requirements.txt ]; then pip install -r requirements.txt; elif [ -f pyproject.toml ]; then pip install -e .; fi",
+  "remoteUser": "vscode",
   "customizations": {
     "vscode": {
       "extensions": [
         "ms-python.python",
-        "ms-python.vscode-pylance",
         "ms-azuretools.vscode-docker"
-      ],
-      "settings": {
-        "python.defaultInterpreterPath": "/home/vscode/venv/bin/python",
-        "python.testing.pytestEnabled": true,
-        "python.testing.pytestArgs": [
-          "tests"
-        ],
-        "python.analysis.extraPaths": [
-          "${workspaceFolder}"
-        ],
-        "files.eol": "\n"
-      }
+      ]
     }
-  },
-  "postAttachCommand": "echo 'API:      /home/vscode/venv/bin/python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000' && echo 'Swagger:  http://localhost:8000/docs' && echo 'Pruebas:  /home/vscode/venv/bin/python -m pytest -q' && echo 'Web:      node --test tests/*.cjs' && echo 'Base:     psql -h db -U postgres -d plant'"
+  }
 }
