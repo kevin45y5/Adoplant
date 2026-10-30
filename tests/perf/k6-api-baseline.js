@@ -6,8 +6,9 @@
 // Endpoints: GET / y GET /api/plantas.
 // Criterio: HTTP 200, 0 % de errores y p95 <= 2 s (sin contar el acceso en frio).
 //
-// Uso local (k6 instalado):
-//   k6 run -e BASE_URL=http://127.0.0.1:8000 Adoplant/tests/perf/k6-api-baseline.js
+// Uso local (k6 instalado), desde la carpeta Adoplant/:
+//   k6 run -e BASE_URL=http://127.0.0.1:8000 tests/perf/k6-api-baseline.js
+// Los reportes quedan en tests/perf/reports/ (ver README del proyecto).
 //
 // Uso con Docker (desde la raiz del workspace):
 //   docker compose -f docker-compose.yml -f compose.k6-api.yaml run --rm k6-api
@@ -15,6 +16,7 @@
 import http from 'k6/http';
 import { check, sleep } from 'k6';
 import { Rate } from 'k6/metrics';
+import { construirReportes } from './reporte.js';
 
 const BASE_URL = (__ENV.BASE_URL || 'http://api:8000').replace(/\/+$/, '');
 const ADMIN_USER = __ENV.ADMIN_USER || 'admin.panel@adopplant.com';
@@ -100,4 +102,9 @@ export default function (data) {
     'GET /api/usuarios/me con token responde 200': (r) => r.status === 200,
   });
   erroresHttp.add(perfil.status !== 200);
+}
+
+// Deja la evidencia de SCRUM-92 en tests/perf/reports/.
+export function handleSummary(data) {
+  return construirReportes(data, 'scrum-92-baseline');
 }

@@ -9,8 +9,9 @@
 // El detalle de planta exige un token valido, por eso el setup inicia sesion
 // con la cuenta donante creada por scripts/seed_pruebas.py.
 //
-// Uso local:
-//   k6 run -e BASE_URL=http://127.0.0.1:8000 Adoplant/tests/perf/k6-api-load.js
+// Uso local, desde la carpeta Adoplant/:
+//   k6 run -e BASE_URL=http://127.0.0.1:8000 tests/perf/k6-api-load.js
+// Los reportes quedan en tests/perf/reports/ (ver README del proyecto).
 //
 // Uso con Docker (desde la raiz del workspace):
 //   docker compose -f docker-compose.yml -f compose.k6-api.yaml run --rm k6-api-load
@@ -18,6 +19,7 @@
 import http from 'k6/http';
 import { check, sleep } from 'k6';
 import { Rate } from 'k6/metrics';
+import { construirReportes } from './reporte.js';
 
 const BASE_URL = (__ENV.BASE_URL || 'http://api:8000').replace(/\/+$/, '');
 const DONOR_USER = __ENV.DONOR_USER || 'donante.pruebas@adopplant.com';
@@ -105,4 +107,9 @@ export default function (data) {
   }
 
   sleep(0.5);
+}
+
+// Deja la evidencia de SCRUM-95 en tests/perf/reports/.
+export function handleSummary(data) {
+  return construirReportes(data, 'scrum-95-load');
 }

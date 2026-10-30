@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>scrum-95-load - Reporte k6</title>
+  <style>
+    body { font-family: Segoe UI, Arial, sans-serif; margin: 24px; color: #1f2933; }
+    h1 { font-size: 20px; }
+    h2 { font-size: 16px; margin-top: 24px; }
+    table { border-collapse: collapse; width: 100%; font-size: 13px; }
+    th, td { border: 1px solid #cbd2d9; padding: 6px 8px; text-align: left; }
+    th { background: #e4e7eb; }
+    tr:nth-child(even) td { background: #f5f7fa; }
+    .ok { color: #0b6b3a; font-weight: 600; }
+    .mal { color: #a61b1b; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <h1>scrum-95-load - Reporte de prueba de carga (k6)</h1>
+  <p>Generado: 2026-10-30T18:12:31.304Z ·
+     Duracion total del test: 47.58 ms de promedio por peticion.</p>
+  <p class="ok">APROBADO (0 checks fallidos) ·
+     Checks: 11086/11086 correctos.</p>
+
+  <h2>Metricas</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Metrica</th><th>Tipo</th><th>Promedio</th><th>Mediana</th>
+        <th>p95</th><th>Maximo</th><th>Tasa</th><th>Muestras</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>checks</td>
+        <td>rate</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td>100.00 %</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>data_received</td>
+        <td>counter</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td>7352186.61 %</td>
+        <td>26888655</td>
+      </tr>
+      <tr>
+        <td>data_sent</td>
+        <td>counter</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td>771444.00 %</td>
+        <td>2821350</td>
+      </tr>
+      <tr>
+        <td>errores_http</td>
+        <td>rate</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td>0.00 %</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>http_req_blocked</td>
+        <td>trend</td>
+        <td>0.01</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>2.65</td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>http_req_connecting</td>
+        <td>trend</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>2.55</td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>http_req_duration</td>
+        <td>trend</td>
+        <td>47.58</td>
+        <td>34.17</td>
+        <td>128.89</td>
+        <td>341.18</td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>http_req_duration{escenario:10vu,endpoint:catalogo}</td>
+        <td>trend</td>
+        <td>68.00</td>
+        <td>56.59</td>
+        <td>155.82</td>
+        <td>341.18</td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>http_req_duration{escenario:10vu,endpoint:detalle}</td>
+        <td>trend</td>
+        <td>27.20</td>
+        <td>19.88</td>
+        <td>81.32</td>
+        <td>287.39</td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>http_req_duration{escenario:5vu,endpoint:catalogo}</td>
+        <td>trend</td>
+        <td>69.01</td>
+        <td>67.46</td>
+        <td>110.98</td>
+        <td>162.75</td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>http_req_duration{escenario:5vu,endpoint:detalle}</td>
+        <td>trend</td>
+        <td>25.63</td>
+        <td>21.64</td>
+        <td>52.40</td>
+        <td>194.21</td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>http_req_duration{expected_response:true}</td>
+        <td>trend</td>
+        <td>47.58</td>
+        <td>34.17</td>
+        <td>128.89</td>
+        <td>341.18</td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>http_req_failed</td>
+        <td>rate</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td>0.00 %</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>http_req_failed{escenario:10vu}</td>
+        <td>rate</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td>0.00 %</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>http_req_failed{escenario:5vu}</td>
+        <td>rate</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td>0.00 %</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>http_req_receiving</td>
+        <td>trend</td>
+        <td>0.80</td>
+        <td>0.64</td>
+        <td>2.23</td>
+        <td>52.18</td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>http_req_sending</td>
+        <td>trend</td>
+        <td>0.02</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>18.10</td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>http_req_tls_handshaking</td>
+        <td>trend</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>http_req_waiting</td>
+        <td>trend</td>
+        <td>46.76</td>
+        <td>33.25</td>
+        <td>127.71</td>
+        <td>339.42</td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>http_reqs</td>
+        <td>counter</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td>3031.25 %</td>
+        <td>11086</td>
+      </tr>
+      <tr>
+        <td>iteration_duration</td>
+        <td>trend</td>
+        <td>596.21</td>
+        <td>580.28</td>
+        <td>713.17</td>
+        <td>902.40</td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>iterations</td>
+        <td>counter</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td>1515.35 %</td>
+        <td>5542</td>
+      </tr>
+      <tr>
+        <td>vus</td>
+        <td>gauge</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td>10.00</td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>vus_max</td>
+        <td>gauge</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td>15.00</td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Thresholds configurados</h2>
+  <p>Si algun threshold falla, k6 termina con codigo de salida distinto de cero y
+     el resumen de consola lo marca como <em>FAILED</em>. Este HTML se genera
+     igualmente para conservar la evidencia.</p>
+</body>
+</html>
