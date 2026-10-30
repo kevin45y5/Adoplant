@@ -112,7 +112,7 @@ Los scripts viven en `tests/perf/` y dejan la evidencia en `tests/perf/reports/`
 1. PostgreSQL con la base `plant` y los datos de prueba (idempotente):
 
    ```powershell
-   cd "C:\Users\sault\Documents\para mientras\Adoplant"
+   cd "C:\Users\sault\Documents\Adoplant"
    .\.venv\Scripts\python.exe -m scripts.seed_pruebas
    ```
 
@@ -131,7 +131,7 @@ Los scripts viven en `tests/perf/` y dejan la evidencia en `tests/perf/reports/`
 ### Ejecutar
 
 ```powershell
-cd "C:\Users\sault\Documents\para mientras\Adoplant"
+cd "C:\Users\sault\Documents\Adoplant"
 
 k6 run -e BASE_URL=http://127.0.0.1:8000 tests/perf/k6-api-baseline.js   # SCRUM-92 (~3 min)
 k6 run -e BASE_URL=http://127.0.0.1:8000 tests/perf/k6-api-load.js       # SCRUM-95 (~6 min)
