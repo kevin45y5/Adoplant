@@ -20,6 +20,20 @@ function setup(file, token) {
   return {el,calls,redirects,values,context,reply:r=>response=r};
 }
 const tick = () => new Promise(resolve=>setImmediate(resolve));
+
+test('login no guarda ni abre una sesión cuando falta un token válido',async()=>{
+  for (const data of [null, {}, {access_token: null}, {access_token: 123}, {access_token: ''}, {access_token: '   '}]) {
+    const s=setup('main.js');
+    s.el('loginEmail').value='ana@example.com';
+    s.el('loginPassword').value='Prueba123';
+    s.reply({ok:true,status:200,json:async()=>data});
+    await s.context.handleLogin({preventDefault(){}});
+    assert.equal(s.values.has('token'),false);
+    assert.equal(s.redirects.length,0);
+    assert.match(s.el('toastMessage').textContent,/sesión válida/);
+    assert.equal(s.el('loginBtn').disabled,false);
+  }
+});
 test('registro acepta letras Unicode como el backend',async()=>{
   const s=setup('main.js');
   for (const [id,value] of Object.entries({regFirstName:'Ana',regLastName:'Prueba',regEmail:'ana@example.com',regPhoneCode:'+503',regPhone:'12345678',regPassword:'ñññññññ1',regPasswordConfirm:'ñññññññ1'})) s.el(id).value=value;

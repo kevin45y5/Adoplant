@@ -1,0 +1,12 @@
+[
+  {
+    "caso": "test_csec_03_token_expirado",
+    "metodo": "GET",
+    "ruta": "/api/usuarios/me",
+    "estado": 401,
+    "www_authenticate": "Bearer",
+    "respuesta": {
+      "detail": "Token ausente, inválido o vencido"
+    }
+  }
+]

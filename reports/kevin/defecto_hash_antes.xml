@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="4" time="0.310" timestamp="2026-10-30T16:22:27.069667-06:00" hostname="DESKTOP-R5KBLVV"><testcase classname="tests.test_security" name="test_c111_04_hash_corrupto_o_vacio" time="0.182"><failure message="pwdlib.exceptions.UnknownHashError: This hash can't be identified. Make sure it's valid and that its corresponding hasher is enabled.">subtests = &lt;_pytest.subtests.Subtests object at 0x00000188C80A1E80&gt;
+
+    def test_c111_04_hash_corrupto_o_vacio(subtests):
+        for valor in ("", "hash-corrupto", "$argon2id$v=19$m=65536,t=3,p=4$invalido"):
+            with subtests.test(hash=valor):
+&gt;               assert security.verificar_contrasena("Secreto#1", valor) is False
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_security.py:48:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\security.py:34: in verificar_contrasena
+    return password_hash.verify(contrasena, hash_guardado)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;pwdlib._hash.PasswordHash object at 0x00000188C80A1A90&gt;
+password = 'Secreto#1', hash = ''
+
+    def verify(self, password: str | bytes, hash: str | bytes) -&gt; bool:
+        """
+        Verifies if a password matches a given hash.
+
+        Args:
+            password: The password to be checked.
+            hash: The hash to be verified.
+
+        Returns:
+            True if the password matches the hash, False otherwise.
+
+        Raises:
+            exceptions.UnknownHashError: If the hash is not recognized by any of the hashers.
+
+        Examples:
+            &gt;&gt;&gt; password_hash.verify("herminetincture", hash)
+            True
+
+            &gt;&gt;&gt; password_hash.verify("INVALID_PASSWORD", hash)
+            False
+        """
+        validate_str_or_bytes(password, "password")
+        validate_str_or_bytes(hash, "hash")
+        for hasher in self.hashers:
+            if hasher.identify(hash):
+                return hasher.verify(password, hash)
+&gt;       raise exceptions.UnknownHashError(hash)
+E       pwdlib.exceptions.UnknownHashError: This hash can't be identified. Make sure it's valid and that its corresponding hasher is enabled.
+
+.venv\Lib\site-packages\pwdlib\_hash.py:94: UnknownHashError</failure><failure message="pwdlib.exceptions.UnknownHashError: This hash can't be identified. Make sure it's valid and that its corresponding hasher is enabled.">subtests = &lt;_pytest.subtests.Subtests object at 0x00000188C80A1E80&gt;
+
+    def test_c111_04_hash_corrupto_o_vacio(subtests):
+        for valor in ("", "hash-corrupto", "$argon2id$v=19$m=65536,t=3,p=4$invalido"):
+            with subtests.test(hash=valor):
+&gt;               assert security.verificar_contrasena("Secreto#1", valor) is False
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_security.py:48:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\security.py:34: in verificar_contrasena
+    return password_hash.verify(contrasena, hash_guardado)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;pwdlib._hash.PasswordHash object at 0x00000188C80A1A90&gt;
+password = 'Secreto#1', hash = 'hash-corrupto'
+
+    def verify(self, password: str | bytes, hash: str | bytes) -&gt; bool:
+        """
+        Verifies if a password matches a given hash.
+
+        Args:
+            password: The password to be checked.
+            hash: The hash to be verified.
+
+        Returns:
+            True if the password matches the hash, False otherwise.
+
+        Raises:
+            exceptions.UnknownHashError: If the hash is not recognized by any of the hashers.
+
+        Examples:
+            &gt;&gt;&gt; password_hash.verify("herminetincture", hash)
+            True
+
+            &gt;&gt;&gt; password_hash.verify("INVALID_PASSWORD", hash)
+            False
+        """
+        validate_str_or_bytes(password, "password")
+        validate_str_or_bytes(hash, "hash")
+        for hasher in self.hashers:
+            if hasher.identify(hash):
+                return hasher.verify(password, hash)
+&gt;       raise exceptions.UnknownHashError(hash)
+E       pwdlib.exceptions.UnknownHashError: This hash can't be identified. Make sure it's valid and that its corresponding hasher is enabled.
+
+.venv\Lib\site-packages\pwdlib\_hash.py:94: UnknownHashError</failure><failure message="contains 2 failed subtests">contains 2 failed subtests</failure></testcase></testsuite></testsuites>

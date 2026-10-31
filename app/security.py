@@ -5,6 +5,7 @@ from pathlib import Path
 import jwt
 from dotenv import load_dotenv
 from pwdlib import PasswordHash
+from pwdlib.exceptions import UnknownHashError
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -31,7 +32,11 @@ def crear_hash(contrasena: str) -> str:
 
 
 def verificar_contrasena(contrasena: str, hash_guardado: str) -> bool:
-    return password_hash.verify(contrasena, hash_guardado)
+    try:
+        return password_hash.verify(contrasena, hash_guardado)
+    except UnknownHashError:
+        # Un hash almacenado inválido rechaza el acceso, sin causar un error 500.
+        return False
 
 
 def crear_token_acceso(id_usuario: int) -> str:

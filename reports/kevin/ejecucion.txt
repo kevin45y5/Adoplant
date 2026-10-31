@@ -1,0 +1,47 @@
+============================= test session starts =============================
+platform win32 -- Python 3.14.10, pytest-9.1.1, pluggy-1.7.0 -- C:\Users\erasm\OneDrive\Documentos\test\Adoplant\.venv\Scripts\python.exe
+metadata: {'Python': '3.14.10', 'Platform': 'Windows-10-10.0.19045-SP0', 'Packages': {'pytest': '9.1.1', 'pluggy': '1.7.0'}, 'Plugins': {'anyio': '4.15.1', 'cov': '6.0.0', 'html': '4.1.1', 'metadata': '3.1.1'}}
+rootdir: C:\Users\erasm\OneDrive\Documentos\test\Adoplant
+configfile: pytest.ini
+plugins: anyio-4.15.1, cov-6.0.0, html-4.1.1, metadata-3.1.1
+collecting ... collected 18 items
+
+tests/test_security.py::test_c111_01_hash_con_sal_y_sin_texto_claro PASSED [  5%]
+tests/test_security.py::test_c111_02_contrasena_correcta PASSED          [ 11%]
+tests/test_security.py::test_c111_03_contrasena_incorrecta PASSED        [ 16%]
+tests/test_security.py::test_c111_04_hash_corrupto_o_vacio SUBPASSED(hash='') [ 22%]
+tests/test_security.py::test_c111_04_hash_corrupto_o_vacio SUBPASSED(hash='hash-corrupto') [ 22%]
+tests/test_security.py::test_c111_04_hash_corrupto_o_vacio SUBPASSED(hash='$argon2id$v=19$m=65536,t=3,p=4$invalido') [ 22%]
+tests/test_security.py::test_c111_04_hash_corrupto_o_vacio PASSED        [ 22%]
+tests/test_security.py::test_c111_05_claims_y_duracion PASSED            [ 27%]
+tests/test_security.py::test_c111_06_tokens_consecutivos_y_usuarios_distintos PASSED [ 33%]
+tests/test_security.py::test_c111_07_firma_correcta_e_incorrecta PASSED  [ 38%]
+tests/test_security.py::test_c111_08_decodificar_en_otro_proceso PASSED  [ 44%]
+tests/test_security.py::test_c111_09_rechazar_clave_corta PASSED         [ 50%]
+tests/test_security.py::test_c111_10_rechazar_duracion_no_positiva SUBPASSED(minutos=0) [ 55%]
+tests/test_security.py::test_c111_10_rechazar_duracion_no_positiva SUBPASSED(minutos=-1) [ 55%]
+tests/test_security.py::test_c111_10_rechazar_duracion_no_positiva PASSED [ 55%]
+tests/test_notificaciones.py::test_c112_01_notificacion_de_solicitud PASSED [ 61%]
+tests/test_notificaciones.py::test_c112_02_no_confirma_transaccion PASSED [ 66%]
+tests/test_notificaciones.py::test_c112_03_aceptada PASSED               [ 72%]
+tests/test_notificaciones.py::test_c112_04_rechazada PASSED              [ 77%]
+tests/test_notificaciones.py::test_c112_05_estado_distinto_de_aceptada PASSED [ 83%]
+tests/test_notificaciones.py::test_c112_06_destinatario_es_adoptante PASSED [ 88%]
+tests/test_notificaciones.py::test_c112_07_flush_conserva_identificadores PASSED [ 94%]
+tests/test_notificaciones.py::test_c112_08_notificaciones_independientes PASSED [100%]
+
+- generated xml file: C:\Users\erasm\OneDrive\Documentos\test\Adoplant\reports\kevin\resultados.xml -
+
+---------- coverage: platform win32, python 3.14.10-final-0 ----------
+Name                             Stmts   Miss Branch BrPart  Cover   Missing
+----------------------------------------------------------------------------
+app\security.py                     29      0      4      0   100%
+app\services\notificaciones.py       7      0      0      0   100%
+----------------------------------------------------------------------------
+TOTAL                               36      0      4      0   100%
+Coverage HTML written to dir reports/kevin/cobertura
+Coverage JSON written to file reports/kevin/cobertura.json
+
+Required test coverage of 90% reached. Total coverage: 100.00%
+- Generated html report: file:///C:/Users/erasm/OneDrive/Documentos/test/Adoplant/reports/kevin/ejecucion.html -
+==================== 18 passed, 5 subtests passed in 3.24s ====================

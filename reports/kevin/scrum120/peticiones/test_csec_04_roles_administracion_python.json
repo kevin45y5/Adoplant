@@ -1,0 +1,53 @@
+[
+  {
+    "caso": "test_csec_04_roles_administracion_python",
+    "metodo": "GET",
+    "ruta": "/api/admin/usuarios",
+    "estado": 403,
+    "www_authenticate": null,
+    "respuesta": {
+      "detail": "Se requieren permisos de administrador"
+    }
+  },
+  {
+    "caso": "test_csec_04_roles_administracion_python",
+    "metodo": "GET",
+    "ruta": "/api/admin/usuarios",
+    "estado": 200,
+    "www_authenticate": null,
+    "respuesta": {
+      "total": 3,
+      "pagina": 1,
+      "limite": 20,
+      "usuarios": [
+        {
+          "id_usuario": 715,
+          "nombre": "admin",
+          "apellido": "SCRUM120",
+          "correo": "admin-7cf434c47c39@example.com",
+          "telefono": "12007cf434c47c39",
+          "estado": "ACTIVO",
+          "fecha_registro": "2026-10-30T16:38:46.005893-06:00"
+        },
+        {
+          "id_usuario": 716,
+          "nombre": "usuario",
+          "apellido": "SCRUM120",
+          "correo": "usuario-7cf434c47c39@example.com",
+          "telefono": "12017cf434c47c39",
+          "estado": "ACTIVO",
+          "fecha_registro": "2026-10-30T16:38:46.005893-06:00"
+        },
+        {
+          "id_usuario": 717,
+          "nombre": "otro",
+          "apellido": "SCRUM120",
+          "correo": "otro-7cf434c47c39@example.com",
+          "telefono": "12027cf434c47c39",
+          "estado": "ACTIVO",
+          "fecha_registro": "2026-10-30T16:38:46.005893-06:00"
+        }
+      ]
+    }
+  }
+]

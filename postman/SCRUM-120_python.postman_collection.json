@@ -1,0 +1,326 @@
+{
+  "info": {
+    "name": "SCRUM-120 — Seguridad API Python local",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Colección preparada; ejecución acreditada mediante pytest/TestClient, no Postman. Requiere API local, cuentas ficticias admin/usuario y tokens configurados. C-SEC-04 adaptado a administración Python; no cubre C#. No contiene credenciales reales."
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000"
+    },
+    {
+      "key": "token_invalido",
+      "value": "invalido"
+    },
+    {
+      "key": "token_expirado",
+      "value": ""
+    },
+    {
+      "key": "token_usuario",
+      "value": ""
+    },
+    {
+      "key": "token_admin",
+      "value": ""
+    },
+    {
+      "key": "correo_usuario",
+      "value": ""
+    },
+    {
+      "key": "id_notificacion_ajena",
+      "value": ""
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "const base = pm.variables.get(\"base_url\");",
+          "if (!/^http:\\/\\/(127\\.0\\.0\\.1|localhost)(:\\d+)?$/.test(base)) { pm.execution.skipRequest(); throw new Error(\"Solo API local autorizada\"); }"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "C-SEC-01: sin token",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{base_url}}/api/usuarios/me"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 401\", () => pm.response.to.have.status(401));",
+              "pm.test(\"Sin errores internos\", () => { pm.expect(pm.response.text()).not.to.include(\"Traceback\"); pm.expect(pm.response.text()).not.to.include(\"psycopg.errors\"); });",
+              "pm.test(\"Bearer challenge\", () => pm.expect(pm.response.headers.get(\"WWW-Authenticate\")).to.eql(\"Bearer\"));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "C-SEC-02: firma invalida",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token_invalido}}"
+          }
+        ],
+        "url": "{{base_url}}/api/usuarios/me"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 401\", () => pm.response.to.have.status(401));",
+              "pm.test(\"Sin errores internos\", () => { pm.expect(pm.response.text()).not.to.include(\"Traceback\"); pm.expect(pm.response.text()).not.to.include(\"psycopg.errors\"); });",
+              "pm.test(\"Bearer challenge\", () => pm.expect(pm.response.headers.get(\"WWW-Authenticate\")).to.eql(\"Bearer\"));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "C-SEC-03: token expirado",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token_expirado}}"
+          }
+        ],
+        "url": "{{base_url}}/api/usuarios/me"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 401\", () => pm.response.to.have.status(401));",
+              "pm.test(\"Sin errores internos\", () => { pm.expect(pm.response.text()).not.to.include(\"Traceback\"); pm.expect(pm.response.text()).not.to.include(\"psycopg.errors\"); });",
+              "pm.test(\"Bearer challenge\", () => pm.expect(pm.response.headers.get(\"WWW-Authenticate\")).to.eql(\"Bearer\"));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "C-SEC-04 Python: usuario normal",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token_usuario}}"
+          }
+        ],
+        "url": "{{base_url}}/api/admin/usuarios"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 403\", () => pm.response.to.have.status(403));",
+              "pm.test(\"Sin errores internos\", () => { pm.expect(pm.response.text()).not.to.include(\"Traceback\"); pm.expect(pm.response.text()).not.to.include(\"psycopg.errors\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "C-SEC-04 Python: administrador",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token_admin}}"
+          }
+        ],
+        "url": "{{base_url}}/api/admin/usuarios"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Sin errores internos\", () => { pm.expect(pm.response.text()).not.to.include(\"Traceback\"); pm.expect(pm.response.text()).not.to.include(\"psycopg.errors\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "C-SEC-05: login incorrecto (repetir 5 veces)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/auth/login",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"identificador\": \"{{correo_usuario}}\", \"contrasena\": \"Incorrecta120!\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 401\", () => pm.response.to.have.status(401));",
+              "pm.test(\"Sin errores internos\", () => { pm.expect(pm.response.text()).not.to.include(\"Traceback\"); pm.expect(pm.response.text()).not.to.include(\"psycopg.errors\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "C-SEC-06: SQLi como dato",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/auth/login",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"identificador\": \"x@example.com' OR 1=1 --\", \"contrasena\": \"Incorrecta120!\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 401\", () => pm.response.to.have.status(401));",
+              "pm.test(\"Sin errores internos\", () => { pm.expect(pm.response.text()).not.to.include(\"Traceback\"); pm.expect(pm.response.text()).not.to.include(\"psycopg.errors\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "C-SEC-07: login desconocido",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/auth/login",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"identificador\": \"ausente-scrum120@example.com\", \"contrasena\": \"Incorrecta120!\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 401\", () => pm.response.to.have.status(401));",
+              "pm.test(\"Sin errores internos\", () => { pm.expect(pm.response.text()).not.to.include(\"Traceback\"); pm.expect(pm.response.text()).not.to.include(\"psycopg.errors\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "C-SEC-07: notificacion ajena",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token_usuario}}"
+          }
+        ],
+        "url": "{{base_url}}/api/notificaciones/{{id_notificacion_ajena}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 404\", () => pm.response.to.have.status(404));",
+              "pm.test(\"Sin errores internos\", () => { pm.expect(pm.response.text()).not.to.include(\"Traceback\"); pm.expect(pm.response.text()).not.to.include(\"psycopg.errors\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "C-SEC-07: notificacion inexistente",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token_usuario}}"
+          }
+        ],
+        "url": "{{base_url}}/api/notificaciones/2147483647"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 404\", () => pm.response.to.have.status(404));",
+              "pm.test(\"Sin errores internos\", () => { pm.expect(pm.response.text()).not.to.include(\"Traceback\"); pm.expect(pm.response.text()).not.to.include(\"psycopg.errors\"); });"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+[
+  {
+    "caso": "test_csec_06_inyeccion_sql_parametrizada",
+    "metodo": "POST",
+    "ruta": "/api/auth/login",
+    "estado": 401,
+    "www_authenticate": null,
+    "respuesta": {
+      "detail": "Credenciales inválidas"
+    }
+  },
+  {
+    "caso": "test_csec_06_inyeccion_sql_parametrizada",
+    "metodo": "GET",
+    "ruta": "/api/admin/usuarios?buscar=%27+OR+%271%27%3D%271%27+--",
+    "estado": 200,
+    "www_authenticate": null,
+    "respuesta": {
+      "total": 0,
+      "pagina": 1,
+      "limite": 20,
+      "usuarios": []
+    }
+  },
+  {
+    "caso": "test_csec_06_inyeccion_sql_parametrizada",
+    "metodo": "POST",
+    "ruta": "/api/auth/login",
+    "estado": 401,
+    "www_authenticate": null,
+    "respuesta": {
+      "detail": "Credenciales inválidas"
+    }
+  },
+  {
+    "caso": "test_csec_06_inyeccion_sql_parametrizada",
+    "metodo": "GET",
+    "ruta": "/api/admin/usuarios?buscar=x%40example.com%27+OR+1%3D1+--",
+    "estado": 200,
+    "www_authenticate": null,
+    "respuesta": {
+      "total": 0,
+      "pagina": 1,
+      "limite": 20,
+      "usuarios": []
+    }
+  },
+  {
+    "caso": "test_csec_06_inyeccion_sql_parametrizada",
+    "metodo": "POST",
+    "ruta": "/api/auth/login",
+    "estado": 401,
+    "www_authenticate": null,
+    "respuesta": {
+      "detail": "Credenciales inválidas"
+    }
+  },
+  {
+    "caso": "test_csec_06_inyeccion_sql_parametrizada",
+    "metodo": "GET",
+    "ruta": "/api/admin/usuarios?buscar=%27%3B+SELECT+1%3B+--",
+    "estado": 200,
+    "www_authenticate": null,
+    "respuesta": {
+      "total": 0,
+      "pagina": 1,
+      "limite": 20,
+      "usuarios": []
+    }
+  }
+]

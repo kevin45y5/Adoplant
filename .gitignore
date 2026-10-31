@@ -1,4 +1,6 @@
 .venv/
+.python/
+.uv-cache/
 .env
 postman/*.local.postman_environment.json
 __pycache__/

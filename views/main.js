@@ -49,6 +49,10 @@ async function handleLogin(event) {
         });
 
         if (res.ok) {
+            if (typeof data?.access_token !== 'string' || !data.access_token.trim()) {
+                showNotification('El servidor no devolvió una sesión válida. Intenta nuevamente.');
+                return;
+            }
             sessionStorage.setItem('token', data.access_token);
             localStorage.removeItem('token');
             localStorage.removeItem('user');

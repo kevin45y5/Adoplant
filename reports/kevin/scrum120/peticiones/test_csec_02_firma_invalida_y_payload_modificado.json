@@ -1,0 +1,22 @@
+[
+  {
+    "caso": "test_csec_02_firma_invalida_y_payload_modificado",
+    "metodo": "GET",
+    "ruta": "/api/usuarios/me",
+    "estado": 401,
+    "www_authenticate": "Bearer",
+    "respuesta": {
+      "detail": "Token ausente, inválido o vencido"
+    }
+  },
+  {
+    "caso": "test_csec_02_firma_invalida_y_payload_modificado",
+    "metodo": "GET",
+    "ruta": "/api/usuarios/me",
+    "estado": 401,
+    "www_authenticate": "Bearer",
+    "respuesta": {
+      "detail": "Token ausente, inválido o vencido"
+    }
+  }
+]

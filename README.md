@@ -23,6 +23,7 @@ source .venv/bin/activate
 
 # Instalar dependencias
 pip install -r requirements.txt
+```
 
 **Nota:** Si el comando `python -m pytest --cov=app --cov-report=html` te devuelve
 `error: unrecognized arguments: --cov=app --cov-report=html`, significa que
@@ -34,6 +35,7 @@ pip install pytest-cov pytest-html
 
 Luego vuelve a ejecutar el comando de cobertura.
 
+```bash
 # Ejecutar todos los tests
 python -m pytest -q
 
@@ -46,7 +48,7 @@ python -m pytest tests/test_autenticacion.py -v
 
 ## Tests de aceptación y E2E (Jira SCRUM-89, 90 y 94)
 
-Estos tests validan flujos de extremo a extremo y aceptación de la aplicación web. Requieren la API levantada y, en algunos casos, PostgreSQL con datos de seed.
+Las pruebas Python de rutas usan TestClient y las pruebas JavaScript usan simulaciones del DOM y de la API. No requieren un servidor levantado ni un navegador. Las pruebas de integración con PostgreSQL se activan por separado.
 
 | Ticket | Tipo | Archivos de test | Qué valida |
 |--------|------|------------------|------------|
@@ -60,27 +62,33 @@ Estos tests validan flujos de extremo a extremo y aceptación de la aplicación 
 
 ```powershell
 # Desde la carpeta Adoplant/
-# Asegúrate de que la API esté corriendo en http://127.0.0.1:8000
-# y PostgreSQL en localhost:5432 con datos de seed
-
-$env:DB_HOST="localhost"; $env:DB_PORT="5432"; $env:DB_USER="postgres"; $env:DB_PASSWORD="javarberl"; $env:DB_NAME="plant"
-
 python -m pytest tests/test_web_recuperacion.py -v          # SCRUM-89
 python -m pytest tests/test_admin_panel.py -v               # SCRUM-94 (administración)
 ```
 
 ### Ejecutar tests web frontend (JavaScript/Node)
 
-Estos archivos `.cjs` se ejecutan con Node y requieren un navegador (Playwright/Puppeteer según configuración):
+Estos archivos `.cjs` se ejecutan con Node, sin instalar Playwright ni Puppeteer:
 
 ```powershell
 # Desde la carpeta Adoplant/
+node --test tests/*.cjs                                   # Toda la suite JavaScript
 node tests/perfil_web.test.cjs                              # SCRUM-90
 node tests/recuperacion_web.test.cjs                        # SCRUM-89, SCRUM-90
 node tests/sesion_web.test.cjs                              # SCRUM-89, SCRUM-90
 ```
 
-**Total de tests:** 200 tests (según `pytest --collect-only`).
+Las pruebas unitarias reciben una configuración ficticia desde `tests/conftest.py`; no necesitan un archivo `.env`. Para ejecutar las pruebas de integración, configura un `.env` a partir de `.env.example` con una base PostgreSQL exclusiva para pruebas y activa los grupos correspondientes:
+
+```powershell
+$env:DB_NAME="adopplant_test"
+$env:SCRUM2_TEST_DB="1"
+$env:SCRUM6_TEST_DB="1"
+python -m pytest -q
+Remove-Item Env:DB_NAME, Env:SCRUM2_TEST_DB, Env:SCRUM6_TEST_DB
+```
+
+Estos indicadores usan la configuración real del entorno o del `.env`. Sin ellos, las pruebas de PostgreSQL se omiten.
 
 ## Ver reportes
 
@@ -163,6 +171,8 @@ consola al terminar. `-e REPORTES_DIR=otra/carpeta` cambia el destino; la carpet
 debe existir.
 
 ## Ejecutar la API localmente (opcional)
+
+Configura primero `.env` a partir de `.env.example`, incluyendo PostgreSQL y una clave JWT aleatoria de al menos 64 caracteres. La configuración ficticia de pytest no se usa al iniciar la API.
 
 ```bash
 # Con venv activado

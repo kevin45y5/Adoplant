@@ -1,0 +1,32 @@
+[
+  {
+    "caso": "test_csec_01_sin_token",
+    "metodo": "GET",
+    "ruta": "/api/usuarios/me",
+    "estado": 401,
+    "www_authenticate": "Bearer",
+    "respuesta": {
+      "detail": "Token ausente, inválido o vencido"
+    }
+  },
+  {
+    "caso": "test_csec_01_sin_token",
+    "metodo": "GET",
+    "ruta": "/api/admin/usuarios",
+    "estado": 401,
+    "www_authenticate": "Bearer",
+    "respuesta": {
+      "detail": "Token ausente, inválido o vencido"
+    }
+  },
+  {
+    "caso": "test_csec_01_sin_token",
+    "metodo": "GET",
+    "ruta": "/api/notificaciones",
+    "estado": 401,
+    "www_authenticate": "Bearer",
+    "respuesta": {
+      "detail": "Token ausente, inválido o vencido"
+    }
+  }
+]

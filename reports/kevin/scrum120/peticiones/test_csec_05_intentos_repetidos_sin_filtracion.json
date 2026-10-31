@@ -1,0 +1,113 @@
+[
+  {
+    "caso": "test_csec_05_intentos_repetidos_sin_filtracion",
+    "metodo": "POST",
+    "ruta": "/api/auth/login",
+    "estado": 401,
+    "www_authenticate": null,
+    "respuesta": {
+      "detail": "Credenciales inválidas"
+    }
+  },
+  {
+    "caso": "test_csec_05_intentos_repetidos_sin_filtracion",
+    "metodo": "POST",
+    "ruta": "/api/auth/login",
+    "estado": 401,
+    "www_authenticate": null,
+    "respuesta": {
+      "detail": "Credenciales inválidas"
+    }
+  },
+  {
+    "caso": "test_csec_05_intentos_repetidos_sin_filtracion",
+    "metodo": "POST",
+    "ruta": "/api/auth/login",
+    "estado": 401,
+    "www_authenticate": null,
+    "respuesta": {
+      "detail": "Credenciales inválidas"
+    }
+  },
+  {
+    "caso": "test_csec_05_intentos_repetidos_sin_filtracion",
+    "metodo": "POST",
+    "ruta": "/api/auth/login",
+    "estado": 401,
+    "www_authenticate": null,
+    "respuesta": {
+      "detail": "Credenciales inválidas"
+    }
+  },
+  {
+    "caso": "test_csec_05_intentos_repetidos_sin_filtracion",
+    "metodo": "POST",
+    "ruta": "/api/auth/login",
+    "estado": 401,
+    "www_authenticate": null,
+    "respuesta": {
+      "detail": "Credenciales inválidas"
+    }
+  },
+  {
+    "caso": "test_csec_05_intentos_repetidos_sin_filtracion",
+    "metodo": "POST",
+    "ruta": "/api/auth/login",
+    "estado": 401,
+    "www_authenticate": null,
+    "respuesta": {
+      "detail": "Credenciales inválidas"
+    }
+  },
+  {
+    "caso": "test_csec_05_intentos_repetidos_sin_filtracion",
+    "metodo": "POST",
+    "ruta": "/api/auth/login",
+    "estado": 401,
+    "www_authenticate": null,
+    "respuesta": {
+      "detail": "Credenciales inválidas"
+    }
+  },
+  {
+    "caso": "test_csec_05_intentos_repetidos_sin_filtracion",
+    "metodo": "POST",
+    "ruta": "/api/auth/login",
+    "estado": 401,
+    "www_authenticate": null,
+    "respuesta": {
+      "detail": "Credenciales inválidas"
+    }
+  },
+  {
+    "caso": "test_csec_05_intentos_repetidos_sin_filtracion",
+    "metodo": "POST",
+    "ruta": "/api/auth/login",
+    "estado": 401,
+    "www_authenticate": null,
+    "respuesta": {
+      "detail": "Credenciales inválidas"
+    }
+  },
+  {
+    "caso": "test_csec_05_intentos_repetidos_sin_filtracion",
+    "metodo": "POST",
+    "ruta": "/api/auth/login",
+    "estado": 401,
+    "www_authenticate": null,
+    "respuesta": {
+      "detail": "Credenciales inválidas"
+    }
+  },
+  {
+    "caso": "test_csec_05_intentos_repetidos_sin_filtracion",
+    "metodo": "POST",
+    "ruta": "/api/auth/login",
+    "estado": 200,
+    "www_authenticate": null,
+    "respuesta": {
+      "access_token": "[OMITIDO]",
+      "token_type": "bearer"
+    }
+  }
+]
