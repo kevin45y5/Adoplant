@@ -22,8 +22,16 @@ async function initializePublication() {
  const select=pubEl('plantCategory');while(select.options.length>1)select.remove(1);
  categories.filter(c=>c.estado==='ACTIVA').forEach(c=>{const option=document.createElement('option');option.value=c.id_categoria;option.textContent=c.nombre;select.append(option);});
  if(select.options.length===1)throw new Error('No hay categorías activas para publicar. Intenta más tarde.');
+ const editId=new URLSearchParams(window.location.search).get('editar');
+ if(editId!==null){
+  if(!/^[1-9][0-9]*$/.test(editId))throw new Error('La publicación no es válida.');
+  const plant=await publicationRequest('/plantas/mias/'+editId);
+  if(Number(plant.id_usuario)!==Number(publicationUser.id_usuario)||plant.eliminada||plant.estado_planta!=='DISPONIBLE')throw new Error('Esta publicación no está disponible para editar.');
+  beginPublicationEdit(plant);
+ }else{
+  try {const saved=JSON.parse(sessionStorage.getItem('plantDraft:'+publicationUser.id_usuario)||'null');if(saved){publicationFields.forEach(name=>{if(typeof saved[name]==='string')pubEl('publishForm').elements.namedItem(name).value=saved[name];});pubMessage('Borrador recuperado. Adjunta nuevamente la fotografía antes de publicar.');}}catch(_){/* Un borrador inválido no impide publicar. */}
+ }
  pubEl('publishForm').hidden=false;pubEl('pageStatus').textContent='';
- try {const saved=JSON.parse(sessionStorage.getItem('plantDraft:'+publicationUser.id_usuario)||'null');if(saved){publicationFields.forEach(name=>{if(typeof saved[name]==='string')pubEl('publishForm').elements.namedItem(name).value=saved[name];});pubMessage('Borrador recuperado. Adjunta nuevamente la fotografía antes de publicar.');}}catch(_){/* Un borrador inválido no impide publicar. */}
  }catch(error){pubEl('pageStatus').textContent=error.message;pubEl('retryPage').hidden=false;}finally{booting=false;}
 }
 function validatePublicationPhoto(file) {
@@ -73,16 +81,22 @@ function showPublicationSuccess(plant) {
  photo.src=source;
  pubEl('successTitle').focus();
 }
-pubEl('editPublication').addEventListener('click',()=>{
- if(!publishedPlant || publishing)return;
+function beginPublicationEdit(plant){
+ publishedPlant=plant;
  editingPublication=true;
  const form=pubEl('publishForm');
  publicationFields.forEach(name=>{form.elements.namedItem(name).value=String(publishedPlant[name] ?? '');});
  pubEl('photograph').required=false;
- pubEl('photoPreview').src=pubEl('successPhoto').src;pubEl('photoPreview').hidden=false;pubEl('photoPlaceholder').hidden=true;
+ let photo='/views/icon.jpeg';try{const url=new URL(plant.fotografia_url);if(['https:','http:'].includes(url.protocol))photo=url.href;}catch(_){}
+ pubEl('photoPreview').src=photo;pubEl('photoPreview').hidden=false;pubEl('photoPlaceholder').hidden=true;
  pubEl('publishSuccess').hidden=true;pubEl('publicationHeading').hidden=false;form.hidden=false;
  pubEl('publishButton').textContent='Guardar cambios →';pubEl('saveDraft').hidden=true;
+ pubEl('publicationHeading').querySelector('h1').textContent='Editar publicación';
  pubMessage('Edita los datos de tu publicación. Si no seleccionas otra fotografía, conservaremos la actual.');
  form.scrollIntoView({behavior:'smooth',block:'start'});
+}
+pubEl('editPublication').addEventListener('click',()=>{
+ if(!publishedPlant || publishing)return;
+ beginPublicationEdit(publishedPlant);
 });
 initializePublication();
