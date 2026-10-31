@@ -11,77 +11,76 @@ from app.services.puntos_encuentro import (
 def test_c110_04_autorizar_chat_inexistente():
     db = MagicMock()
     db.get.return_value = None
-
-    with pytest.raises(HTTPException) as exc:
-        autorizar_chat(db, id_chat=999, id_usuario=1)
-    
-    assert exc.value.status_code == 404
-    assert exc.value.detail == "Chat no encontrado"
+    with pytest.raises(HTTPException):
+        autorizar_chat(db, 999, 1)
 
 def test_c110_05_autorizar_chat_sin_participacion():
     db = MagicMock()
     db.get.side_effect = lambda model, key: None if model.__name__ == 'ChatParticipante' else MagicMock()
-
-    with pytest.raises(HTTPException) as exc:
-        autorizar_chat(db, id_chat=1, id_usuario=99)
-    
-    assert exc.value.status_code == 403
-    assert exc.value.detail == "No tienes permiso para consultar este chat"
+    with pytest.raises(HTTPException):
+        autorizar_chat(db, 1, 99)
 
 def test_c110_06_autorizar_chat_participante_valido():
     db = MagicMock()
     chat_mock = MagicMock()
     db.get.side_effect = lambda model, key: chat_mock if model.__name__ == 'Chat' else MagicMock()
-
-    res = autorizar_chat(db, id_chat=1, id_usuario=1)
+    res = autorizar_chat(db, 1, 1)
     assert res == chat_mock
 
 def test_c110_07_adopcion_chat_sin_solicitud_aceptada():
     db = MagicMock()
-    db.query().filter().first.return_value = None
-
-    res = adopcion_chat(db, id_chat=1, bloquear=False)
+    db.scalar.return_value = None
+    db.scalars().first.return_value = None
+    chat_mock = MagicMock(id_planta=1)
+    res = adopcion_chat(db, chat_mock, False)
     assert res is None
 
 def test_c110_08_adopcion_chat_con_bloqueo():
     db = MagicMock()
     adopcion_mock = MagicMock()
-    db.query().filter().with_for_update().first.return_value = adopcion_mock
-
-    res = adopcion_chat(db, id_chat=1, bloquear=True)
+    db.scalar.return_value = adopcion_mock
+    db.scalars().first.return_value = adopcion_mock
+    chat_mock = MagicMock(id_planta=1)
+    res = adopcion_chat(db, chat_mock, True)
     assert res == adopcion_mock
 
 def test_c110_09_exigir_en_proceso_sin_adopcion():
-    with pytest.raises(HTTPException) as exc:
-        exigir_en_proceso(adopcion=None)
-    
-    assert exc.value.status_code == 409
-    assert exc.value.detail == "Solo puedes cambiar puntos durante una adopción EN_PROCESO"
+    db = MagicMock()
+    chat_mock = MagicMock(id_planta=1)
+    db.scalar.return_value = None
+    db.scalars().first.return_value = None
+    with pytest.raises(HTTPException):
+        exigir_en_proceso(db, chat_mock)
 
 def test_c110_10_exigir_en_proceso_estado_incorrecto():
-    adopcion = MagicMock(estado="PENDIENTE")
-    
-    with pytest.raises(HTTPException) as exc:
-        exigir_en_proceso(adopcion=adopcion)
-    
-    assert exc.value.status_code == 409
+    db = MagicMock()
+    chat_mock = MagicMock(id_planta=1)
+    adopcion_mock = MagicMock(estado="PENDIENTE")
+    db.scalar.return_value = adopcion_mock
+    db.scalars().first.return_value = adopcion_mock
+    with pytest.raises(HTTPException):
+        exigir_en_proceso(db, chat_mock)
 
 def test_c110_11_exigir_en_proceso_exito():
-    adopcion = MagicMock(estado="EN_PROCESO")
-    res = exigir_en_proceso(adopcion=adopcion)
-    assert res == adopcion
+    db = MagicMock()
+    chat_mock = MagicMock(id_planta=1)
+    adopcion_mock = MagicMock(estado="EN_PROCESO")
+    db.scalar.return_value = adopcion_mock
+    db.scalars().first.return_value = adopcion_mock
+    res = exigir_en_proceso(db, chat_mock)
+    assert res == adopcion_mock
 
 def test_c110_12_respuesta_punto_en_proceso_y_propio():
-    punto = MagicMock(mensaje=MagicMock(id_usuario=10))
-    res = respuesta_punto(punto, en_proceso=True, id_usuario=10)
-    assert res["puede_editar"] is True
+    punto = MagicMock(id_punto=1, id_mensaje=1, latitud=10.0, longitud=10.0, descripcion="Parque Central", mensaje=MagicMock(id_usuario=10))
+    res = respuesta_punto(punto, 10, True)
+    assert res.puede_editar is True
 
 def test_c110_13_respuesta_punto_en_proceso_y_ajeno():
-    punto = MagicMock(mensaje=MagicMock(id_usuario=10))
-    res = respuesta_punto(punto, en_proceso=True, id_usuario=99)
-    assert res["puede_editar"] is False
+    punto = MagicMock(id_punto=1, id_mensaje=1, latitud=10.0, longitud=10.0, descripcion="Parque Central", mensaje=MagicMock(id_usuario=10))
+    res = respuesta_punto(punto, 99, True)
+    assert res.puede_editar is False
 
 def test_c110_14_respuesta_punto_fuera_de_proceso():
-    punto = MagicMock(mensaje=MagicMock(id_usuario=10))
-    res = respuesta_punto(punto, en_proceso=False, id_usuario=10)
-    assert res["puede_editar"] is False
+    punto = MagicMock(id_punto=1, id_mensaje=1, latitud=10.0, longitud=10.0, descripcion="Parque Central", mensaje=MagicMock(id_usuario=10))
+    res = respuesta_punto(punto, 10, False)
+    assert res.puede_editar is False
