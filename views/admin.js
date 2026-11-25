@@ -6,7 +6,15 @@ async function adminApi(path,options={}){
  if(!adminToken||sessionStorage.getItem('token')!==adminToken){window.location.replace('/views/index.html');throw new Error('Inicia sesión.');}
  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),20000);
  try{const r=await fetch(window.ADOPPLANT_API_URL+'/admin'+path,{...options,headers:{Authorization:'Bearer '+adminToken,'Content-Type':'application/json'},cache:'no-store',signal:controller.signal});
- if(r.status===401||r.status===403){adminUser=null;adm('adminPanel').hidden=true;throw new Error('Tu cuenta no tiene acceso de administrador o la sesión venció.');}
+ if(r.status===401||r.status===403){
+  adminUser=null;
+  adm('adminPanel').hidden=true;
+  adm('adminIdentity').textContent='Acceso restringido';
+  adm('adminStatus').textContent='Tu cuenta no tiene acceso de administrador o la sesión venció.';
+  adm('retryAdmin').hidden=false;
+  if(r.status===401&&sessionStorage.getItem('token')===adminToken){sessionStorage.removeItem('token');window.location.replace('/views/index.html');}
+  throw new Error(adm('adminStatus').textContent);
+ }
  const data=await r.json();if(!r.ok)throw new Error(typeof data.detail==='string'?data.detail:'No se pudo completar la operación.');if(sessionStorage.getItem('token')!==adminToken)throw new Error('La sesión cambió.');return data;
  }catch(e){if(e.name==='AbortError')throw new Error('El servidor tardó demasiado. Consulta el estado antes de reintentar.');throw e;}finally{clearTimeout(timer);}
 }
@@ -24,14 +32,42 @@ function renderAdminRows(){
  adm('adminEmpty').hidden=adminRows.length>0;adm('adminPage').textContent='Página '+adminPage;adm('adminPrev').disabled=adminPage===1;
 }
 async function loadAdminRows(){
- if(!adminUser)return;const version=++adminVersion;adm('adminStatus').textContent='Cargando…';adm('retryAdmin').hidden=true;
+ if(!adminUser||adminTab==='metricas')return;const version=++adminVersion;adm('adminStatus').textContent='Cargando…';adm('retryAdmin').hidden=true;
  try{const query=adm('adminQuery').value.trim(),offset=(adminPage-1)*20;let path;
  if(adminTab==='usuarios')path='/usuarios?limite=20&pagina='+adminPage+'&buscar='+encodeURIComponent(query);else if(adminTab==='plantas')path='/plantas?limit=20&skip='+offset+'&q='+encodeURIComponent(query);else path='/reportes?limit=20&skip='+offset;
  const data=await adminApi(path);if(version!==adminVersion)return;adminRows=adminTab==='usuarios'?data.usuarios:data;if(!Array.isArray(adminRows))throw new Error('Respuesta inválida.');renderAdminRows();adm('adminNext').disabled=adminTab==='usuarios'?adminPage*20>=data.total:adminRows.length<20;adm('adminStatus').textContent='';
  }catch(e){if(version===adminVersion){adm('adminStatus').textContent=e.message;adm('retryAdmin').hidden=false;}}
 }
-async function initializeAdmin(){try{adminUser=await adminApi('/me');adm('adminIdentity').textContent='Hola, '+adminUser.nombre+'. Gestiona los usuarios, publicaciones y reportes.';adm('adminPanel').hidden=false;await loadAdminRows();}catch(e){adm('adminIdentity').textContent='Acceso restringido';adm('adminStatus').textContent=e.message;adm('retryAdmin').hidden=false;}}
-document.querySelectorAll('[data-admin-tab]').forEach(button=>button.onclick=()=>{if(adminBusy)return;adminTab=button.dataset.adminTab;adminPage=1;adm('adminQuery').value='';adm('adminSearch').hidden=adminTab==='reportes';document.querySelectorAll('[data-admin-tab]').forEach(b=>b.classList.toggle('selected',b===button));loadAdminRows();});
+function mostrarSeccionAdmin(seccion){
+ if(!adminUser||adminBusy)return;
+ adminTab=seccion;
+ adminPage=1;
+ adminVersion++;
+ const esMetricas=seccion==='metricas';
+ adm('adminGestion').hidden=esMetricas;
+ adm('adminMetricas').hidden=!esMetricas;
+ adm('adminStatus').textContent='';
+ adm('retryAdmin').hidden=true;
+ document.querySelectorAll('[data-admin-tab]').forEach(button=>{
+  const activa=button.dataset.adminTab===seccion;
+  button.classList.toggle('selected',activa);
+  button.setAttribute('aria-pressed',String(activa));
+ });
+ if(esMetricas){panelMetricas.cargar();return;}
+ panelMetricas.cancelarVista();
+ adm('adminQuery').value='';
+ adm('adminSearch').hidden=seccion==='reportes';
+ loadAdminRows();
+}
+async function initializeAdmin(){
+ try{
+  adminUser=await adminApi('/me');
+  adm('adminIdentity').textContent='Hola, '+adminUser.nombre+'.';
+  adm('adminPanel').hidden=false;
+  mostrarSeccionAdmin(window.location.hash==='#metricas'?'metricas':adminTab);
+ }catch(e){adm('adminIdentity').textContent='Acceso restringido';adm('adminStatus').textContent=e.message;adm('retryAdmin').hidden=false;}
+}
+document.querySelectorAll('[data-admin-tab]').forEach(button=>button.onclick=()=>mostrarSeccionAdmin(button.dataset.adminTab));
 adm('adminSearch').onsubmit=event=>{event.preventDefault();adminPage=1;loadAdminRows();};adm('adminPrev').onclick=()=>{if(adminPage>1){adminPage--;loadAdminRows();}};adm('adminNext').onclick=()=>{adminPage++;loadAdminRows();};adm('retryAdmin').onclick=initializeAdmin;
 adm('adminCancel').onclick=()=>{if(!adminBusy){adminPending=null;adm('adminDialog').close();}};adm('adminDialog').addEventListener('cancel',e=>{if(adminBusy)e.preventDefault();else adminPending=null;});
 adm('adminConfirm').onclick=async()=>{if(adminBusy||!adminPending)return;const action=adminPending,body={...action.body};if(action.reason){body.motivo=adm('adminReason').value.trim();if(!body.motivo){adm('adminActionStatus').textContent='Escribe el motivo para continuar.';return;}}

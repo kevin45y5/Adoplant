@@ -1,0 +1,88 @@
+.admin-tabs { flex-wrap: wrap; }
+
+.metricas {
+  color: #254530;
+  font-size: 14px;
+}
+
+.metricas-cabecera, .metricas-controles {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.metricas-cabecera { justify-content: space-between; }
+
+.metricas-controles select, .metricas-controles button {
+  padding: 10px 14px;
+  border-radius: 18px;
+  font-size: 13px;
+}
+
+.metricas-controles select {
+  background: white;
+  border: 1px solid #dde5d3;
+}
+
+.metricas-controles button {
+  background: #20472e;
+  color: white;
+  border: 1px solid transparent;
+}
+
+#metricasEstado { color: #56705a; }
+#metricasError { color: #8e392b; }
+
+.metricas-indicadores, .metricas-grid, .metricas-columnas {
+  display: grid;
+  gap: 14px;
+}
+
+.metricas-indicadores {
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  margin: 22px 0;
+}
+
+.metricas-indicadores > div, .metricas-tarjeta {
+  min-width: 0;
+  border: 1px solid #e9ebdf;
+  border-radius: 18px;
+  padding: 16px;
+  background: white;
+}
+
+.metricas-indicadores > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border-left: 4px solid #3a7650;
+}
+
+.metricas-indicadores dt { color: #56705a; }
+.metricas-indicadores dd { order: -1; margin: 0; font-size: 24px; font-weight: 700; }
+.metricas-grid, .metricas-columnas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.metricas-ancha { grid-column: 1 / -1; }
+.metricas-tarjeta h3 { margin: 0 0 12px; }
+.metricas-tarjeta h4 { margin: 4px 0; }
+.metricas-tarjeta ul, .metricas-tarjeta ol { margin: 8px 0 0; padding-left: 20px; }
+.metricas-grafica { position: relative; height: 250px; }
+.metricas-pasos { margin: 0; }
+
+.metricas-pasos > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid #e9ebdf;
+}
+
+.metricas-pasos dd { margin: 0; font-weight: 700; }
+
+@media (max-width: 760px) {
+  .metricas-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 440px) {
+  .metricas-columnas { grid-template-columns: 1fr; }
+}

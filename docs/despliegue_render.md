@@ -27,6 +27,31 @@ El archivo `.python-version` selecciona Python 3.14, la misma serie utilizada lo
 En Render se configuró PYTHON_VERSION=3.14.2, que tiene precedencia sobre el archivo.
 No usar --reload en el servidor.
 
+### Usar la base existente en Amazon RDS
+
+Configura ambos servicios con el mismo endpoint, puerto y nombre de base de
+PostgreSQL. Usa cuentas de aplicación con los permisos que necesita cada
+servicio. Analytics consulta la base y puede usar una cuenta de solo lectura.
+Las contraseñas y la clave JWT se configuran como variables del entorno de
+ejecución.
+
+| Servicio | Configuración |
+| --- | --- |
+| FastAPI | `DATABASE_URL=postgresql://USUARIO:CLAVE_CODIFICADA@HOST_RDS:5432/BASE?sslmode=verify-full&sslrootcert=RUTA_AL_CERTIFICADO` |
+| Analytics (.NET) | `ConnectionStrings__AdopPlant=Host=HOST_RDS;Port=5432;Database=BASE;Username=USUARIO;Password=CLAVE;SSL Mode=VerifyFull;Root Certificate=RUTA_AL_CERTIFICADO` |
+| Comunicación | `ANALYTICS_API_URL` en FastAPI apunta a .NET y `FastApi__BaseUrl` en .NET apunta a FastAPI. |
+| Autenticación | `JWT_SECRET_KEY` en FastAPI y `Jwt__Secret` en .NET tienen el mismo valor en ese entorno. |
+
+En FastAPI, `DATABASE_URL_POOLED` tiene prioridad sobre `DATABASE_URL`.
+Actualiza ambas si el entorno ya configura la primera. Descarga el certificado
+raíz indicado por [la guía SSL/TLS de RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html)
+y colócalo en una ruta accesible para cada servicio. Permite TCP 5432 únicamente
+desde los orígenes autorizados en el grupo de seguridad de RDS.
+
+Antes de cambiar la web publicada, valida la conexión de los dos servicios y
+comprueba que la base RDS ya tiene el esquema esperado. Usa los datos existentes
+para revisar **Administración → Métricas**.
+
 ## Procedimiento para una instalación nueva
 
 - Seleccionar PostgreSQL remoto y revisar su versión antes de importar el esquema.

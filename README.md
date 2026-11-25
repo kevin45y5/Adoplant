@@ -180,3 +180,9 @@ uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 ```
 
 Documentación en http://127.0.0.1:8000/docs. Para el stack completo con Analytics ver ../INICIAR_PROYECTOS.md.
+
+Para abrir el panel integrado, visita `http://127.0.0.1:8000/views/index.html`,
+inicia sesión con una cuenta administradora y selecciona **Administración → Métricas**.
+La API de ASP.NET Core debe estar ejecutándose en `ANALYTICS_API_URL`
+(por defecto `http://127.0.0.1:5080`). Ambos servicios usan la misma base
+y clave JWT. Consulta [la guía de la web](docs/base_web_equipo.md).

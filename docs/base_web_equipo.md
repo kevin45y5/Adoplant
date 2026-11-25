@@ -9,17 +9,22 @@ La interfaz se sirve desde el mismo servicio de Render que la API:
 
 Estas rutas requieren desplegar en Render el commit que contiene `views`.
 La raíz `/` sigue mostrando la salud de la API y `/docs` conserva Swagger.
-`views/config.js` fija la API en `https://adopplant-api.onrender.com/api` para
-registro, login, recuperación e inicio, incluso al trabajar en la computadora.
-La API permite CORS desde HTTP localhost y 127.0.0.1 con puerto; conserva JWT.
-Este cambio de CORS también debe desplegarse en Render antes de probar la web local.
+`views/config.js` apunta a `/api` en el mismo origen de la web.
+Para desarrollar, levanta FastAPI y abre `http://127.0.0.1:8000/views/index.html`.
+Si usas un servidor separado para los archivos estáticos, debe reenviar `/api`
+al FastAPI de tu entorno. Los módulos web reutilizan `window.ADOPPLANT_API_URL`.
 
-Para desarrollar pueden mantener `http://127.0.0.1:8000/views/index.html` o servir
-la carpeta raíz del repositorio con Live Server (no solamente `views`). Las rutas
-de recursos y páginas empiezan por `/views/`. No abrir con `file://`.
-Los registros, cambios de contraseña y demás operaciones afectan a los datos reales
-de Render. No se necesitan claves de Mailjet ni una base de datos local para servir
-los archivos estáticos. Los nuevos módulos deben reutilizar `window.ADOPPLANT_API_URL`.
+## Administración y métricas
+
+Una cuenta administradora entra por el formulario normal y abre
+**Administración → Métricas**. Las consultas del navegador a `/api/admin/metricas/*`
+reutilizan el token de la sesión actual. FastAPI reenvía las consultas a
+la API de .NET, que valida el token y el rol, y calcula los indicadores con PostgreSQL.
+
+`ANALYTICS_API_URL` indica dónde está .NET para FastAPI. El valor por defecto
+es `http://127.0.0.1:5080`. Cuando se publican ambos servicios, hay que configurar
+esa URL, la misma base PostgreSQL y la misma clave de firma en ambos servicios
+(`JWT_SECRET_KEY` en FastAPI y `Jwt__Secret` en .NET).
 
 ## Comportamiento
 

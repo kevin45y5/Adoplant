@@ -1,6 +1,9 @@
 import logging
+import os
+from contextlib import asynccontextmanager
 from pathlib import Path
 
+import httpx
 from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
@@ -15,10 +18,25 @@ from app.routes.api import api_router
 
 logger = logging.getLogger(__name__)
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    analytics_url = os.environ.get("ANALYTICS_API_URL", "http://127.0.0.1:5080").strip()
+    async with httpx.AsyncClient(
+        base_url=analytics_url.rstrip("/") + "/",
+        timeout=12.0,
+        follow_redirects=False,
+        trust_env=False,
+    ) as analytics:
+        app.state.analytics = analytics
+        yield
+
+
 app = FastAPI(
     title="AdopPlant API",
     description="API para la adopción de plantas.",
     version="0.1.0",
+    lifespan=lifespan,
 )
 
 app.add_middleware(

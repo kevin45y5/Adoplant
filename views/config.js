@@ -1,2 +1,2 @@
-// Configuración compartida: incluso la web local utiliza el backend publicado.
-window.ADOPPLANT_API_URL = 'https://adopplant-api.onrender.com/api';
+// La web y su API se sirven desde el mismo dominio, también en local.
+window.ADOPPLANT_API_URL = '/api';
